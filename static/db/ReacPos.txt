@@ -1,0 +1,85 @@
+ North America
+    
+    % Mexico
+    rMexico=Reactor(4.054,[-96.41 19.72],'name','LAGUNA VERDE', ...
+        'load',.8360);
+
+    % Canada
+    r101=Reactor(16.708,[-81.6 44.33],'name','BRUCE','load',.7988);
+    r102=Reactor(11.104,[-78.7 43.88],'name','DARLINGTON','load',.8375);
+    r103=Reactor(2.156,[-72.36 46.4],'name','GENTILLY','load',.8340);
+    r104=Reactor(10.464,[-79.06 43.81],'name','PICKERING','load',.7302);
+    r105=Reactor(2.18,[-66.45 45.07],'name','POINTE LEPREAU','load',.8150);
+
+    rCanada={r101 r102 r103 r104 r105};
+
+    % United States of America
+    r106=Reactor(5.594,[-93.25 35.23],'name','ARKANSAS ONE','load',.8115);
+    r107=Reactor(5.378,[-80.43 40.62],'name','BEAVER VALLEY','load',.7915);
+    r108=Reactor(7.174,[-88.23 41.24],'name','BRAIDWOOD','load',.8905);
+    r109=Reactor(10.374,[-87.12 34.7],'name','BROWNS FERRY','load',.7357);
+    r110=Reactor(5.846,[-78.01 33.96],'name','BRUNSWICK','load',.7330);
+    r111=Reactor(7.174,[-89.28 42.08],'name','BYRON','load',.8945);
+    r112=Reactor(3.565,[-91.78 38.76],'name','CALLAWAY','load',.8810);
+    r113=Reactor(5.4,[-76.44 38.43],'name','CALVERT CLIFFS','load',.7925);
+    r114=Reactor(6.822,[-81.07 35.05],'name','CATAWBA','load',.8445);
+    r115=Reactor(3.473,[-88.83 40.17],'name','CLINTON','load',.7460);
+    r116=Reactor(3.486,[-119.33 46.47],'name','COLUMBIA','load',.7860);
+    r117=Reactor(6.916,[-97.79 32.3],'name','COMANCHE PEAK','load',.8955);
+    r118=Reactor(2.381,[-95.64 40.36],'name','COOPER','load',.7530);
+    r119=Reactor(2.568,[-82.7 28.96],'name','CRYSTAL RIVER','load',.7310);
+    r120=Reactor(2.772,[-83.09 41.6],'name','DAVIS BESSE','load',.6820);
+    r121=Reactor(6.749,[-120.85 35.21],'name','DIABLO CANYON', ...
+        'load',.8740);
+    r122=Reactor(6.772,[-86.57 41.98],'name','DONALDCOOK','load',.6905);
+    r123=Reactor(5.054,[-88.27 41.39],'name','DRESDEN','load',.7540);
+    r124=Reactor(1.912,[-91.77 42.1],'name','DUANE ARNOLD','load',.7860);
+    r125=Reactor(3.43,[-83.26 41.96],'name','ENRICO FERMI','load',.7790);
+    r126=Reactor(5.55,[-85.11 31.22],'name','FARLEY','load',.8525);
+    r127=Reactor(2.536,[-76.4 43.52],'name','FITZPATRICK','load',.7680);
+    r128=Reactor(1.5,[-96.08 41.52],'name','FORT CALHOUN','load',.8020);
+    r129=Reactor(3.833,[-91.05 32.01],'name','GRAND GULF','load',.8660);
+    r130=Reactor(2.339,[-80.16 34.4],'name','H.B. ROBINSON','load',.7860);
+    r131=Reactor(5.608,[-82.34 31.93],'name','HATCH','load',.8125);
+    r132=Reactor(3.339,[-75.54 39.47],'name','HOPE CREEK','load',.8540);
+    r133=Reactor(6.432,[-73.95 41.27],'name','INDIAN POINT','load',.7000);
+    r134=Reactor(1.772,[-87.54 44.34],'name','KEWAUNEE','load',.8290);
+    r135=Reactor(6.978,[-88.67 41.24],'name','LASALLE','load',.7475);
+    r136=Reactor(6.916,[-75.59 40.22],'name','LIMERICK','load',.9120);
+    r137=Reactor(6.822,[-80.95 35.43],'name','MCGUIRE','load',.8215);
+    r138=Reactor(6.111,[-72.17 41.31],'name','MILLSTONE','load',.7075);
+    r139=Reactor(1.775,[-93.85 45.33],'name','MONTICELLO','load',.8460);
+    r140=Reactor(5.317,[-76.41 43.52],'name','NINE MILE POINT', ...
+        'load',.7835);
+    r141=Reactor(5.786,[-77.79 38.06],'name','NORTH ANNA','load',.8360);
+    r142=Reactor(7.704,[-82.9 34.79],'name','OCONEE','load',.8027);
+    r143=Reactor(1.93,[-74.21 39.81],'name','OYSTERCREEK','load',.7490);
+    r144=Reactor(2.565,[-86.31 42.32],'name','PALISADES','load',.6960);
+    r145=Reactor(11.97,[-112.86 33.39],'name','PALO VERDE','load',.8013);
+    r146=Reactor(7.028,[-76.27 39.76],'name','PEACH BOTTOM','load',.7380);
+    r147=Reactor(3.758,[-81.14 41.8],'name','PERRY','load',.8020);
+    r148=Reactor(2.028,[-70.58 41.94],'name','PILGRIM','load',.7020);
+    r149=Reactor(3.08,[-87.54 44.28],'name','POINT BEACH','load',.8380);
+    r150=Reactor(3.3,[-92.63 44.62],'name','PRAIRIE ILSAND','load',.8700);
+    r151=Reactor(5.468,[-90.31 41.73],'name','QUAD CITIES','load',.7655);
+    r152=Reactor(1.775,[-77.31 43.28],'name','R.E. GINNA','load',.8440);
+    r153=Reactor(3.091,[-91.33 30.76],'name','RIVER BEND','load',.8170);
+    r154=Reactor(6.918,[-75.54 39.46],'name','SALEM','load',.6815);
+    r155=Reactor(6.876,[-117.56 33.37],'name','SAN ONOFRE','load',.8140);
+    r156=Reactor(3.587,[-70.85 42.9],'name','SEABROOK','load',.8660);
+    r157=Reactor(6.822,[-85.09 35.23],'name','SEQUOYAH','load',.7315);
+    r158=Reactor(2.9,[-78.96 35.63],'name','SHEARON HARRIS','load',.8790);
+    r159=Reactor(7.706,[-96.05 28.8],'name','SOUTH TEXAS','load',.8125);
+    r160=Reactor(5.4,[-80.25 27.35],'name','SAINT LUCIE','load',.8430);
+    r161=Reactor(5.092,[-76.7 37.17],'name','SURRY','load',.7510);
+    r162=Reactor(6.978,[-76.15 41.09],'name','SUSQUEHANNA','load',.8560);
+    r163=Reactor(2.568,[-76.72 40.15],'name','THREE MILE ISLAND', ...
+        'load',.8660);
+    r164=Reactor(4.6,[-80.33 25.43],'name','TURKEY POINT','load',.7735);
+    r165=Reactor(1.912,[-72.52 42.78],'name','VERMONT YANKEE', ...
+        'load',.8420);
+    r166=Reactor(2.9,[-81.32 34.3],'name','VIRGIL C. SUMMER','load',.8450);
+    r167=Reactor(7.13,[-81.76 33.14],'name','VOGTLE','load',.8985);
+    r168=Reactor(3.716,[-90.47 30],'name','WATERFORD','load',.8700);
+    r169=Reactor(3.459,[-84.79 35.6],'name','WATTS BAR','load',.8960);
+    r170=Reactor(3.565,[-95.69 38.24],'name','WOLF CREEK','load',.8640);
