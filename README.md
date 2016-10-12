@@ -5,9 +5,9 @@ with daily reactor operational information (publicly available from NRC.gov) and
 static details regarding reactors (licensed thermal power output, location, etc.)
 
 Dependencies:
-Python 2.7
-couchdb
-numpy
+Python 2.7,
+couchdb,
+numpy,
 matplotlib
 
 Some details on important scripts:
@@ -24,11 +24,11 @@ REACTORS.ratdb file found in the SNO+ RAT distribution for reactor information. 
 also grabs reactor location details from db/ReacPos_corr.txt, which contains position
 information for US reactors found using Google Earth.
 
-graph/
+graph/:
 Home for various graphing scripts.  The scripts query the 'reacdb' couchDB for reactor
 information for data needed to complete the plots.
 
-graph/SigPlots.py
+graph/SigPlots.py:
 Outputs matplotlib plots graphing all US/CA reactors significance factors relative to
 SNO+.  A reactor's significance factor is defined as it's licensed thermal output,
 given in MW, divided by the squared distance from SNO+ in kilometers.
