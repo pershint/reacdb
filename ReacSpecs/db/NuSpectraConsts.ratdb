@@ -1,0 +1,51 @@
+//Contains a collection of antineutrino flux spectrum constants from
+//several sources.
+
+//Source: Th. A. Mueller, D. Lhuillier, M. Fallot et al. "Improved Predictions
+of reactor antineutrino spectra."  Pnys. Rev. C, 83:054615, May 2011.
+
+{
+type: "SPECTRACOEFF"
+version: 1,
+index: "SpectraSet_1",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestmap: "",
+235U: [3.217, -3.111, 1.395, -.3690, 0.04445, -0.002053],
+238U: [0.4833, 0.1927, -0.1283, -0.006762, 0.002233, -0.0001536],
+239Pu: [6.413, -7.432, 3.535, -0.8820, 0.1025, -0.004550],
+241Pu: [3.251, -3.204, 1.428, -0.3675, 0.04254, -0.001896]
+}
+
+//Source: P. Huber, "Determination of antineutrino spectra from nuclear reactors,"
+//Phys. Rev. C. 84.024617, 29 August 2011
+
+{
+type: "SPECTRACOEFF"
+version: 1,
+index: "SpectraSet_2",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestmap: "",
+235U: [4.367, -4.577, 2.100, -.5294, 0.06186, -0.002777],
+//No 238U coefficients measured
+239Pu: [4.757, -5.392, 2.563, -0.6596, 0.07820, -0.003536],
+241Pu: [2.990, -2.882, 1.278, -0.3343, 0.03905, -0.001754]
+}
+
+//Source: ILL + Vogel given by Satoko, need the paper
+{
+type: "SPECTRACOEFF"
+version: 1,
+index: "SpectraSet_3",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestmap: "",
+235U: [3.519, -3.517, 1.595, -0.4171, 0.05004, -0.002303],
+238U: [0.976, -0.162, -0.0790, 0.0, 0.0, 0.0]
+239Pu: [2.560, -2.654, 1.256, -0.3617, 0.04547, -0.002143],
+241Pu: [1.487, -1.038, 0.413, -0.1423, 0.01866, -0.0009229]
+}

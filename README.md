@@ -4,6 +4,10 @@ The following repository contains various python scripts to construct databases
 with daily reactor operational information (publicly available from NRC.gov) and
 static details regarding reactors (licensed thermal power output, location, etc.)
 
+Files in the ReacSpecs directory deal with filling and removing reactor-related
+elements in ReacDB.  Specifically, this directory is responsible for modifying/filling
+the "daily" and "static" views for ReacDB.
+
 Dependencies:
 Python 2.7,
 couchdb,
@@ -12,11 +16,11 @@ matplotlib
 
 Some details on important scripts:
 
-daily/pollReacDB.py:
+ReacSpecs/daily/pollReacDB.py:
 Pulls daily posted reactor status information from NRC.gov and pushes the data to
 a local couchDB named 'reacdb'.
 
-static/NRCgrabber.py:
+ReacSpecs/NRCgrabber.py:
 Contains the 'claws' class for grabbing/calculating static reactor details, packaging them toa couchDB format, and pushing the details as a document to a local couchDB named
 'reacdb'.  The 'RDBclaws' subclass adds an additional function that parses the
 REACTORS.ratdb file found in the SNO+ RAT distribution for reactor information.  The
