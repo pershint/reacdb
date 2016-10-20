@@ -1,14 +1,11 @@
+#Various functions for parsing the REACTORS.ratdb file for reactor information.
+
 import numpy as np
 import os.path
 import sys
 
 basepath = os.path.dirname(__file__)
 ratdbpath = os.path.abspath(os.path.join(basepath, "..", "db", "REACTORS_corr.ratdb"))
-
-Rearth = 6371000 #Radius of earth at sea level, In meters
-DSNOLAB = 2070   #Distance of SNOLAB underground, In meters
-SNOLAB_latlong = [-81.1868, 46.4719]  #[longitude, latitude] according to Google Earth
-SNOLAB_XYZ = [672000,-4335000,4618000] #Calculated with the X,Y,Z calculator below
 
 def getCAreacs():
     """
@@ -32,7 +29,7 @@ def getCAreacs():
             CA_reacs.append(line_pieces[1].rstrip("\",\n").lstrip(" \""))
     return CA_reacs
 
-
+##DEPRECATED: ADDED TO reacdbparse.py AS A CLASS.  REMOVE
 def parseRATDB(reacname):
     """
     Opens the REACTORS.ratdb in the /ReacDB/db directory and grabs the

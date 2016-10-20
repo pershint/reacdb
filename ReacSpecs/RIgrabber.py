@@ -1,4 +1,5 @@
-#Functions for grabbing US reactor information from the NRC webpage. The class
+#Functions for grabbing US reactor information from the NRC webpage and CA
+#reactor information from /db/REACTORS_corr.ratdb. The class
 #NRCClaws scrapes the NRC webpage for reactor information, bundles the data into
 #dictionary format for pushing to couchDB, and pushes the information to the
 #reacdb database.
@@ -10,7 +11,8 @@ from __future__ import print_function
 import sys
 import urllib2
 import lib.latlongparse as ll
-import lib.ratdbparse as rp
+import lib.getCAreacs as gca
+import lib.rdbparse as rp
 import json, couchdb
 import string, time, re
 from bs4 import BeautifulSoup as bs
@@ -145,8 +147,11 @@ class RDBclaws(claws):
         """
         Grabs a reactor's MWt and [longitude,latitude] from the
         REACTORS.ratdb file in /ReacDB/db.
+        We import from the rdbparse library to help get canadian
+        Reactor information.
         """
-        self.MWt, self.position = rp.parseRATDB(self.reac_name)
+        self.MWt, self.position = gca.parseRATDB(self.reac_name) #FIXME:
+        #USE THE CLASS in rdbparse TO GET THESE VALUES
 
 
 class NRCclaws(claws):
@@ -204,7 +209,7 @@ class NRCclaws(claws):
 
 if __name__ == '__main__':
     #Adds all static CA reactor info. to the static database
-    CA_reacs = rp.getCAreacs()
+    CA_reacs = gca.getCAreacs()
     for reactorname in CA_reacs:
         caclaws = RDBclaws(reactorname)
         caclaws.getRATDBReacInfo()
