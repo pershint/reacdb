@@ -85,7 +85,7 @@ class claws:
         shortname = shortname.rstrip()
         return shortname
 
-    def showReacSpecs(self):
+    def showSpecs(self):
         """
         Prints each of the relevant reactor details needed for the
         reacdb.  
@@ -150,8 +150,11 @@ class RDBclaws(claws):
         We import from the rdbparse library to help get canadian
         Reactor information.
         """
-        self.MWt, self.position = gca.parseRATDB(self.reac_name) #FIXME:
-        #USE THE CLASS in rdbparse TO GET THESE VALUES
+        RATDBEntry = rp.ReactorSpecs(self.reac_name)
+        RATDBEntry.fill()
+        RATDBEntry.parseMisc()
+        self.MWt, self.position = RATDBEntry.power_therm, RATDBEntry.longlat
+
 
 
 class NRCclaws(claws):

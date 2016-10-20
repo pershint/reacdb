@@ -1,4 +1,11 @@
-#Various functions for parsing the CoreComps.ratdb file for reactor information.
+#Various functions for parsing any ratdb file for reactor information.
+#TO ADD YOUR OWN CLASS PARSER:
+# 1. Create a new class that inherits from class ratdbEntry
+# 2. Write a parseMisc() function that parses out your
+#    RATDB entry's information specific to the RATDB type
+# 3. Write a buildreacdbEntry() function that adds the values
+#    Specific to your RATDB type to the reacdb_entry dictionary
+#*** See the CoreComp subclass for an example of how this is done.
 
 import numpy as np
 import os.path
@@ -9,6 +16,36 @@ dbpath = os.path.abspath(os.path.join(basepath, "..", "db"))
 
 REACTOR_RATDB = 'REACTORS_corr.ratdb'
 CORECOMP_RATDB = 'CoreComps.ratdb'
+NUSPEC_RATDB = 'NuSpectraConsts.ratdb'
+
+def getCCIndices():
+    """
+    Opens CoreComp.ratdb and grabs all the index values present.
+    """
+    CCindices = []
+    ccpath = os.path.abspath(os.path.join(dbpath, CORECOMP_RATDB))
+    f = open(ccpath, 'r')
+    for line in f:
+        if line.find('index') != -1:
+            indexline = line.split(":")
+            index = indexline[1].lstrip(" \"").rstrip("\",\n")
+            CCindices.append(index)
+    return CCindices
+
+
+def getNSIndices():
+    """
+    Opens NuSpectraConst.ratdb and grabs all the index values present.
+    """
+    NSindices = []
+    nspath = os.path.abspath(os.path.join(dbpath, NUSPEC_RATDB))
+    f = open(nspath, 'r')
+    for line in f:
+        if line.find('index') != -1:
+            indexline = line.split(":")
+            index = indexline[1].lstrip(" \"").rstrip("\",\n")
+            NSindices.append(index)
+    return NSindices
 
 #Class is defined with a RATDB database file, RDB type, and RDB index. grabs the basic
 #information for that entry in the database.
@@ -36,10 +73,11 @@ class ratdbEntry(object):
         print("Miscillaneous values: " + str(self.misc))
         print("Current reacdb_entry: " + str(self.reacdb_entry))
 
-    def getEntryInfo(self):
+    def fill(self):
         '''
-        Grabs the general information universal to all RATDB files and fills
-        the defined class variables.
+        Fills the defined class variables with the general information 
+        universal to all RATDB files. The misc dictionary is filled with
+        information specific to a RATDB entry type.
         '''
         f=open(self.ratdbpath, 'r')
         doneparse = False
@@ -66,7 +104,6 @@ class ratdbEntry(object):
             line = str(f.readline())
             if line.find('}') == -1:
                 linepieces = line.split(":")
-                print(linepieces)
                 if linepieces[0] == 'version':
                     self.ver = int(linepieces[1].rstrip(",\n"))
                 elif linepieces[0] == 'run_range':
@@ -93,7 +130,7 @@ class ratdbEntry(object):
         """
         Fills in self.reacdb_entry with the standard RATDB entry values."
         """
-        stdratdict = {"type": self.rdb_type, "version": self.ver, "index": self.index,
+        stdratdict = {"RATDB_type": self.rdb_type, "version": self.ver, "index": self.index,
         "run_range": self.run_range, "pass": self.passing, "comment": self.comment,
         "timestamp": self.timestamp}
         readytobuild = True
@@ -126,20 +163,80 @@ class CoreComp(ratdbEntry):
         super(CoreComp,self).showValue() #performs the parent method showValue()
         print("Isotope composition: " + str(self.composition))
 
-    def parseComps(self):
+    def parseMisc(self):
         composition = self.misc['iso_comp']
-        composition = composition.lstrip("\' ").rstrip(",\n\'")
-        comp_array = composition.split(",")
+        composition = composition.lstrip("\' [").rstrip("],\n\'")
+        print(composition)
+        composition = composition.split(",")
+        comp_array = []
+        for entry in composition:
+            entry = float(entry)
+            comp_array.append(entry)
         self.composition = comp_array
-        
+
     def buildreacdbEntry(self):
-       self.reacdb_entry["Core Composition (U238, U235, Pu239, Pu241)"] = self.composition
-       super(CoreComp, self).buildReacdbEntry()
+        super(CoreComp, self).buildReacdbEntry()
+        self.reacdb_entry["Core Composition (U238, U235, Pu239, Pu241)"] = self.composition
 
-    def printTheReal(self):
-        print("Gettingreal")
+class NuCoeff(ratdbEntry):
+    def __init__(self,index):
+        self.rdb_type = "SPECTRACOEFF"
+        self.filename = NUSPEC_RATDB
+        self.U235 = []
+        self.U238 = []
+        self.Pu239 = []
+        self.Pu241 = []
+        super(NuCoeff, self).__init__(self.filename, self.rdb_type, index)
 
-#STILL NEEDS THE buildreacdbEntry FUNCTION
+    def showValue(self):
+        super(NuCoeff,self).showValue() #performs the parent method showValue()
+        print("U235 parameters: " + str(self.U235))
+        print("U238 parameters: " + str(self.U238))
+        print("Pu239 parameters: " + str(self.Pu239))
+        print("Pu241 parameters: " + str(self.Pu241))
+
+
+    def parseMisc(self):
+        U235_str = self.misc['U235']
+        U235_str = U235_str.lstrip("\' [").rstrip("],\n\'")
+        U235_str = U235_str.split(",")
+        U235_arr = []
+        for entry in U235_str:
+            entry = float(entry)
+            U235_arr.append(entry)
+        self.U235 = U235_arr
+        U238_str = self.misc['U238']
+        U238_str = U238_str.lstrip("\' [").rstrip("],\n\'")
+        U238_str = U238_str.split(",")
+        U238_arr = []
+        for entry in U238_str:
+            entry = float(entry)
+            U238_arr.append(entry)
+        self.U238 = U238_arr
+        Pu239_str = self.misc['Pu239']
+        Pu239_str = Pu239_str.lstrip("\' [").rstrip("],\n\'")
+        Pu239_str = Pu239_str.split(",")
+        Pu239_arr = []
+        for entry in Pu239_str:
+            entry = float(entry)
+            Pu239_arr.append(entry)
+        self.Pu239 = Pu239_arr
+        Pu241_str = self.misc['Pu241']
+        Pu241_str = Pu241_str.lstrip("\' [").rstrip("],\n\'")
+        Pu241_str = Pu241_str.split(",")
+        Pu241_arr = []
+        for entry in Pu241_str:
+            entry = float(entry)
+            Pu241_arr.append(entry)
+        self.Pu241 = Pu241_arr
+      
+    def buildreacdbEntry(self):
+        super(NuCoeff, self).buildReacdbEntry()
+        self.reacdb_entry["U235 parameter values [a1,a2,a3,a4,a5,a6]"] = self.U235
+        self.reacdb_entry["U238 parameter values [a1,a2,a3,a4,a5,a6]"] = self.U238
+        self.reacdb_entry["Pu239 parameter values [a1,a2,a3,a4,a5,a6]"] = self.Pu239
+        self.reacdb_entry["Pu241 parameter values [a1,a2,a3,a4,a5,a6]"] = self.Pu241
+ 
 class ReactorSpecs(ratdbEntry):
     def __init__(self,index):
         self.rdb_type = "REACTORS"
@@ -153,7 +250,7 @@ class ReactorSpecs(ratdbEntry):
         print("Reactor Thermal Output (MW): " + str(self.power_therm))
         print("Reactor position [long, lat] (degrees): " + str(self.longlat))
 
-    def parsePowLoc(self):
+    def parseMisc(self):
         power = self.misc['power_therm']
         power = float(power.lstrip().rstrip(",\n"))
         self.power_therm = power
@@ -164,7 +261,12 @@ class ReactorSpecs(ratdbEntry):
         latitude = round(float(latitude.lstrip().rstrip(",\n")),2)
         self.longlat[1]=latitude
         
-               
+    def buildreacdbEntry(self):
+        self.reacdb_entry["thermal_output (MW)"] = self.composition
+        self.reacdb_entry["location (long,lat)"] = self.longlat
+        super(CoreComp, self).buildReacdbEntry()
+
+              
 
         
 if __name__ == '__main__':

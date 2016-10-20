@@ -16,6 +16,14 @@ def connectToDB(dbName):
         status = "bad"
     return status, db
 
+def saveToReacdb(doc):
+    dbStatus, db = connectToDB('reacdb')
+    if dbStatus is "ok":
+        try:
+            db.save(doc)
+        except:
+            print("Error saving document to reacdb. Check your document's format.")
+
 def delViewFromDB(dbname, viewname):
     dbStatus, db = connectToDB(dbname)
     if dbStatus is "ok":
