@@ -14,9 +14,9 @@ import sys
 basepath = os.path.dirname(__file__)
 dbpath = os.path.abspath(os.path.join(basepath, "..", "db"))
 
-REACTOR_RATDB = 'REACTORS_corr.ratdb'
-CORECOMP_RATDB = 'CoreComps.ratdb'
-NUSPEC_RATDB = 'NuSpectraConsts.ratdb'
+REACTOR_RATDB = 'static/REACTORS_corr.ratdb'
+CORECOMP_RATDB = 'static/CoreComps.ratdb'
+NUSPEC_RATDB = 'static/NuSpectraConsts.ratdb'
 
 def getCCIndices():
     """

@@ -3,7 +3,7 @@ import os.path
 import sys
 
 basepath = os.path.dirname(__file__)
-posdbpath = os.path.abspath(os.path.join(basepath, "..", "db", "ReacPos_corr.txt"))
+posdbpath = os.path.abspath(os.path.join(basepath, "..", "db", "static", "ReacPos_corr.txt"))
 
 Rearth = 6371000 #Radius of earth at sea level, In meters
 DSNOLAB = 2070   #Distance of SNOLAB underground, In meters

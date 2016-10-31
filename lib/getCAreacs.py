@@ -5,7 +5,7 @@ import os.path
 import sys
 
 basepath = os.path.dirname(__file__)
-ratdbpath = os.path.abspath(os.path.join(basepath, "..", "db", "REACTORS_corr.ratdb"))
+ratdbpath = os.path.abspath(os.path.join(basepath, "..", "db", "static", "REACTORS_corr.ratdb"))
 
 def getCAreacs():
     """
