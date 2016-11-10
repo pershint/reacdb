@@ -7,6 +7,8 @@ import string, time, re
 
 couch = couchdb.Server()
 
+
+
 def connectToDB(dbName):
     status = "ok"
     db = {}
@@ -28,112 +30,143 @@ def saveToreacdb(newentry):
         db.save(newentry)
         print("reacdb UPDATE: reactor info. added for date: " + newentry["date"])
 
-def getNRCDailyList():
-    """
-    Gets all of the entries from the current NRC daily textfile and
-    Returns them in a list.
-    The format for each element of reactor_list is as follows:
-    [date,reactor_name,day_power_capacity]
-    The webpage with daily power capacities can be found here:
-    http://www.nrc.gov/reading-rm/doc-collections/event-status/reactor-status/PowerReactorStatusForLast365Days.txt
-    """
-    reactor_list = []
-    f = urllib2.urlopen('http://www.nrc.gov/reading-rm/doc-collections/event-status/reactor-status/PowerReactorStatusForLast365Days.txt')
-    f.next()
-    for line in f:
-        clean=str.rstrip(line,"\r\n")
-        reactor = str.split(clean,"|")
-        if reactor[1] == 'Watts Bar 2':
-            return reactor_list
-        reactor_list.append(reactor)
-    return reactor_list
+class NRCDayList(object):
+    def __init__(self):
+        self.date = "none"
+        self.NRCCurrent = self.getNRCCurrentList()
+        self.day_reacstatuses = {}
 
-def getAllReacDBDaily():
-    """
-    Polls the reactor database and grabs all entries from the "daily" view.
-    """
-    dbStatus, db = connectToDB("reacdb")
-    alldocs = []
-    alldates = []
-    if dbStatus is "ok":
-        try:
-            queryresult = db.view("reacdb/daily",descending=False)
-            for row in queryresult:
-                doc = db[row.id]
-                alldocs.append(doc)
-                alldates.append(doc["date"])
-        except:
-            print("Error in query attempt.  Could not get all daily entries.")
-    return alldocs, alldates
+    def setReacStatusDate(self,date):
+        """
+        Takes in a date put in by user and sets the date used to build the reactor
+        status dictionary to this date.
+        """
+        self.date = date
 
-def getDayReactorInfo(date):
-    """
-    Takes in a date and returns (from the NRC webpage document)
-    a dictionary with all power capacity information 
-    available for each reactor on that day.
-    Format of reacdict is ready for pushing to reacdb on couchDB.
-    The webpage with daily power capacities can be found here:
-    http://www.nrc.gov/reading-rm/doc-collections/event-status/reactor-status/PowerReactorStatusForLast365Days.txt
-    """
-    reacdict = {"date": date, "reactor_statuses": [], "type":"daily"}
-    NRCreacs = getNRCDailyList()
-    for reactor in NRCreacs:
-        if reactor[0] == date:
-            this_reactor = {"reactor_name": reactor[1], "power_capacity" : reactor[2]}
-            reacdict["reactor_statuses"].append(this_reactor)
-    return reacdict
+    def show(self):
+        """
+        Shows the dictionary that has the chosen date's power reactor status info for
+        all US reactors from the NRC page.
+        """
+        print(self.day_reacstatuses)
 
-def getMostRecentDailyEntry():
-    """
-    Polls the reactor database and grabs the most recent database entry
-    from reacdb.
-    """
-    dbStatus, db = connectToDB("reacdb")
-    if dbStatus is "ok":
-        try:
-            queryresult = db.view("reacdb/daily",descending=False,limit=1)
-            for row in queryresult:
-                doc = db[row.id]
-        except:
-            print("Error in query attempt.  Could not get most recent daily entry.")
-            doc = "none"
-    return doc
+    def getNRCCurrentList(self):
+        """
+        Gets all of the entries from the current NRC daily textfile and
+        Returns them in a list.
+        The format for each element of reactor_list is as follows:
+        [date,reactor_name,day_power_capacity]
+        The webpage with daily power capacities can be found here:
+        http://www.nrc.gov/reading-rm/doc-collections/event-status/reactor-status/PowerReactorStatusForLast365Days.txt
+        """
+        reactor_list = []
+        f = urllib2.urlopen('http://www.nrc.gov/reading-rm/doc-collections/event-status/reactor-status/PowerReactorStatusForLast365Days.txt')
+        f.next()
+        for line in f:
+            clean=str.rstrip(line,"\r\n")
+            reactor = str.split(clean,"|")
+            reactor_list.append(reactor)
+        return reactor_list
 
-def updateDailyreacdb():
-    """
-    This function grabs the most recent Reactors file from nrc.gov and compares
-    to all entries in the reacdb database.  If a date from the nrc text file
-    is not in reacdb, the data for that date is added as a document to reacdb.
-    """
-    NRCcurrent = getNRCDailyList()
-    reacdbcurrent, datesinreacdb = getAllReacDBDaily()
-    testcount = 0
-    for entry in NRCcurrent:
-        date = entry[0]
-        if date not in datesinreacdb:
-            newentry = {}
-            newentry = getDayReactorInfo(date)
-            saveToreacdb(newentry)
-            datesinreacdb.append(date)
+    def setDayReacStatuses(self,date):
+        """
+        Takes in a date and returns (from the NRC webpage document)
+        a dictionary with all power capacity information 
+        available for each reactor on that day.
+        Information is pulled from the self.NRCCurrent list.
+        """
+        reacdict = 'none'
+        if date == 'none':
+            print("No date chosen to get info. for.  Set date of interest using " + \
+                    "the command className.setReacStatusDate(\'mm\dd\yyyy\')")
+            return reacdict
+        else:
+            reacdict = {"date": date, "reactor_statuses": [], "type":"daily"}
+            for reactor in self.NRCCurrent:
+                if reactor[0] == date:
+                    this_reactor = {"reactor_name": reactor[1], "power_capacity" : reactor[2]}
+                    reacdict["reactor_statuses"].append(this_reactor)
+            if not reacdict["reactor_statuses"]:
+                print("Given date was not found in the NRC list.  Set another" + \
+                        "date using \' className.setReacStatusDate(\'mm\dd\yyyy\')");
+            else:
+                return reacdict
+    
 
-def getReactorsInDateRange(reac_name,startdate,enddate):
-    """
-    Prints the power capacity information for a reactor between
-    two specified dates.  The earlier date must be supplied as
-    the startdate variable.  Dates must be of format "MM/DD/YYYY".
-    """
-    dbStatus, db = connectToDB("reacdb")
-    if dbStatus is "ok":
-        try:
-            queryresults = db.view("reacdb/daily",startkey=startdate,endkey=enddate,descending=False,limit=4)
-            for row in queryresults:
-                doc = db[row.id]
-                entry = doc["reactor_statuses"]
-                print(entry)
-        except:
-            print("Error in query attempt.  Could not get value.")
-            entry = "none"
-            print(entry)
+#Class takes in an NRCDayList class and uses the class to add reactor information to
+#the ReacDB couchDB.
+class NRCDailyClaws(object):
+    def __init__(self,NRCDayList):
+        self.NRCDayList = NRCDayList
+        self.docsindb, self.datesindb = self.getAllReacDBDaily()
 
+    # ----------- BEGIN METHODS FOR couch/ReacDB INTERFACING ----------#
+    def getAllReacDBDaily(self):
+        """
+        Polls the reactor database and grabs all entries from the "daily" view.
+        """
+        dbStatus, db = connectToDB("reacdb")
+        alldocs = []
+        alldates = []
+        if dbStatus is "ok":
+            try:
+                queryresult = db.view("reacdb/daily",descending=False)
+                for row in queryresult:
+                    doc = db[row.id]
+                    alldocs.append(doc)
+                    alldates.append(doc["date"])
+            except:
+                print("Error in query attempt.  Could not get all daily entries.")
+        return alldocs, alldates
+    	
+    def getMostRecentDailyEntry(self):
+        """
+        Polls the reactor database and grabs the most recent database entry
+        from reacdb.
+        """
+        dbStatus, db = connectToDB("reacdb")
+        if dbStatus is "ok":
+            try:
+                queryresult = db.view("reacdb/daily",descending=False,limit=1)
+                for row in queryresult:
+                    doc = db[row.id]
+            except:
+                print("Error in query attempt.  Could not get most recent daily entry.")
+                doc = "none"
+        return doc
+    
+    def updateDailyreacdb(self):
+        """
+        This function grabs the most recent Reactors file from nrc.gov and compares
+        to all entries in the reacdb database.  If a date from the nrc text file
+        is not in reacdb, the data for that date is added as a document to reacdb.
+        """
+        for entry in self.NRCDayList.NRCCurrent:
+            date = entry[0]
+            if date not in self.datesindb:
+                newentry = {}
+                newentry = self.NRCDayList.setDayReacStatuses(date)
+                saveToreacdb(newentry)
+                self.datesindb.append(date)
+    
+    def getReactorsInDateRange(self,reac_name,startdate,enddate):
+        """
+        Prints the power capacity information for a reactor between
+        two specified dates.  The earlier date must be supplied as
+        the startdate variable.  Dates must be of format "MM/DD/YYYY".
+        """
+        dbStatus, db = connectToDB("reacdb")
+        if dbStatus is "ok":
+            try:
+                queryresults = db.view("reacdb/daily",startkey=startdate,endkey=enddate,descending=False,limit=4)
+                for row in queryresults:
+                    doc = db[row.id]
+                    entry = doc["reactor_statuses"]
+            except:
+                print("Error in query attempt.  Could not get value.")
+                entry = "none"
+   
 if __name__ == "__main__":
-    updateDailyreacdb()
+    TodaysList = NRCDayList()
+    ReacDB_Updater = NRCDailyClaws(TodaysList)
+    ReacDB_Updater.updateDailyreacdb()
