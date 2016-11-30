@@ -16,6 +16,7 @@ dbpath = os.path.abspath(os.path.join(basepath, "..", "db"))
 
 REACTORC_RATDB = 'static/REACTORS_corr.ratdb'
 REACTOR_RATDB = 'static/REACTORS.ratdb'
+REACTORSTAT_RATDB = 'daily/REACTORS_STATUS.ratdb'
 CORECOMP_RATDB = 'static/CoreComps.ratdb'
 NUSPEC_RATDB = 'static/NuSpectraConsts.ratdb'
 
@@ -104,64 +105,79 @@ class ratdbEntry(object):
             print("Issue opening RATDB file to read entries from.  Check" + \
                     "your subclass has a specified filename.")
             return
-        doneparse = False
+
         startparse = False
-        while True:
-            stuff = str(f.readline())
-            if stuff.find('{') != -1:
-                nextline = str(f.readline())
-                #split line into key and value
-                nxlinepieces = nextline.split(":")
-                key = nxlinepieces[0]
-                value = ""
-                #re-fuses entries split within the value 
-                for i,entry in enumerate(nxlinepieces):
-                    if i > 0:
-                        value = value + entry
-                if key == "type" and \
-                value.rstrip("\",\n").lstrip(" \"") == self.rdb_type:
-                    verline = f.readline()
-                    indexline = f.readline()
-                    inlinepieces = indexline.split(":")
-                    if inlinepieces[0] == "index" and \
-                    inlinepieces[1].rstrip("\",\n").lstrip(" \"") == self.index:
-                        break
-        verlinepieces = verline.split(":")
-        self.ver = verlinepieces[1].rstrip(",\n")
-        while True:
-            line = str(f.readline())
-            if line.find('//') != -1:
-                continue
-            if line in ['\n', '\r\n']:
-                continue
-            if line.find('}') == -1:
-                linepieces = line.split(":")
-                key = linepieces[0]
-                value = ""
-                for i,entry in enumerate(linepieces):
-                    if i > 0:
-                        value = value + entry
-                if key  == 'version':
-                    self.ver = int(value.rstrip(",\n"))
-                elif key == 'run_range':
-                    rr = value.split(",")
-                    for i,entry in enumerate(rr):
-                        if i == 0:
-                            runstart = int(entry.lstrip(" ["))
-                            self.run_range.append(runstart)
-                        if i == (len(rr) - 2): #There's a blank entry after last comma
-                            runend = int(entry.rstrip("],\n"))
-                            self.run_range.append(runend)
-                elif key == "pass":
-                    self.passing = int(value.rstrip(",\n"))
-                elif key == "comment":
-                    self.comment = value.rstrip(",\n")
-                elif key == "timestamp":
-                    self.timestamp = value.rstrip(",\n")
-                else:
-                    self.misc[key] = value
-            else:
-                break
+        filelines = f.readlines()
+        entryfinished = False
+        for i,stuff in enumerate(filelines):
+            if not entryfinished:
+                if i == len(filelines)-1:
+                    raise ValueError('Index not found in RATDB file')
+                #found an entry; check if it's the one we want in the class
+                if stuff.find('{') != -1:
+                    nextline = filelines[i+1]
+                    #split line into key and value
+                    nxlinepieces = nextline.split(":")
+                    key = nxlinepieces[0]
+                    value = ""
+                    #re-fuses entries split within the value 
+                    for j,entry in enumerate(nxlinepieces):
+                        if j > 0:
+                            value = value + entry
+                    print(key, value)
+                    if key == "type" and \
+                    value.rstrip("\",\n").lstrip(" \"") == self.rdb_type:
+                        verline = filelines[i+2]
+                        indexline = filelines[i+3]
+                        print(verline,indexline)
+                        inlinepieces = indexline.split(":")
+                        if inlinepieces[0] == "index" and \
+                        inlinepieces[1].rstrip("\",\n").lstrip(" \"") == self.index:
+                            print("Should be starting parse!")
+                            startparse = True                            
+                if startparse:
+                    verlinepieces = verline.split(":")
+                    self.ver = verlinepieces[1].rstrip(",\n")
+                    entryline = 4
+                    while not entryfinished:
+                        line = filelines[i+entryline]
+                        print(line)
+                        if line.find('//') != -1:
+                            entryline+=1
+                            continue
+                        if line in ['\n', '\r\n']:
+                            entryline+=1
+                            continue
+                        if line.find('}') == -1:
+                            entryline+=1
+                            linepieces = line.split(":")
+                            key = linepieces[0]
+                            value = ""
+                            for k,entry in enumerate(linepieces):
+                                if k > 0:
+                                    value = value + entry
+                            if key  == 'version':
+                                self.ver = int(value.rstrip(",\n"))
+                            elif key == 'run_range':
+                                rr = value.split(",")
+                                print(rr)
+                                for l,entry in enumerate(rr):
+                                    if l == 0:
+                                        runstart = int(entry.lstrip(" ["))
+                                        self.run_range.append(runstart)
+                                    if l == (len(rr) - 2): #There's a blank entry after last comma
+                                        runend = int(entry.rstrip("],\n"))
+                                        self.run_range.append(runend)
+                            elif key == "pass":
+                                self.passing = int(value.rstrip(",\n"))
+                            elif key == "comment":
+                                self.comment = value.rstrip(",\n")
+                            elif key == "timestamp":
+                                self.timestamp = value.rstrip(",\n")
+                            else:
+                                self.misc[key] = value
+                        else:
+                            entryfinished = True
 
     def buildReacdbEntry(self):
         """
@@ -366,40 +382,118 @@ class Reactor_Isotope_Info(ratdbEntry):
         self.reacdb_entry["Error on E released per fission (MeV)"] = self.Eperfission_err
         self.reacdb_entry["Type used to characterize spectrum"] = self.spec_type
 
-#Subclass reads from REACTORS.RATDB to get the licensed thermal power and
-#Position (longitude,latitude) for the spceified reactor name (index input)
-#FIXME: Need to parse these values from the RATDB entry
-
+#Subclass reads from REACTORS.RATDB to get the position information
+#(longitude,latitude,altitude)for each core for input reactor name (index input)
 class ReactorSpecs(ratdbEntry):
     def __init__(self,index):
         self.rdb_type = "REACTOR"
         self.filename = REACTOR_RATDB
         self.no_cores = 'unknown'
-        self.core_longs = []
-        self.core_lats = []
-        self.core_alts = []
+        self.core_longitudes = []
+        self.core_latitudes = []
+        self.core_altitudes = []
         super(ReactorSpecs, self).__init__(self.filename, self.rdb_type, index)
         self.parseMisc()
         self.show()
 
     def show(self):
         super(ReactorSpecs,self).show() #performs the parent method show()
-        print("Reactor core longitudes (degrees): " + str(self.core_longs))
-        print("Reactor core latitudes (degrees): " + str(self.core_lats))
-        print("Reactor core altitudes (meters): " + str(self.core_alts))
+        print("Number of cores: " + str(self.no_cores))
+        print("Reactor core longitudes (degrees): " + str(self.core_longitudes))
+        print("Reactor core latitudes (degrees): " + str(self.core_latitudes))
+        print("Reactor core altitudes (meters): " + str(self.core_altitudes))
 
     def parseMisc(self):
-        power = self.misc['power_therm']
-        power = float(power.lstrip().rstrip(",\n"))
-        self.power_therm = power
-       
-    def buildreacdbEntry(self):
-        self.reacdb_entry["Reactor core longitudes (deg.)"] = self.core_longs
-        self.reacdb_entry["Reactor core latitudes (deg.)"] = self.core_lats
-        self.reacdb_entry["Reactor core altitudes (m)"] = self.core_alts
-        super(CoreComp, self).buildReacdbEntry()
+        numcores = self.misc['no_cores']
+        numcores = numcores.lstrip("\' ").rstrip(",\n\'")
+        self.no_cores = numcores
 
-              
+        lat_vals = self.misc['latitude']
+        lat_vals = lat_vals.lstrip("\' [").rstrip("],\n\'")
+        lat_vals = lat_vals.split(",")
+        lat_arr = []
+        for entry in lat_vals:
+            if entry != '':
+                value = float(entry)
+                lat_arr.append(value)
+        self.core_latitudes = lat_arr
+
+        long_vals = self.misc['longitude']
+        long_vals = long_vals.lstrip("\' [").rstrip("],\n\'")
+        long_vals = long_vals.split(",")
+        long_arr = []
+        for entry in long_vals:
+            if entry != '':
+                value = float(entry)
+                long_arr.append(value)
+        self.core_longitudes = long_arr
+
+        alt_vals = self.misc['altitude']
+        alt_vals = alt_vals.lstrip("\' [").rstrip("],\n\'")
+        alt_vals = alt_vals.split(",")
+        alt_arr = []
+        for entry in alt_vals:
+            if entry != '':
+                value = float(entry)
+                alt_arr.append(value)
+        self.core_altitudes = alt_arr
+
+    def buildreacdbEntry(self):
+        self.reacdb_entry["Number of cores"] = self.no_cores
+        self.reacdb_entry["Reactor core longitudes (deg.)"] = self.core_longitudes
+        self.reacdb_entry["Reactor core latitudes (deg.)"] = self.core_latitudes
+        self.reacdb_entry["Reactor core altitudes (m)"] = self.core_altitudes
+        super(ReactorSpecs, self).buildReacdbEntry()
+
+class ReactorStatus(ratdbEntry):
+    def __init__(self,index):
+        self.rdb_type = "REACTOR_STATUS"
+        self.filename = REACTORSTAT_RATDB
+        self.no_cores = 'unknown'
+        self.core_powers = []
+        self.core_types = []
+        super(ReactorStatus, self).__init__(self.filename, self.rdb_type, index)
+        self.parseMisc()
+        self.show()
+
+    def show(self):
+        super(ReactorStatus,self).show() #performs the parent method show()
+        print("Number of cores: " + str(self.no_cores))
+        print("Thermal output of each core (MW):  " + str(self.core_powers))
+        print("Reactor core type (PWR,BWR,PHWR,etc.): " + str(self.core_types))
+
+
+    def parseMisc(self):
+        numcores = self.misc['no_cores']
+        numcores = numcores.lstrip("\' ").rstrip(",\n\'")
+        self.no_cores = numcores
+        
+        type_vals = self.misc['core_spectrum']
+        type_vals = type_vals.lstrip("\' [").rstrip("],\n\'")
+        type_vals = type_vals.split(",")
+        type_vals_arr = []
+        for entry in type_vals:
+            if entry != '':
+                entry = entry.lstrip(" \"").rstrip("\"")
+                type_vals_arr.append(entry)
+        self.core_types = type_vals_arr
+
+        power_vals = self.misc['core_power']
+        power_vals = power_vals.lstrip("\' [").rstrip("],\n\'")
+        power_vals = power_vals.split(",")
+        power_arr = []
+        for entry in power_vals:
+            if entry != '':
+                value = float(entry)
+                power_arr.append(value)
+        self.core_powers = power_arr
+
+def buildreacdbEntry(self):
+        self.reacdb_entry["Number of cores"] = self.no_cores
+        self.reacdb_entry["Thermal output of each core (MW)"] = self.core_longitudes
+        self.reacdb_entry["Reactor core type (PWR,BWR,PHWR, etc.)"] = self.core_latitudes
+        super(ReactorStatus, self).buildReacdbEntry()
+             
 
         
 if __name__ == '__main__':
