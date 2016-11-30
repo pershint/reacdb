@@ -5,9 +5,8 @@ import urllib2
 import json, couchdb
 import string, time, re
 
+#---------- UTILITIES FOR USE WITH COUCHDB ---------------#
 couch = couchdb.Server()
-
-
 
 def connectToDB(dbName):
     status = "ok"
@@ -22,33 +21,37 @@ def connectToDB(dbName):
 def saveToreacdb(newentry):
     """
     Function takes a dictionary and saves it to reacdb.  For pushes containing
-    daily reactor operating info, the output format of the getDayReactorInfo
+    daily reactor operating info, the output format of the getDateReactorStatuses
     function should be pushed to reacdb.
     """
     dbStatus, db = connectToDB('reacdb')
     if dbStatus is 'ok':
         db.save(newentry)
         print("reacdb UPDATE: reactor info. added for date: " + newentry["date"])
+#----------- END COUCHDB UTILITIES ----------------#
 
 class NRCDayList(object):
     def __init__(self):
-        self.date = "none"
         self.NRCCurrent = self.getNRCCurrentList()
-        self.day_reacstatuses = {}
-
-    def setReacStatusDate(self,date):
-        """
-        Takes in a date put in by user and sets the date used to build the reactor
-        status dictionary to this date.
-        """
-        self.date = date
+        self.date_info = {}
+        self.date_reacs = []
 
     def show(self):
         """
         Shows the dictionary that has the chosen date's power reactor status info for
         all US reactors from the NRC page.
         """
-        print(self.day_reacstatuses)
+        print(self.date_info)
+
+    def fillDateNames(self):
+        """
+        Gets only the reactor names from the oneday_info dictionary and
+        returns them as a list.
+        """
+        reactornames = []
+        for reactor in self.date_info["reactor_statuses"]:
+            reactornames.append(reactor["reactor_name"])
+        self.date_reacs = reactornames
 
     def getNRCCurrentList(self):
         """
@@ -68,18 +71,18 @@ class NRCDayList(object):
             reactor_list.append(reactor)
         return reactor_list
 
-    def setDayReacStatuses(self,date):
+    def getDateReacStatuses(self,date):
         """
         Takes in a date and returns (from the NRC webpage document)
         a dictionary with all power capacity information 
         available for each reactor on that day.
         Information is pulled from the self.NRCCurrent list.
         """
-        reacdict = 'none'
+
         if date == 'none':
             print("No date chosen to get info. for.  Set date of interest using " + \
                     "the command className.setReacStatusDate(\'mm\dd\yyyy\')")
-            return reacdict
+            self.date_info = "none"
         else:
             reacdict = {"date": date, "reactor_statuses": [], "type":"daily"}
             for reactor in self.NRCCurrent:
@@ -89,8 +92,9 @@ class NRCDayList(object):
             if not reacdict["reactor_statuses"]:
                 print("Given date was not found in the NRC list.  Set another" + \
                         "date using \' className.setReacStatusDate(\'mm\dd\yyyy\')");
+                self.date_info = "none"
             else:
-                return reacdict
+                self.date_info = reacdict
     
 
 #Class takes in an NRCDayList class and uses the class to add reactor information to
@@ -145,7 +149,7 @@ class NRCDailyClaws(object):
             date = entry[0]
             if date not in self.datesindb:
                 newentry = {}
-                newentry = self.NRCDayList.setDayReacStatuses(date)
+                newentry = self.NRCDayList.getDateReacStatuses(date)
                 saveToreacdb(newentry)
                 self.datesindb.append(date)
     

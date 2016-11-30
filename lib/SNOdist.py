@@ -10,6 +10,7 @@ DSNOLAB = 2070   #Distance of SNOLAB underground, In meters
 SNOLAB_latlong = [-81.1868, 46.4719]  #[longitude, latitude] according to Google Earth
 SNOLAB_XYZ = [672000,-4335000,4618000] #Calculated with the X,Y,Z calculator below
 
+
 def parsecoord():
     """
     function for parsing out longitude and latitude values from Vincent's file.

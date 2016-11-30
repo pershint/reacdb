@@ -10,9 +10,9 @@
 from __future__ import print_function
 import sys
 import urllib2
-import lib.latlongparse as ll
-import lib.getCAreacs as gca
-import lib.rdbparse as rp
+import SNOdist as sd
+import getCAreacs as gca
+import rdbparse as rp
 import json, couchdb
 import string, time, re
 from bs4 import BeautifulSoup as bs
@@ -52,7 +52,6 @@ def getReacNames():
         #    print(row.value["reactor_statuses"][0]["reactor_name"])
         #Gives reactor nameat index 0... must be a cleaner way though
 
-
 def saveToreacdb(newentry):
     """
     Function takes a dictionary and saves it to reacdb.  For pushes containing
@@ -69,11 +68,11 @@ class claws:
 
     def __init__(self, reac_name):
         self.reac_name = reac_name
-        self.MWt = 'none'
-        self.reac_type = 'none'
-        self.position = ['none','none']
-        self.dist_from_SNOplus = 'none'
-        self.significance = 'none'
+        self.MWt = 'unknown'
+        self.reac_type = 'unknown'
+        self.position = ['unknown','unknown']
+        self.dist_from_SNOplus = 'unknown'
+        self.significance = 'unknown'
         self.readytopush = False
         self.reacdb_entry = {}
 
@@ -101,8 +100,8 @@ class claws:
         Uses the latlongparse library to calculate a reactor's distance
         from SNOLAB.
         """
-        self.dist_from_SNOplus = ll.getDistFromSNOLAB(self.position)
-
+        self.dist_from_SNOplus = sd.getDistFromSNOLAB(self.position)
+ 
     def calculateSignificance(self):
         """
         Takes the reactor's MWt and divides by the distance from SNO+ squared.
@@ -126,10 +125,10 @@ class claws:
         "significance_factor": self.significance, "type": self._dbtype}
         #Some checks that you're not just pushing empty values to reacdb
         self.reacdb_entry = staticdict
-        if (self.reac_type == 'none') or (self.MWt == 'none'):
+        if (self.reac_type == 'unknown') or (self.MWt == 'unknown'):
             print("WARNING: Reactor Type and/or MWt could not be collected.  Document \
             is not ready to push to couchDB.")
-        elif (self.position == ['none', 'none']) or (self.dist_from_SNOplus == 'none'):
+        elif (self.position == ['unknown', 'unknown']) or (self.dist_from_SNOplus == 'unknown'):
             print("WARNING: Reactor position and distance from" + \
             'SNO+ Not filled in. Document is not ready to push to couchDB.')
         else:
@@ -177,6 +176,8 @@ class NRCclaws(claws):
             print("Reactor name not found in list on NRC.GOV webpage." + \
             "Missing reactor: " + self.reac_name)
             reacloc = "none"
+            self.reac_type = "none"
+            self.MWt = "none"
         else:
             reacpage = urllib2.urlopen(self._homepage + reacloc)
             mainsoup = bs(reacpage, 'html.parser')

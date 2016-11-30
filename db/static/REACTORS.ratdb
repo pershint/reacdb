@@ -1,0 +1,3100 @@
+//************* REACTOR Location ***********
+// Originally created by Rehan Deen
+// Modified by Satoko Asahi (5-16-2014) asahis@owl.phy.queensu.ca
+// Modified by Jeff Lidgard (3-Aug-2015) jeffrey.lidgard@physics.ox.ac.uk
+// Modified by Nuno Barros (16-Oct-2016) nfbarros@hep.upenn.edu
+// Modified by Nuno Barros (30-Oct-2016) nfbarros@hep.upenn.edu
+//
+// Power in MW, PRIS data
+// Coordinates: - for West and South
+// Straight line distance in km
+// More details on DocDB-2460
+//
+//
+//********************************************
+
+{
+type: "REACTOR_LIST",
+version: 1,
+index: "ALL",
+run_range: [0, 0],
+pass: 0,
+comment: "All reactors in this file.",
+timestamp: "",
+active_reactors: [""], // IMPORTANT: The quotes are necessary to know the type if the array
+}
+
+{
+type: "REACTOR_LIST",
+version: 1,
+index: "macro",
+run_range: [0, 0],
+pass: 0,
+comment: "Custom entry to be customized using the macro.",
+timestamp: "",
+active_reactors: [""], // IMPORTANT: The quotes are necessary to know the type if the array
+}
+
+{
+type: "REACTOR_LIST",
+version: 1,
+index: "3CAD",
+run_range: [0, 0],
+pass: 0,
+comment: "Closest Canadian reactors",
+timestamp: "",
+active_reactors: ["BRUCE", "DARLINGTON", "PICKERING"],
+}
+
+{
+type: "REACTOR_LIST",
+version: 1,
+index: "testing",
+run_range: [0, 0],
+pass: 0,
+comment: "Testing list of reactors to be simulated",
+timestamp: "",
+active_reactors: ["BRUCE", "DAYA BAY", "LINGAO", "ALMARAZ"],
+}
+
+{
+type: "REACTOR_ISOTOPE_INFO",
+version: 1,
+index: "235U",
+run_range: [0, 0],
+pass: 0,
+comment: "Taken from Huber et al. PRD 70 053011. The energy released per fission is in units of MeV. The number of neutrinos per fission is determined just above 1.8 Mev (the energy for IBD).  Table 1 of Satoko's note.",
+timestamp: "",
+n_nu_fission: 1.92,
+n_nu_fission_err: 0.037,
+e_per_fission: 201.7,
+e_per_fission_err: 0.6,
+spec_type: "polynomial",
+// polynomial coefficients to construct the spectrum
+poly_coeff: [3.519, -3.517, 1.595, -0.4171, 0.05004, -0.002303],
+// these are just used in case spec_type is set to "shape"
+spec_e: [],
+spec_flux: [],
+}
+
+{
+type: "REACTOR_ISOTOPE_INFO",
+version: 1,
+index: "238U",
+run_range: [0, 0],
+pass: 0,
+comment: "Taken from Huber et al. PRD 70 053011. The energy released per fission is in units of MeV. The number of neutrinos per fission is determined just above 1.8 Mev (the energy for IBD).  Table 1 of Satoko's note.",
+timestamp: "",
+n_nu_fission: 2.38,
+n_nu_fission_err: 0.048,
+e_per_fission: 205,
+e_per_fission_err: 0.9,
+spec_type: "polynomial",
+poly_coeff: [0.976, -0.162, -0.079],
+spec_e: [],
+spec_flux: [],
+}
+
+{
+type: "REACTOR_ISOTOPE_INFO",
+version: 1,
+index: "239Pu",
+run_range: [0, 0],
+pass: 0,
+comment: "Taken from Huber et al. PRD 70 053011. The energy released per fission is in units of MeV. The number of neutrinos per fission is determined just above 1.8 Mev (the energy for IBD).  Table 1 of Satoko's note.",
+timestamp: "",
+n_nu_fission: 1.45,
+n_nu_fission_err: 0.03,
+e_per_fission: 210.3,
+e_per_fission_err: 0.9,
+spec_type: "polynomial",
+poly_coeff: [2.56, -2.654, 1.256, -0.3617, 0.04547, -0.002143],
+spec_e: [],
+spec_flux: [],
+}
+
+{
+type: "REACTOR_ISOTOPE_INFO",
+version: 1,
+index: "241Pu",
+run_range: [0, 0],
+pass: 0,
+comment: "Taken from Huber et al. PRD 70 053011. The energy released per fission is in units of MeV. The number of neutrinos per fission is determined just above 1.8 Mev (the energy for IBD).",
+timestamp: "",
+n_nu_fission: 1.83,
+n_nu_fission_err: 0.035,
+e_per_fission: 212.6,
+e_per_fission_err: 1,
+spec_type: "polynomial",
+poly_coeff: [1.487, -1.038, 0.413, -0.1423, 0.01866, -0.0009229],
+spec_e: [],
+spec_flux: [],
+}
+
+// Reactor spectral parameterization
+// The reactor spectra entries can be provided in terms of isotope list and compositions
+// The total spectrum will be inferred from the isotope data in REACTOR_ISOTOPE_INFO
+// Alternatively, a precomputed spectrum can be provided. In this case, the energy per neutrino must be provided
+
+{
+type: "REACTOR_SPECTRUM",
+version: 1,
+index: "PHWR",
+run_range: [0, 0],
+pass: 0,
+comment: " Emission Spectra of U235, U238, Pu239, Pu241 from Phys. Rev.C 83, 054615, 2011. NOTE: this is valid only for E_nu > 1.8 MeV (above IBD threshold).",
+timestamp: "",
+emin: 1.8,
+emax: 11.8,
+spectrum_type: "parameterized",
+
+// These entries are ignored unless spectrum_type is "shape"
+
+spec_e: [0],
+spec_flux: [0],
+flux_norm: 0,
+param_isotope: ["235U", "238U", "239Pu", "241Pu"],
+param_composition: [0.52, 0.05, 0.42, 0.01], // from AECL private communication
+}
+
+{
+type: "REACTOR_SPECTRUM",
+version: 1,
+index: "PWRBWR",
+run_range: [0, 0],
+pass: 0,
+comment: "Neutrino spectrum per fission for PWR\/BWR for 1 MeV production. Scaling factor is 1\/109.818. Normalizes for \/fission\/MeV. [S.Asahi, 3-8-2016]. Mass fractions 0.56, 0.078, 0.295, 0.057, respectively, from KamLAND (ref?) in PWRBWR and thus PWRBWR emit 1. anti-neutrino (with E in [1.8,9.1] MeV) per 109.818 MeV produced",
+timestamp: "",
+emin: 1.8,
+emax: 9,
+spectrum_type: "parameterized",
+spec_e: [],
+spec_flux: [],
+flux_norm: 0,
+param_isotope: ["235U", "238U", "239Pu", "241Pu"],
+param_composition: [0.568, 0.078, 0.297, 0.057],
+}
+
+{
+type: "REACTOR_SPECTRUM",
+version: 1,
+index: "Param_Huber",
+run_range: [0, 0],
+pass: 0,
+comment: "Taken from Huber et al. PRD 70 053011. This serves just as an example on how to use the parameterized spectra.",
+timestamp: "",
+emin: 1.8,
+emax: 9.1,
+spectrum_type: "parameterized",
+spec_e: [0],
+spec_flux: [0],
+flux_norm: 0,
+param_isotope: ["235U", "238U", "239Pu", "241Pu"],
+param_composition: [0.56, 0.08, 0.3, 0.06],
+}
+
+{
+type: "REACTOR_SPECTRUM",
+version: 1,
+index: "DayaBayComp",
+run_range: [0, 0],
+pass: 0,
+comment: "Daya Bay Paper arXiv:1607.05378 [hep-ph] (19 July 2016).",
+timestamp: "",
+emin: 1.8,
+emax: 12,
+spectrum_type: "shape",
+// Neutrino spectrum in paper is weighted by the IBD cross-section, here i divided it.
+// They prupose we could use it directely, and this is clearly less exact, serves for now to test shapes (integral here gives 1.7632)
+
+
+spec_e: [1.9625, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7, 7.25, 7.5, 7.75, 8, 10.0625],
+spec_flux: [1.24055, 1.0352, 0.853597, 0.707877, 0.574308, 0.476808, 0.385253, 0.311711, 0.249809, 0.196407, 0.151059, 0.115864, 0.0924527, 0.074467, 0.058144, 0.0451798, 0.0338736, 0.0245644, 0.0179723, 0.01301, 0.00885488, 0.0056222, 0.00359866, 0.00231873, 0.00132232, 5.39287e-05],
+// (anti-nu/Mev)/fission
+// average energy per fission is 205.99 (this gives 1.76/205.99 = 116.83 antinu/MeV release at reactor (to be comparable 
+
+flux_norm: 205.99,
+
+// Since the type is shape, these options are ignored - are kept here just for reference, from the same paper
+
+param_isotope: ["235U", "238U", "239Pu", "241Pu"],
+param_composition: [0.561, 0.076, 0.307, 0.056],
+
+// energies/fission: 202.36,205.99,211.12,214.26
+// w/ uncertainty :  0.26, 0.52, 0.34, 0.33
+
+}
+
+{
+type: "REACTOR_SPECTRUM",
+version: 1,
+index: "dummy",
+run_range: [0, 0],
+pass: 0,
+comment: "THis spectrum has an unknown normalization and therefore should probably not be used. Serves as an example of how to use the type \"shape\".",
+timestamp: "",
+emin: 1.85,
+emax: 8.15,
+spectrum_type: "shape",
+spec_e: [1.85, 2.15, 2.45, 2.75, 3.05, 3.35, 3.65, 3.95, 4.25, 4.55, 4.85, 5.15, 5.45, 5.75, 6.05, 6.35, 6.65, 6.95, 7.25, 7.55, 7.85, 8.15],
+spec_flux: [49.8, 39.66, 31.43, 24.79, 19.45, 15.19, 11.8, 9.12, 7.01, 5.35, 4.06, 3.06, 2.28, 1.67, 1.21, 0.85, 0.58, 0.38, 0.23, 0.13, 0.06, 0.03],
+flux_norm: 1,
+param_isotope: [],
+param_composition: [],
+}
+
+{
+type: "REACTOR_SPECTRUM",
+version: 1,
+index: "DayaBayMeas",
+run_range: [0, 0],
+pass: 0,
+comment: "Daya Bay Paper arXiv:1607.05378 [hep-ph] (19 July 2016).",
+timestamp: "",
+emin: 1.8,
+emax: 12,
+spectrum_type: "shape",
+
+// Neutrino spectrum in paper is weighted by the IBD cross-section, here i divided it.
+// They prupose we could use it directely, and this is clearly less exact, serves for now to test shapes (integral here gives 1.7632)
+
+spec_e: [1.9625, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7, 7.25, 7.5, 7.75, 8, 10.0625],
+spec_flux: [1.24055, 1.0352, 0.853597, 0.707877, 0.574308, 0.476808, 0.385253, 0.311711, 0.249809, 0.196407, 0.151059, 0.115864, 0.0924527, 0.074467, 0.058144, 0.0451798, 0.0338736, 0.0245644, 0.0179723, 0.01301, 0.00885488, 0.0056222, 0.00359866, 0.00231873, 0.00132232, 5.39287e-05],
+// (anti-nu/Mev)/fission
+// average energy per fission is 205.99 (this gives 1.76/205.99 = 116.83 antinu/MeV release at reactor (to be comparable with Satoko's norms)
+
+flux_norm: 205.99,
+// Since the type is shape, these options are ignored - are kept here just for reference, from the same paper
+
+param_isotope: ["235U", "238U", "239Pu", "241Pu"],
+param_composition: [0.561, 0.076, 0.307, 0.056],
+// energies/fission: 202.36,205.99,211.12,214.26
+// w/ uncertainty :  0.26, 0.52, 0.34, 0.33
+}
+
+{
+type: "REACTOR_SPECTRUM",
+version: 1,
+index: "PHWR_Satoko",
+run_range: [0, 0],
+pass: 0,
+comment: " Emission Spectra of U235, U238, Pu239, Pu241 from Phys. Rev.C 83, 054615, 2011. NOTE: this is valid only for E_nu > 1.8 MeV (above IBD threshold). Neutrino spectrum per fission for CANDU for 1 MeV production., normalized for \/fission\/MeV. Mass fractions 0.52, 0.05, 0.42, 0.01, respectively from AECL in PHWR (CANDU). Average energy release\/fission is 205.653 MeV and average number of anti neutrinos (with E in [1.8,9.1] MeV) is 1.80479. Thus PHWR\/CANDU emit 1 anti-neutrino (with E in [1.8,9.1] MeV) per 113.95 MeV produced",
+timestamp: "",
+emin: 1.8,
+emax: 9,
+spectrum_type: "shape",
+spec_e: [1.90286, 2.10857, 2.31429, 2.52, 2.72571, 2.93143, 3.13714, 3.34286, 3.54857, 3.75429, 3.96, 4.16571, 4.37143, 4.57714, 4.78286, 4.98857, 5.19429, 5.4, 5.60571, 5.81143, 6.01714, 6.22286, 6.42857, 6.63429, 6.84, 7.04571, 7.25143, 7.45714, 7.66286, 7.86857, 8.07429, 8.28, 8.48571, 8.69143, 8.89714, 9.10286],
+spec_flux: [0.743248, 0.633057, 0.545363, 0.472005, 0.408358, 0.35186, 0.30118, 0.255694, 0.215136, 0.179374, 0.148268, 0.121598, 0.099051, 0.0802325, 0.0646986, 0.0519906, 0.0416644, 0.033311, 0.026569, 0.021129, 0.0167332, 0.0131714, 0.0102762, 0.00791703, 0.00599419, 0.00443367, 0.00318126, 0.00219659, 0.001447, 0.000901705, 0.000527747, 0.000288981, 0.000148371, 7.22756e-05, 3.423e-05, 0],
+flux_norm: 113.95,
+param_isotope: [],
+param_composition: [],
+}
+
+{
+type: "REACTOR_SPECTRUM",
+version: 1,
+index: "PWRBWR_Satoko",
+run_range: [0, 0],
+pass: 0,
+comment: "Neutrino spectrum per fission for PWR\/BWR for 1 MeV production. Mass fractions 0.568, 0.078, 0.297, 0.057, respectively, from KamLAND (2003). Average energy release \/ fission is 205.213, average number of anti-neutrinos (w\/ E in [1.8,9.] MeV) is 1.871. So, 109.807 MeV released per antineutrino emmitted in IBD range",
+timestamp: "",
+emin: 1.8,
+emax: 9,
+spectrum_type: "shape",
+spec_e: [1.90286, 2.10857, 2.31429, 2.52, 2.72571, 2.93143, 3.13714, 3.34286, 3.54857, 3.75429, 3.96, 4.16571, 4.37143, 4.57714, 4.78286, 4.98857, 5.19429, 5.4, 5.60571, 5.81143, 6.01714, 6.22286, 6.42857, 6.63429, 6.84, 7.04571, 7.25143, 7.45714, 7.66286, 7.86857, 8.07429, 8.28, 8.48571, 8.69143, 8.89714, 9.10286],
+spec_flux: [0.72615, 0.62378, 0.540617, 0.469957, 0.407983, 0.352586, 0.302678, 0.257754, 0.2176, 0.182101, 0.151124, 0.124459, 0.10181, 0.0828051, 0.0670255, 0.0540385, 0.0434221, 0.0347852, 0.0277793, 0.0221028, 0.0175023, 0.0137688, 0.0107338, 0.0082644, 0.00625727, 0.0046341, 0.00333593, 0.00231765, 0.00154229, 0.000975868, 0.000583656, 0.00032908, 0.000175456, 8.95153e-05, 4.46835e-05, 0],
+flux_norm: 109.683,
+param_isotope: [],
+param_composition: [],
+}
+
+///
+/// -- Individual reactor information. Only positional information is kept here
+///
+
+{
+type: "REACTOR",
+version: 1,
+index: "ALMARAZ",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [39.8074, 39.8074],
+longitude: [-5.69769, -5.69669],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "ANGRA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [-23.008, -23.0065],
+longitude: [-44.4567, -44.4578],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "ANO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [35.3103, 35.3103],
+longitude: [-93.2296, -93.2286],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "ARMENIAN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [40.1813],
+longitude: [44.1472],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "ASCO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [41.2016, 41.2016],
+longitude: [0.57136, 0.57236],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "ATUCHA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [-33.9669],
+longitude: [-59.2086],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BALAKOVO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [52.0915, 52.0921, 52.0927, 52.0932],
+longitude: [47.9519, 47.9536, 47.9558, 47.9579],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BEAVER VALLEY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [40.6238, 40.6238],
+longitude: [-80.4319, -80.4309],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BELLEVILLE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [47.5105, 47.51],
+longitude: [2.87116, 2.87123],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BELOYARSK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [56.8415],
+longitude: [61.3188],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BEZNAU",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [47.552, 47.552],
+longitude: [8.22946, 8.23046],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BILIBINO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [68.0586, 68.0586, 68.0586, 68.0586],
+longitude: [166.492, 166.493, 166.494, 166.495],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BLAYAIS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [45.2562, 45.2561, 45.2561, 45.2561],
+longitude: [-0.69129, -0.69077, -0.69033, -0.68988],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BOHUNICE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [48.4921, 48.4916],
+longitude: [17.6869, 17.6869],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BORSSELE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [51.4311],
+longitude: [3.71867],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BRAIDWOOD",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [41.247, 41.247],
+longitude: [-88.2296, -88.2288],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BROKDORF",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [53.85],
+longitude: [9.34455],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BROWNS FERRY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+latitude: [34.7038, 34.7033, 34.7028],
+longitude: [-87.119, -87.119, -87.119],
+altitude: [0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BRUCE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 8,
+latitude: [44.3411, 44.3411, 44.3411, 44.3416, 44.3198, 44.3193, 44.3188, 44.3183],
+longitude: [-81.5716, -81.5716, -81.5716, -81.5716, -81.588, -81.588, -81.588, -81.588],
+altitude: [0, 0, 0, 0, 0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BRUNSWICK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [33.9579, 33.9574],
+longitude: [-78.0071, -78.0071],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BUGEY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [45.7975, 45.7975, 45.7998, 45.7998],
+longitude: [5.2672, 5.2682, 5.26725, 5.26825],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BUSHEHR",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [28.8296],
+longitude: [50.88596],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "BYRON",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [42.0744, 42.0744],
+longitude: [-89.2766, -89.2756],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "CALLAWAY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [38.763],
+longitude: [-91.7814],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "CALVERT CLIFFS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [38.4345, 38.434],
+longitude: [-76.4389, -76.4389],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "CATAWBA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [35.053, 35.053],
+longitude: [-81.071, -81.07],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "CATTENOM",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [49.4164, 49.41588, 49.4154, 49.4149],
+longitude: [6.21737, 6.21737, 6.21737, 6.21737],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "CEFR",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [39.73944],
+longitude: [116.03016],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "CERNAVODA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [44.3216, 44.3216],
+longitude: [28.0605, 28.0615],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "CHASNUPP",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [32.3919, 32.3919],
+longitude: [71.463, 71.463],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "CHINON B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [47.2298, 47.2293, 47.2242, 47.2242],
+longitude: [0.16823, 0.16825, 0.17089, 0.17147],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "CHINSHAN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [25.2924, 25.2924],
+longitude: [121.567, 121.568],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "CHOOZ B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [50.0892, 50.0885],
+longitude: [4.7907, 4.7907],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "CIVAUX",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [46.4566, 46.4566],
+longitude: [0.65446, 0.65546],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "CLINTON",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [40.1717],
+longitude: [-88.8335],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "COFRENTES",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [39.2162],
+longitude: [-1.05132],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "COLUMBIA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [46.4713],
+longitude: [-119.333],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "COMANCHE PEAK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [32.3007, 32.3007],
+longitude: [-97.7865, -97.7855],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "COOK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [41.9752, 41.9752],
+longitude: [-86.5641, -86.5631],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "COOPER",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [40.3609],
+longitude: [-95.6434],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "CRUAS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [44.6336, 44.6331, 44.6326, 44.6321],
+longitude: [4.75652, 4.75652, 4.75652, 4.75652],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "CRYSTAL RIVER",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [28.9659],
+longitude: [-82.6971],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "DAMPIERRE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [47.7323, 47.7323, 47.7323, 47.7323],
+longitude: [2.51311, 2.51411, 2.51511, 2.51611],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "DARLINGTON",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [43.867, 43.8665, 43.866, 43.8655],
+longitude: [-78.7244, -78.7244, -78.7244, -78.7244],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "DAVIS BESSE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [41.5969],
+longitude: [-83.0919],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "DAYA BAY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [22.5989, 22.5986],
+longitude: [114.544, 114.544],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "DIABLO CANYON",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [35.2122, 35.2122],
+longitude: [-120.854, -120.853],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "DOEL",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [51.3227, 51.3227, 51.3249, 51.3249],
+longitude: [4.25868, 4.25919, 4.25658, 4.25708],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "DRESDEN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [41.38615, 41.38513],
+longitude: [-88.26802, -88.26837],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "DUANE ARNOLD",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [42.101],
+longitude: [-91.776],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "DUKOVANY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [49.0893, 49.0889, 49.0886, 49.0883],
+longitude: [16.1491, 16.1489, 16.1488, 16.1486],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "DUNGENESS B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [50.9126, 50.9121],
+longitude: [0.96176, 0.96176],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "EMBALSE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [-32.2315],
+longitude: [-64.4423],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "EMSLAND",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [52.4706],
+longitude: [7.32177],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "FARLEY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [31.2231, 31.2231],
+longitude: [-85.1145, -85.1135],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "FERMI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [41.9627],
+longitude: [-83.2566],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "FESSENHEIM",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [47.903, 47.9029],
+longitude: [7.56437, 7.56506],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "FITZPATRICK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [43.521],
+longitude: [-76.4026],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "FLAMANVILLE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [49.5367, 49.5367],
+longitude: [-1.88112, -1.88058],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "FORSMARK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+latitude: [60.4047, 60.4047, 60.4068],
+longitude: [18.1681, 18.1702, 18.1546],
+altitude: [0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "FORT CALHOUN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [41.5202],
+longitude: [-96.076],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "FUKUSHIMA-DAIICHI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [37.429, 37.429],
+longitude: [141.031, 141.031],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "FUKUSHIMA-DAINI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [37.3153, 37.3153, 37.3153, 37.3153],
+longitude: [141.024, 141.025, 141.026, 141.027],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "GENKAI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [33.5179, 33.5174, 33.5169, 33.5164],
+longitude: [129.837, 129.837, 129.837, 129.837],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "GINNA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [43.2786],
+longitude: [-77.3108],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "GOESGEN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [47.3663],
+longitude: [7.96898],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "GOLFECH",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [44.1046, 44.1041],
+longitude: [0.84536, 0.84536],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "GRAFENRHEINFELD",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [49.984],
+longitude: [10.1857],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "GRAND GULF",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [32.0069],
+longitude: [-91.0452],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "GRAVELINES",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 6,
+latitude: [51.0139, 51.0134, 51.0129, 51.0124, 51.0119, 51.0114],
+longitude: [2.13752, 2.13752, 2.13752, 2.13752, 2.13752, 2.13752],
+altitude: [0, 0, 0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "GROHNDE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [52.0332],
+longitude: [9.41151],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "GUNDREMMINGEN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [48.5153, 48.5153],
+longitude: [10.4037, 10.4042],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "HAMAOKA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+latitude: [34.6203, 34.6198, 34.6193],
+longitude: [138.141, 138.141, 138.141],
+altitude: [0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "HANBIT",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 6,
+latitude: [35.4039, 35.4034, 35.4029, 35.4024, 35.4019, 35.4014],
+longitude: [126.419, 126.419, 126.419, 126.419, 126.419, 126.419],
+altitude: [0, 0, 0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "HANUL",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 5,
+latitude: [37.0929, 37.0929, 37.0929, 37.0929, 37.0929],
+longitude: [129.393, 129.394, 129.395, 129.396, 129.397],
+altitude: [0, 0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "HARRIS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [35.6349],
+longitude: [-78.9548],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "HARTLEPOOL A",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [54.6339, 54.6336],
+longitude: [-1.17961, -1.17961],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "HATCH",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [31.9347, 31.9343],
+longitude: [-82.3461, -82.3461],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "HEYSHAM A",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [54.0287, 54.0282],
+longitude: [-2.91227, -2.91227],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "HEYSHAM B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [54.0277, 54.0272],
+longitude: [-2.91227, -2.91227],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "HIGASHI DORI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [41.1881],
+longitude: [141.393],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "HINKLEY POINT B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [51.2082, 51.2077],
+longitude: [-3.1305, -3.1305],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "HONGYANHE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [39.79583, 39.79583],
+longitude: [121.48056, 121.48056],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "HOPE CREEK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [39.4668],
+longitude: [-75.5354],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "HUNTERSTON B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [55.721, 55.7205],
+longitude: [-4.89341, -4.89341],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "IKATA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+latitude: [33.491, 33.491, 33.4908],
+longitude: [132.309, 132.31, 132.312],
+altitude: [0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "INDIAN POINT",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [41.2693, 41.2688],
+longitude: [-73.9497, -73.9497],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "ISAR",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [48.6069],
+longitude: [12.2958],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "JP-59 SHIKA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [37.0611],
+longitude: [136.729],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "KAIGA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [14.8652, 14.8652, 14.8653, 14.8653],
+longitude: [74.4381, 74.4384, 74.4418, 74.4418],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "KAKRAPAR",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [21.2355, 21.2352],
+longitude: [73.3507, 73.3507],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "KALININ",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [57.9028, 57.9039, 57.9051, 57.9051],
+longitude: [35.0571, 35.0586, 35.0606, 35.0606],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "KANUPP",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [24.8451],
+longitude: [66.7895],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "KASHIWAZAKI KARIWA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 7,
+latitude: [37.434, 37.4335, 37.433, 37.4325, 37.432, 37.4315, 37.431],
+longitude: [138.598, 138.598, 138.598, 138.598, 138.598, 138.598, 138.598],
+altitude: [0, 0, 0, 0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "KEWAUNEE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [44.4696],
+longitude: [-87.498],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "KHMELNITSKI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [50.3007, 50.3012],
+longitude: [26.6493, 26.6471],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "KOEBERG",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [-33.6773, -33.6773],
+longitude: [18.4334, 18.4344],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "KOLA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [67.4667, 67.4667, 67.4667, 67.4667],
+longitude: [32.4913, 32.4923, 32.4933, 32.4943],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "KORI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [35.3212, 35.3212, 35.3212, 35.3212],
+longitude: [129.295, 129.296, 129.297, 129.298],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "KOZLODUY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [43.74665, 43.7463],
+longitude: [23.76961, 23.7709],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "KRSKO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [45.9389],
+longitude: [15.516],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "KUDANKULAM",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [8.16889],
+longitude: [77.7125],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "KUOSHENG",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [25.2025, 25.203],
+longitude: [121.662, 121.662],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "KURSK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [51.674, 51.6735, 51.673, 51.6725],
+longitude: [35.6067, 35.6067, 35.6067, 35.6067],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "LAGUNA VERDE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [19.7189, 19.7189],
+longitude: [-96.4049, -96.4039],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "LASALLE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [41.2461, 41.2456],
+longitude: [-88.6724, -88.6724],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "LEIBSTADT",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [47.6012],
+longitude: [8.18341],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "LENINGRAD",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [59.8403, 59.8403, 59.8403, 59.8403],
+longitude: [29.0274, 29.0284, 29.0294, 29.0304],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "LIMERICK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [40.2251, 40.2246],
+longitude: [-75.5835, -75.5835],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "LINGAO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [22.6058, 22.6053, 22.6089, 22.6089],
+longitude: [114.55, 114.55, 114.552, 114.552],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "LOVIISA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [60.3715, 60.3714],
+longitude: [26.3423, 26.3429],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "MAANSHAN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [21.9585, 21.9585],
+longitude: [120.753, 120.754],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "MADRAS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [12.5571, 12.5571],
+longitude: [80.177, 80.177],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "MCGUIRE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [35.4333, 35.4327],
+longitude: [-80.9463, -80.9463],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "MIHAMA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+latitude: [35.7013, 35.7008, 35.7034],
+longitude: [135.962, 135.962, 135.961],
+altitude: [0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "MILLSTONE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [41.3116, 41.3111],
+longitude: [-72.166, -72.166],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "MOCHOVCE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [48.2609, 48.2604],
+longitude: [18.4547, 18.4547],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "MONTICELLO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [45.3337],
+longitude: [-93.8504],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "MUEHLEBERG",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [46.969],
+longitude: [7.26622],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "NARORA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [28.1559, 28.1554],
+longitude: [78.4092, 78.4092],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "NECKARWESTHEIM",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [49.0394],
+longitude: [9.17616],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "NINE MILE POINT",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [43.5216, 43.5205],
+longitude: [-76.4124, -76.4126],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "NINGDE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [27.045],
+longitude: [120.28],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "NOGENT",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [48.517, 48.5164],
+longitude: [3.52004, 3.52004],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "NORTH ANNA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [38.0612, 38.0607],
+longitude: [-77.7918, -77.7918],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "NOVOVORONEZH",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+latitude: [51.2744, 51.2739, 52.3807],
+longitude: [39.2064, 39.2064, 39.2112],
+altitude: [0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "OCONEE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+latitude: [34.7964, 34.7959, 34.7954],
+longitude: [-82.8944, -82.8944, -82.8944],
+altitude: [0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "OHI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [35.5437, 35.5432, 35.5422, 35.5422],
+longitude: [135.652, 135.652, 135.652, 135.652],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "OLKILUOTO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [61.2354, 61.2354],
+longitude: [21.444, 21.445],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "ONAGAWA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+latitude: [38.4, 38.4005, 38.401],
+longitude: [141.504, 141.504, 141.504],
+altitude: [0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "OSKARSHAMN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+latitude: [57.4146, 57.4146, 57.4161],
+longitude: [16.6658, 16.6668, 16.671],
+altitude: [0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "OYSTER CREEK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [39.8146],
+longitude: [-74.2077],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "PAKS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [46.574, 46.574, 46.574, 46.574],
+longitude: [18.85516, 18.8562, 18.8572, 18.8582],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "PALISADES",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [42.3226],
+longitude: [-86.3161],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "PALO VERDE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+latitude: [33.3873, 33.3868, 33.3863],
+longitude: [-112.863, -112.863, -112.863],
+altitude: [0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "PALUEL",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [49.8569, 49.8564, 49.8559, 49.8555],
+longitude: [0.63529, 0.63529, 0.63529, 0.63529],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "PEACH BOTTOM",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [39.7589, 39.7584],
+longitude: [-76.2702, -76.2702],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "PENLY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [49.975, 49.9746],
+longitude: [1.21494, 1.21494],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "PERRY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [41.8006],
+longitude: [-81.1465],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "PHILIPPSBURG",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [49.2526],
+longitude: [8.43335],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "PICKERING",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 6,
+latitude: [43.8116, 43.8113, 43.8107, 43.8105, 43.8102, 43.81],
+longitude: [-79.0695, -79.0673, -79.0649, -79.0642, -79.063, -79.062],
+altitude: [0, 0, 0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "PILGRIM",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [41.9449],
+longitude: [-70.5776],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "POINT BEACH",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [44.2816, 44.2811],
+longitude: [-87.5343, -87.5343],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "POINT LEPREAU",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [45.068],
+longitude: [-66.4554],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "PRAIRIE ISLAND",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [44.6223, 44.6218],
+longitude: [-92.6314, -92.6314],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "QINSHAN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [30.4398],
+longitude: [120.95],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "QINSHAN 2",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [30.421, 30.4208, 30.4189, 30.4189],
+longitude: [120.945, 120.946, 120.942, 120.942],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "QINSHAN 3",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [30.436, 30.4354],
+longitude: [120.961, 120.961],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "QUAD CITIES",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [41.7268, 41.7263],
+longitude: [-90.3078, -90.3078],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "RAJASTHAN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 6,
+latitude: [24.8762, 24.8762, 24.8723, 24.8718, 24.8722, 24.8722],
+longitude: [75.6083, 75.6092, 75.619, 75.619, 75.625, 75.625],
+altitude: [0, 0, 0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "RINGHALS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [57.259, 57.259, 57.259, 57.259],
+longitude: [12.1112, 12.1122, 12.1132, 12.1142],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "RIVER BEND",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [30.7273],
+longitude: [-91.3716],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "ROBINSON",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [34.4024],
+longitude: [-80.1584],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "ROSTOV",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [47.5988, 47.6],
+longitude: [42.373, 42.3739],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "ROVNO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [51.3261, 51.3261, 51.3261, 51.3261],
+longitude: [25.8996, 25.9006, 25.9016, 25.9026],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SALEM",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [39.463, 39.4625],
+longitude: [-75.5342, -75.5342],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SAN ONOFRE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [33.3673, 33.3668],
+longitude: [-117.556, -117.556],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SANTA MARIA DE GARONA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [42.7753],
+longitude: [-3.20535],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SEABROOK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [42.8974],
+longitude: [-70.8493],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SENDAI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [31.8339, 31.8339],
+longitude: [130.193, 130.193],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SEQUOYAH",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [35.2277, 35.2272],
+longitude: [-85.0936, -85.0936],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SHIKA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [37.0611],
+longitude: [136.728],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SHIMANE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [35.5368, 35.5367],
+longitude: [132.999, 133],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SHIN-KORI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [35.32714, 35.32714],
+longitude: [129.30174, 129.30174],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SHIN-WOLSONG",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [35.71111],
+longitude: [129.475],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SIZEWELL-B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [52.2149],
+longitude: [1.62269],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SMOLENSK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+latitude: [54.1688, 54.1683, 54.1678],
+longitude: [33.2448, 33.2448, 33.2448],
+altitude: [0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SOUTH TEXAS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [28.7967, 28.7962],
+longitude: [-96.0444, -96.0444],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SOUTH UKRAINE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+latitude: [47.8113, 47.8108, 47.8116],
+longitude: [31.2199, 31.2199, 31.2238],
+altitude: [0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "ST. ALBAN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [45.404, 45.404],
+longitude: [4.75397, 4.75498],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "ST. LAURENT B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [47.7211, 47.72041],
+longitude: [1.58069, 1.58072],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "ST. LUCIE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [27.3484, 27.3484],
+longitude: [-80.2439, -80.2438],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SUMMER",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [34.2985],
+longitude: [-81.3138],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SURRY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [37.1664, 37.1659],
+longitude: [-76.7003, -76.7003],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "SUSQUEHANNA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [41.0929, 41.0924],
+longitude: [-76.1428, -76.1428],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "TAKAHAMA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [35.5195, 35.52, 35.5205, 35.521],
+longitude: [135.503, 135.503, 135.503, 135.503],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "TARAPUR",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [19.8343, 19.8343, 19.8297, 19.8297],
+longitude: [72.6567, 72.6569, 72.6632, 72.6636],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "TEMELIN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [49.1812, 49.1807],
+longitude: [14.3771, 14.3769],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "THREE MILE ISLAND",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [40.1539],
+longitude: [-76.727],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "TIANWAN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [34.6898, 34.6888],
+longitude: [119.456, 119.456],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "TIHANGE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+latitude: [50.5333, 50.5328, 50.5323],
+longitude: [5.271, 5.271, 5.271],
+altitude: [0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "TOKAI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [36.4664],
+longitude: [140.614],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "TOMARI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+latitude: [43.0375, 43.0375, 43.0344],
+longitude: [140.515, 140.516, 140.517],
+altitude: [0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "TORNESS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [55.9664, 55.9659],
+longitude: [-2.39883, -2.39883],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "TRICASTIN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [44.3297, 44.3302, 44.3307, 44.3312],
+longitude: [4.73318, 4.73318, 4.73318, 4.73318],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "TRILLO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [40.6993],
+longitude: [-2.62211],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "TSURUGA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [35.67247, 35.6725],
+longitude: [136.07913, 136.08],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "TURKEY POINT",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [25.4346, 25.4346],
+longitude: [-80.3301, -80.3291],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "ULCHIN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [37.0929],
+longitude: [129.398],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "VANDELLOS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [40.9485],
+longitude: [0.86749],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "VERMONT YANKEE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [42.7787],
+longitude: [-72.5143],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "VOGTLE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+latitude: [33.1425, 33.142],
+longitude: [-81.7596, -81.7596],
+altitude: [0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "WATERFORD",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [29.9944],
+longitude: [-90.4708],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "WATTS BAR",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [35.601],
+longitude: [-84.7893],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "WOLF CREEK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [38.2392],
+longitude: [-95.6905],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "WOLSONG",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+latitude: [35.7101, 35.7101, 35.7101, 35.7101],
+longitude: [129.476, 129.477, 129.478, 129.479],
+altitude: [0, 0, 0, 0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "WYLFA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [53.4159],
+longitude: [-4.48044],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "YANGJIANG",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+latitude: [21.70807],
+longitude: [112.25929],
+altitude: [0],
+}
+
+{
+type: "REACTOR",
+version: 1,
+index: "ZAPOROZHYE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 6,
+latitude: [47.5084, 47.5079, 47.5074, 47.5069, 47.5064, 47.5059],
+longitude: [34.6265, 34.6265, 34.6265, 34.6265, 34.6265, 34.6265],
+altitude: [0, 0, 0, 0, 0, 0],
+}
+

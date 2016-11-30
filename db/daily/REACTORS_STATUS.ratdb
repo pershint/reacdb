@@ -1,0 +1,2598 @@
+//************* REACTOR Transient information ***********
+// Originally created by Nuno Barros (nfbarros@hep.upenn.edu)
+//
+// This file contains the transient information about the reactors (power, spectrum)
+// It is planned to have multiple tables per reactor, each witha  different run range, 
+// preferably living in the remote database server
+// The table distributed with RAT will most likely contain a default plane of information
+// that is valid for all times
+//
+//********************************************
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ALMARAZ",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2555, 2483],
+core_spectrum: ["PWRBWR_Satoko", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ANGRA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1310, 3389],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ANO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1565, 2619],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ARMENIAN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [908],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ASCO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2944, 2450],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ATUCHA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [984],
+core_spectrum: ["PHWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BALAKOVO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [3160, 2967, 2661, 3016],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BEAVER VALLEY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2577, 2924],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BELLEVILLE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2884, 2495],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BELOYARSK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [1151],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BEZNAU",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1087, 1022],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BILIBINO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [24, 27, 28, 29],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BLAYAIS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [2382, 1714, 2431, 1800],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BOHUNICE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1326, 1352],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BORSSELE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [885],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BRAIDWOOD",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3387, 3520],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BROKDORF",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [3523],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BROWNS FERRY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+core_power: [3402, 2857, 3285],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BRUCE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 8,
+core_power: [2007, 2141, 2444, 1820, 2545, 2130, 2771, 2122],
+core_spectrum: ["PHWR", "PHWR", "PHWR", "PHWR", "PHWR", "PHWR", "PHWR", "PHWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BRUNSWICK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2873, 2318],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BUGEY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [1640, 1517, 2574, 1832],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BUSHEHR",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [1446],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "BYRON",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3617, 3336],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "CALLAWAY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2822],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "CALVERT CLIFFS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2819, 2382],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "CATAWBA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3432, 3082],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "CATTENOM",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [2231, 3269, 2638, 1999],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "CEFR",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [0],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "CERNAVODA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2153, 1946],
+core_spectrum: ["PHWR", "PHWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "CHASNUPP",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [830, 642],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "CHINON B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [1438, 1584, 2087, 2341],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "CHINSHAN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1337, 1790],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "CHOOZ B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3237, 3473],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "CIVAUX",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2496, 3455],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "CLINTON",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [3102],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "COFRENTES",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2787],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "COLUMBIA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [3041],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "COMANCHE PEAK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3428, 3652],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "COOK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2875, 3103],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "COOPER",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2451],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "CRUAS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [2200, 1991, 2389, 2405],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "CRYSTAL RIVER",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [0],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "DAMPIERRE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [1819, 2322, 1701, 2525],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "DARLINGTON",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [2690, 1855, 2649, 1878],
+core_spectrum: ["PHWR", "PHWR", "PHWR", "PHWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "DAVIS BESSE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2763],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "DAYA BAY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2511, 2493],
+core_spectrum: ["DayaBayComp", "DayaBayComp"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "DIABLO CANYON",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3350, 2918],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "DOEL",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [1281, 1231, 1721, 2776],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "DRESDEN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2883, 3065],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "DUANE ARNOLD",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [1931],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "DUKOVANY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [1329, 1290, 1242, 1307],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "DUNGENESS B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [954, 609],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "EMBALSE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [1261],
+core_spectrum: ["PHWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "EMSLAND",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [3612],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "FARLEY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2548, 2538],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "FERMI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2492],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "FESSENHEIM",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1617, 1747],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "FITZPATRICK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2435],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "FLAMANVILLE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3414, 2493],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "FORSMARK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+core_power: [2566, 2975, 2903],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "FORT CALHOUN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [33],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "FUKUSHIMA-DAIICHI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [0, 0],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "FUKUSHIMA-DAINI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [0, 0, 0, 0],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "GENKAI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [0, 0, 0, 0],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "GINNA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [1741],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "GOESGEN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2236],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "GOLFECH",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3231, 3159],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "GRAFENRHEINFELD",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [3260],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "GRAND GULF",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [3830],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "GRAVELINES",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 6,
+core_power: [1895, 1364, 2240, 2137, 2319, 2370],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "GROHNDE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [3409],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "GUNDREMMINGEN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3291, 3416],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "HAMAOKA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+core_power: [0, 0, 0],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "HANBIT",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 6,
+core_power: [2292, 2066, 1517, 2449, 2652, 2766],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "HANUL",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 5,
+core_power: [2400, 2453, 2832, 1063, 2415],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "HARRIS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2458],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "HARTLEPOOL A",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1151, 876],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "HATCH",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2567, 2443],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "HEYSHAM A",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [832, 1193],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "HEYSHAM B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1381, 1177],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "HIGASHI DORI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [0],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "HINKLEY POINT B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1502, 1415],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "HONGYANHE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1660, 26],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "HOPE CREEK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [3413],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "HUNTERSTON B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1505, 1362],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "IKATA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+core_power: [0, 0, 0],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "INDIAN POINT",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3151, 2927],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ISAR",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [3651],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "JP-59 SHIKA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [0],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "KAIGA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [652, 693, 702, 536],
+core_spectrum: ["PHWR", "PHWR", "PHWR", "PHWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "KAKRAPAR",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [774, 765],
+core_spectrum: ["PHWR", "PHWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "KALININ",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [2495, 3114, 2506, 2443],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "KANUPP",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [204],
+core_spectrum: ["PHWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "KASHIWAZAKI KARIWA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 7,
+core_power: [0, 0, 0, 0, 0, 0, 0],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "KEWAUNEE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [732],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "KHMELNITSKI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2479, 2535],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "KOEBERG",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1881, 2763],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "KOLA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [910, 920, 865, 984],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "KORI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [865, 1515, 2913, 2182],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "KOZLODUY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2366, 2426],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "KRSKO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [1666],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "KUDANKULAM",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [0],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "KUOSHENG",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2683, 2647],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "KURSK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [2673, 641, 2877, 2459],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "LAGUNA VERDE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1989, 1969],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "LASALLE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3478, 3173],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "LEIBSTADT",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [3261],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "LENINGRAD",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [201, 1314, 2728, 2765],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "LIMERICK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3603, 3337],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "LINGAO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [2376, 2536, 2618, 2594],
+core_spectrum: ["DayaBayMeas", "DayaBayMeas", "DayaBayMeas", "DayaBayMeas"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "LOVIISA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1381, 1394],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "MAANSHAN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2438, 2835],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "MADRAS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [561, 252],
+core_spectrum: ["PHWR", "PHWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "MCGUIRE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2947, 3401],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "MIHAMA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+core_power: [0, 0, 0],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "MILLSTONE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2687, 3283],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "MOCHOVCE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1356, 1379],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "MONTICELLO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [1054],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "MUEHLEBERG",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [981],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "NARORA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [553, 483],
+core_spectrum: ["PHWR", "PHWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "NECKARWESTHEIM",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [3429],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "NINE MILE POINT",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1656, 3901],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "NINGDE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2253],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "NOGENT",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3160, 3047],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "NORTH ANNA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2729, 2610],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "NOVOVORONEZH",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+core_power: [1180, 1240, 2605],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "OCONEE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+core_power: [2449, 2217, 2617],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "OHI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [0, 0, 2354, 2490],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "OLKILUOTO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2423, 2322],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ONAGAWA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+core_power: [0, 0, 0],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "OSKARSHAMN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+core_power: [179, 565, 3007],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "OYSTER CREEK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [1822],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "PAKS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [1382, 1363, 1097, 1382],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "PALISADES",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2228],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "PALO VERDE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+core_power: [3638, 3896, 3374],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "PALUEL",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [2594, 3532, 3004, 2309],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "PEACH BOTTOM",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3602, 3059],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "PENLY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2951, 3358],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "PERRY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2895],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "PHILIPPSBURG",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2811],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "PICKERING",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 6,
+core_power: [797, 1503, 1008, 1169, 1646, 1498],
+core_spectrum: ["PHWR", "PHWR", "PHWR", "PHWR", "PHWR", "PHWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "PILGRIM",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [1479],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "POINT BEACH",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1636, 1820],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "POINT LEPREAU",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [1553],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "PRAIRIE ISLAND",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1707, 1136],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "QINSHAN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [796],
+core_spectrum: ["PHWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "QINSHAN 2",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [1690, 1739, 1832, 1648],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "QINSHAN 3",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1901, 2100],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "QUAD CITIES",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2792, 2983],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "RAJASTHAN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 6,
+core_power: [0, 634, 783, 747, 833, 696],
+core_spectrum: ["PHWR", "PHWR", "PHWR", "PHWR", "PHWR", "PHWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "RINGHALS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [2024, 2117, 2343, 2487],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "RIVER BEND",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2766],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ROBINSON",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2053],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ROSTOV",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3291, 3009],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ROVNO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [625, 934, 2180, 1820],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SALEM",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3088, 3499],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SAN ONOFRE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [0, 0],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SANTA MARIA DE GARONA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [0],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SEABROOK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [3651],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SENDAI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [0, 0],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SEQUOYAH",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3015, 3380],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SHIKA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [0],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SHIMANE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [0, 0],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SHIN-KORI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [761, 1157],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SHIN-WOLSONG",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [1081],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SIZEWELL-B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2847],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SMOLENSK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+core_power: [3068, 1048, 3136],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SOUTH TEXAS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3791, 2405],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SOUTH UKRAINE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+core_power: [646, 2220, 1705],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ST. ALBAN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3288, 2375],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ST. LAURENT B",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1684, 1180],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ST. LUCIE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2458, 3017],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SUMMER",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2854],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SURRY",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2660, 2945],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "SUSQUEHANNA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3555, 3258],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "TAKAHAMA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [0, 0, 0, 0],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "TARAPUR",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [452, 170, 1390, 1420],
+core_spectrum: ["PHWR", "PHWR", "PHWR", "PHWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "TEMELIN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2564, 2629],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "THREE MILE ISLAND",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2389],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "TIANWAN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2706, 2676],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "TIHANGE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+core_power: [2346, 1703, 2648],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "TOKAI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [0],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "TOMARI",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 3,
+core_power: [0, 0, 0],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "TORNESS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [1457, 1455],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "TRICASTIN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [2044, 1970, 2404, 2279],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "TRILLO",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2566],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "TSURUGA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [0, 0],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "TURKEY POINT",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [2342, 1747],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ULCHIN",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2822],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "VANDELLOS",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2487],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "VERMONT YANKEE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [1756],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "VOGTLE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 2,
+core_power: [3678, 3186],
+core_spectrum: ["PWRBWR", "PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "WATERFORD",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [3413],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "WATTS BAR",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [3504],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "WOLF CREEK",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [2425],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "WOLSONG",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 4,
+core_power: [0, 1724, 1876, 1834],
+core_spectrum: ["PHWR", "PHWR", "PHWR", "PHWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "WYLFA",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [1632],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "YANGJIANG",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 1,
+core_power: [0],
+core_spectrum: ["PWRBWR"],
+}
+
+{
+type: "REACTOR_STATUS",
+version: 1,
+index: "ZAPOROZHYE",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+no_cores: 6,
+core_power: [2100, 2113, 1944, 2310, 2490, 2296],
+core_spectrum: ["PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR", "PWRBWR"],
+}
+
