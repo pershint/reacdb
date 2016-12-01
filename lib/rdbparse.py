@@ -77,6 +77,7 @@ class ratdbEntry(object):
         self.passing = 'unknown'
         self.comment = 'unknown'
         self.timestamp = 'unknown'
+
         self.misc = {}
         self.reacdb_entry = {}
         self.ratdbpath = os.path.abspath(os.path.join(dbpath, filename))
@@ -124,16 +125,13 @@ class ratdbEntry(object):
                     for j,entry in enumerate(nxlinepieces):
                         if j > 0:
                             value = value + entry
-                    print(key, value)
                     if key == "type" and \
                     value.rstrip("\",\n").lstrip(" \"") == self.rdb_type:
                         verline = filelines[i+2]
                         indexline = filelines[i+3]
-                        print(verline,indexline)
                         inlinepieces = indexline.split(":")
                         if inlinepieces[0] == "index" and \
                         inlinepieces[1].rstrip("\",\n").lstrip(" \"") == self.index:
-                            print("Should be starting parse!")
                             startparse = True                            
                 if startparse:
                     verlinepieces = verline.split(":")
@@ -143,8 +141,7 @@ class ratdbEntry(object):
                         line = filelines[i+entryline]
                         print(line)
                         if line.find('//') != -1:
-                            entryline+=1
-                            continue
+                            line = line.split('//',1)[0].rstrip(' ')
                         if line in ['\n', '\r\n']:
                             entryline+=1
                             continue
@@ -160,7 +157,6 @@ class ratdbEntry(object):
                                 self.ver = int(value.rstrip(",\n"))
                             elif key == 'run_range':
                                 rr = value.split(",")
-                                print(rr)
                                 for l,entry in enumerate(rr):
                                     if l == 0:
                                         runstart = int(entry.lstrip(" ["))
@@ -208,7 +204,9 @@ class CoreComp(ratdbEntry):
     def __init__(self,index):
         self.rdb_type = "REACTORCOMPS"
         self.filename = CORECOMP_RATDB
+
         self.composition = []
+
         super(CoreComp, self).__init__(self.filename, self.rdb_type, index)
         self.stuff = "things"
 
@@ -235,6 +233,7 @@ class Reactor_Spectrum(ratdbEntry):
     def __init__(self,index):
         self.rdb_type = "REACTOR_SPECTRUM"
         self.filename = REACTOR_RATDB
+
         self.emin = 'none'
         self.emax = 'none'
         self.spectrum_type = 'none'
@@ -243,6 +242,7 @@ class Reactor_Spectrum(ratdbEntry):
         self.flux_norm = 'none'
         self.param_isotope = []
         self.param_composition = []
+
         super(Reactor_Spectrum, self).__init__(self.filename, self.rdb_type, index)
         #self.parseMisc()
 
@@ -329,12 +329,14 @@ class Reactor_Isotope_Info(ratdbEntry):
     def __init__(self,index):
         self.rdb_type = "REACTOR_ISOTOPE_INFO"
         self.filename = REACTOR_RATDB
+
         self.nuperfission = 'none'
         self.nuperfission_err = 'none'
         self.Eperfission = 'none'
         self.Eperfission_err = 'none'
         self.spec_type = 'none'
         self.poly_coeff = []
+
         super(Reactor_Isotope_Info, self).__init__(self.filename, self.rdb_type, index)
         self.parseMisc()
 
@@ -384,20 +386,21 @@ class Reactor_Isotope_Info(ratdbEntry):
 
 #Subclass reads from REACTORS.RATDB to get the position information
 #(longitude,latitude,altitude)for each core for input reactor name (index input)
-class ReactorSpecs(ratdbEntry):
+class ReactorDetails(ratdbEntry):
     def __init__(self,index):
         self.rdb_type = "REACTOR"
         self.filename = REACTOR_RATDB
+
         self.no_cores = 'unknown'
         self.core_longitudes = []
         self.core_latitudes = []
         self.core_altitudes = []
-        super(ReactorSpecs, self).__init__(self.filename, self.rdb_type, index)
+
+        super(ReactorDetails, self).__init__(self.filename, self.rdb_type, index)
         self.parseMisc()
-        self.show()
 
     def show(self):
-        super(ReactorSpecs,self).show() #performs the parent method show()
+        super(ReactorDetails,self).show() #performs the parent method show()
         print("Number of cores: " + str(self.no_cores))
         print("Reactor core longitudes (degrees): " + str(self.core_longitudes))
         print("Reactor core latitudes (degrees): " + str(self.core_latitudes))
@@ -443,7 +446,7 @@ class ReactorSpecs(ratdbEntry):
         self.reacdb_entry["Reactor core longitudes (deg.)"] = self.core_longitudes
         self.reacdb_entry["Reactor core latitudes (deg.)"] = self.core_latitudes
         self.reacdb_entry["Reactor core altitudes (m)"] = self.core_altitudes
-        super(ReactorSpecs, self).buildReacdbEntry()
+        super(ReactorDetails, self).buildReacdbEntry()
 
 class ReactorStatus(ratdbEntry):
     def __init__(self,index):

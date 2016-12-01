@@ -40,10 +40,10 @@ def parsecoord():
             continue
     return locationdict
 
-def getDistFromSNOLAB(longlat):
+def getDistFromSNOLAB(longlatalt):
     """
-    Function takes in a longitude and latitude, and  list formatted
-    as [longitude(deg),latitude(deg)], and returns the reactor name anddistance
+    Function takes in a longitude, latitude, and altitude (formatted as
+    as [longitude(deg),latitude(deg),altitude(km)]). returns distance
     from SNO+ in kilometers.
     The function first takes the location's longitude and latitude and
     converts to cartesian coordinates.  The distance between SNOLAB (which is
@@ -53,9 +53,9 @@ def getDistFromSNOLAB(longlat):
     Tye Z-axis is aligned with the North and South Pole.
     """
 
-    X=(6371000-2070)*np.cos(((np.pi)*longlat[1])/180)*np.cos(((np.pi)*longlat[0])/180)
-    Y=(6371000-2070)*np.cos(((np.pi)*longlat[1])/180)*np.sin(((np.pi)*longlat[0])/180)
-    Z=(6371000-2070)*np.sin(((np.pi)*longlat[1])/180)
+    X=(REARTH-SNODEPTH+longlatalt[2])*np.cos(((np.pi)*longlatalt[1])/180)*np.cos(((np.pi)*longlatalt[0])/180)
+    Y=(REARTH-SNODEPTH+longlatalt[2])*np.cos(((np.pi)*longlatalt[1])/180)*np.sin(((np.pi)*longlatalt[0])/180)
+    Z=(REARTH-SNODEPTH+longlatalt[2])*np.sin(((np.pi)*longlatalt[1])/180)
     print('Calculated cartesian coordinates: ' + str(X) + ',' + str(Y) + ',' + str(Z))
     dist = np.sqrt(((X-SNOLAB_XYZ[0])**2) + ((Y-SNOLAB_XYZ[1])**2) + ((Z-SNOLAB_XYZ[2])**2))
     #give the distance in kilometers; cut off decimals, as uncertainties definitely
