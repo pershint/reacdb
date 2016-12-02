@@ -5,9 +5,9 @@ import sys
 basepath = os.path.dirname(__file__)
 posdbpath = os.path.abspath(os.path.join(basepath, "..", "db", "static", "ReacPos_corr.txt"))
 
-Rearth = 6371000 #Radius of earth at sea level, In meters
-DSNOLAB = 2070   #Distance of SNOLAB underground, In meters
-SNOLAB_latlong = [-81.1868, 46.4719]  #[longitude, latitude] according to Google Earth
+REARTH = 6371000 #Radius of earth at sea level, In meters
+SNODEPTH = 2070   #Distance of SNOLAB underground, In meters
+SNOLAB_LATLONG = [-81.1868, 46.4719]  #[longitude, latitude] according to Google Earth
 SNOLAB_XYZ = [672000,-4335000,4618000] #Calculated with the X,Y,Z calculator below
 
 

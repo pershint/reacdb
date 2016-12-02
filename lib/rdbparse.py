@@ -58,7 +58,6 @@ def getRLIndices():
     f = open(nspath, 'r')
     content = f.readlines()
     for i,line in enumerate(content):
-        print(i, line)
         if content[i].find('\"REACTOR\"') != -1:
             indexline = content[i+2].split(":")
             RLindex = indexline[1]
@@ -139,7 +138,6 @@ class ratdbEntry(object):
                     entryline = 4
                     while not entryfinished:
                         line = filelines[i+entryline]
-                        print(line)
                         if line.find('//') != -1:
                             line = line.split('//',1)[0].rstrip(' ')
                         if line in ['\n', '\r\n']:
@@ -244,7 +242,7 @@ class Reactor_Spectrum(ratdbEntry):
         self.param_composition = []
 
         super(Reactor_Spectrum, self).__init__(self.filename, self.rdb_type, index)
-        #self.parseMisc()
+        self.parseMisc()
 
     def show(self):
         super(Reactor_Spectrum, self).show()
@@ -261,7 +259,6 @@ class Reactor_Spectrum(ratdbEntry):
         spece_vals = self.misc['spec_e']
         spece_vals = spece_vals.lstrip("\' [").rstrip("],\n\'")
         spece_vals = spece_vals.split(",")
-        print(spece_vals)
         spece_vals_arr = []
         for entry in spece_vals:
             if entry != '':
@@ -281,15 +278,15 @@ class Reactor_Spectrum(ratdbEntry):
 
         emin = self.misc['emin']
         emin = emin.lstrip("\' ").rstrip(",\n\'")
-        self.emin = emin
+        self.emin = float(emin)
 
         emax = self.misc['emax']
         emax = emax.lstrip("\' ").rstrip(",\n\'")
-        self.emax = emax
+        self.emax = float(emax)
        
         fnorm = self.misc['flux_norm']
         fnorm = fnorm.lstrip("\' ").rstrip(",\n\'")
-        self.flux_norm = fnorm
+        self.flux_norm = float(fnorm)
         
         spectype = self.misc['spectrum_type']
         spectype = spectype.lstrip("\' \"").rstrip("\",\n\'")
@@ -329,6 +326,7 @@ class Reactor_Isotope_Info(ratdbEntry):
     def __init__(self,index):
         self.rdb_type = "REACTOR_ISOTOPE_INFO"
         self.filename = REACTOR_RATDB
+        self.index = index
 
         self.nuperfission = 'none'
         self.nuperfission_err = 'none'
@@ -354,23 +352,22 @@ class Reactor_Isotope_Info(ratdbEntry):
         PolyCoeffs = PolyCoeffs.lstrip("\' [").rstrip("],\n\'")
         PolyCoeffs = PolyCoeffs.split(",")
         PolyCoeffs_arr = []
-        print(PolyCoeffs)
         for entry in PolyCoeffs:
             value = float(entry)
             PolyCoeffs_arr.append(value)
         self.poly_coeff = PolyCoeffs_arr
         nnuf = self.misc['n_nu_fission']
         nnuf = nnuf.lstrip("\' ").rstrip(",\n\'")
-        self.nuperfission = nnuf
+        self.nuperfission = float(nnuf)
         nnuf_err = self.misc['n_nu_fission_err']
         nnuf_err = nnuf_err.lstrip("\' ").rstrip(",\n\'")
-        self.nuperfission_err = nnuf_err
+        self.nuperfission_err = float(nnuf_err)
         epf = self.misc['e_per_fission']
         epf = epf.lstrip("\' ").rstrip(",\n\'")
-        self.Eperfission = epf
+        self.Eperfission = float(epf)
         epf_err = self.misc['e_per_fission_err']
         epf_err = epf_err.lstrip("\' ").rstrip(",\n\'")
-        self.Eperfission_err = epf_err
+        self.Eperfission_err = float(epf_err)
         spectype = self.misc['spec_type']
         spectype = spectype.lstrip("\' \"").rstrip("\",\n\'")
         self.spec_type = spectype
@@ -409,7 +406,7 @@ class ReactorDetails(ratdbEntry):
     def parseMisc(self):
         numcores = self.misc['no_cores']
         numcores = numcores.lstrip("\' ").rstrip(",\n\'")
-        self.no_cores = numcores
+        self.no_cores = int(numcores)
 
         lat_vals = self.misc['latitude']
         lat_vals = lat_vals.lstrip("\' [").rstrip("],\n\'")
@@ -469,7 +466,7 @@ class ReactorStatus(ratdbEntry):
     def parseMisc(self):
         numcores = self.misc['no_cores']
         numcores = numcores.lstrip("\' ").rstrip(",\n\'")
-        self.no_cores = numcores
+        self.no_cores = int(numcores)
         
         type_vals = self.misc['core_spectrum']
         type_vals = type_vals.lstrip("\' [").rstrip("],\n\'")
