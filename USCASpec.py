@@ -6,18 +6,38 @@ import lib.rdbbuild as rb
 import lib.rdbparse as rp
 import lib.func.FF as ff
 import lib.SNOdist as sd
+import tools.graph.SpectraPlots as splt
+import tools.graph.OscPlot as oplt
 import numpy as np
 
 import inspect as ins
 
+
 DATE = '11/20/2016' #Date queried on NRC.gov to get operating US reactor names
+RUNTIME = 31536000
 EFFICIENCY = 0.8
-NP = 10e32   #Need to approximate SNO+'s number of proton targets
+NP = 1E32   #Need to approximate SNO+'s number of proton targets
 ISOTOPES = ['235U', '238U', '239Pu', '241Pu']
-ENERGIES_TO_EVALUATE_AT = [2.0, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4.0, \
-        4.25, 4.5, 4.75, 5.0, 5.25, 5.5, 5.75, 6.0]
+ENERGIES_TO_EVALUATE_AT = np.arange(2,9,0.01)
+
+SK_PARAMS = True
+KAMLAND_PARAMS = False
+#-----OSCILLATION PARAMETERS-----#
+if SK_PARAMS:
+    hbc = 197.33E-18 #in MeV * km
+    SINSQT12 = 0.334  #unitless
+    SINSQTWO12 = 0.890 #calculated from SINSQT12
+    SINSQT13 = 0.02
+    COS4THT13 = 0.96  #calculated from SINSQT13
+    DELTAMSQ21 = 4.8E-05  #in ev^2
 
 
+#-----CROSS-SECTION CONSTANTS------#
+DELTA = 1.293   #in MeV; neutron mass - proton mass
+Me = 0.511 #in MeV
+A1 = -0.07056
+A2 = 0.02018
+A3 = -0.001953
 
 #Class takes in four RATDB type Isotope Info entries, one
 #Spectrum entry (has the isotope compositions), and an energy to evaulate at.
@@ -33,24 +53,16 @@ class Lambda(object):
 
         self.sl_array = []
         for iso in iso_array:
-            print(iso.index)
             self.sl_array.append(self.smallLambda(iso))
         self.isofracs = isofracs
         self.defineBigLambda()
 
     def smallLambda(self,iso):
         poly_terms = []
-        print(iso.poly_coeff)
         for i in np.arange(0,len(iso.poly_coeff)):
-            print(i)
             term = self.polyTerm(iso.poly_coeff[i], self.E, i)
             poly_terms.append(term)
-        print(poly_terms)
-        #FIXME: the way numpy sums lambdas, functionals get defined into functions.
-        #Need to somehow write the sum to keep all elements in the array as a
-        #functional
-        exp_term = np.sum(poly_terms) #Not a functional: just a function now
-        #sl = ff.FunctionalFunction(lambda x: np.exp(exp_term))
+        exp_term = np.sum(poly_terms)
         sl = np.exp(exp_term)
         return sl
 
@@ -89,7 +101,7 @@ class UnoscSpectra(object):
 
         self.Core_Distances = []
         self.CoreDistancesFromSNO()
-        self.Core_Spectra = []
+        self.Unosc_Spectra = []
         self.calcSpectra()
 
 
@@ -111,7 +123,7 @@ class UnoscSpectra(object):
             print("Core distances calculated! In km... " + str(self.Core_Distances))
 
     def calcSpectra(self):
-        self.Core_Spectra = []  #Refresh array before adding spectrums
+        self.Unosc_Spectra = []  #Refresh array before adding spectrums
         for i in np.arange(0,self.no_cores):
             coreType = self.ReacStatus.core_types[i]
             coreMWt = self.ReacStatus.core_powers[i]
@@ -124,7 +136,7 @@ class UnoscSpectra(object):
                 coreLambda = LambdaFunction / self.spectrumDenom(isotope_composition)
                 coreSpectrum.append( coreMWt * EFFICIENCY * coreLambda / \
                         (4*np.pi * (coreDistance**2)))
-            self.Core_Spectra.append(coreSpectrum)
+            self.Unosc_Spectra.append(coreSpectrum)
 
     def spectrumDenom(self,isocomp):
         denominator = 0.0
@@ -137,16 +149,73 @@ class UnoscSpectra(object):
 class OscSpectra(object):
     def __init__(self, UnoscSpectra):
         print("The init area")
-        self.unosc_spectra = UnoscSpectra
-        self.osc_spectrums = []
-        self.Pee = ff.FunctionalFunction(lambda x: 0) #FIXME: PUT IN OSCILLATION FN. HERE
-        
+        self.Unosc_Spectra = UnoscSpectra.Unosc_Spectra
+        self.ReacDetails = UnoscSpectra.ReacDetails
+        self.ReacStatus = UnoscSpectra.ReacStatus
+        self.E_arr = UnoscSpectra.E_arr
+        self.Core_Distances = UnoscSpectra.Core_Distances 
+
+        self.Osc_Spectra = []
+        self.oscillateSpectra()
+
+        self.Summed_Spectra = []
+        self.sumSpectra()
+
     def oscillateSpectra(self):
         self.osc_spectrums = [] #Refresh array before adding spectrums
-        for spectrum in unosc_spectra:
-            osc_spectra = lambda x: spectrum(x) * self.Pee(x)
-            self.osc_spectrums.append(osc_spectra)
+        for i,spectrum in enumerate(self.Unosc_Spectra):
+            osc_spectrum = []
+            for j,entry in enumerate(spectrum):
+                osc_spectrum.append(entry * self.Pee(self.E_arr[j],self.Core_Distances[i]))
+            self.Osc_Spectra.append(osc_spectrum)
 
+    def Pee(self,E,L):
+        #L must be given in kilometers, energy in MeV
+        term = (1 - (SINSQTWO12 * \
+                (np.sin(1E-12 * DELTAMSQ21 * L /(4 * E * hbc))**2)))
+        result = (COS4THT13 * term) + (SINSQT13**2)
+        #OR, USING 2-PARAMETER APPROXIMATION USED BY KAMLAND
+        #result = 1 - SINSQTWO12 * np.sin((1.27 * DELTAMSQ21*L)/(E/1000))**2
+
+        return result
+
+    def sumSpectra(self):
+        if self.Osc_Spectra:
+            summed_spectra = np.zeros(len(self.E_arr))
+            for spectrum in self.Osc_Spectra:
+                summed_spectra += np.add(summed_spectra,spectrum)
+            self.Summed_Spectra = summed_spectra
+
+#FIXME: need to check this actually works.
+class dNdE(object):
+    def __init__(self,Energy_Array,Spectrum):
+        print("The init area")
+        self.Energy_Array = Energy_Array
+        self.Spectrum = Spectrum
+
+        self.Array_Check()
+
+        self.dNdE = []
+        self.evaldNdE()
+
+    def evaldNdE(self):
+        dNdE = []
+        for j,E in enumerate(self.Energy_Array):
+            dNdE.append(EFFICIENCY * NP * RUNTIME * self.XC(E)* self.Spectrum[j])
+        self.dNdE = dNdE
+
+    def Array_Check(self):
+        if len(self.Energy_Array) != len(self.Spectrum):
+            raise UserWarning("WARNING: Energy array length does not equal" + \
+                    "length of spectrum given.  Check your entries.")
+
+
+    def XC(self, E):
+        print(E)
+        Ee = (E - DELTA)
+        pe = np.sqrt((Ee**2) - (Me**2))
+        poly = E**(A1 + (A2 * np.log(E)) + (A3 * ((np.log(E))**3)))
+        return (1E-53) * pe * Ee * poly #1E-53, instead of -43, for km^2 units
 
 def getUSList():
     NRClist = nrc.NRCDayList()
@@ -178,8 +247,34 @@ if __name__ == '__main__':
 #        print("EXERCISE RESULT:" + str(lambda_values))
     
         print("#----- AN EXERCISE IN CALCULATING AN UNOSC. SPECTRA FOR BRUCE --#")
+        CORENUM = 1
         BruceDetails = rp.ReactorDetails("BRUCE")
         BruceStatus = rp.ReactorStatus("BRUCE")
-        BruceSpectra = UnoscSpectra(BruceDetails,BruceStatus,Isotope_Information, \
+        BruceUnoscSpectra = UnoscSpectra(BruceDetails,BruceStatus,Isotope_Information, \
                 ENERGIES_TO_EVALUATE_AT)
-        print("EXERCISE RESULT: " + str(BruceSpectra.Core_Spectra))
+        print("UNOSC RESULT: " + str(BruceUnoscSpectra.Unosc_Spectra))
+        print("GRAPHING UNOSC SPECTRA FOR " + str(CORENUM) + " NOW...")
+        splt.plotCoreUnoscSpectrum((CORENUM-1),BruceUnoscSpectra)
+        BruceOscSpectra = OscSpectra(BruceUnoscSpectra)
+        print("OSC RESULT: " + str(BruceOscSpectra.Osc_Spectra))
+        print("GRAPHING OSC SPECTRA FOR " + str(CORENUM) + " NOW...")
+        splt.plotCoreOscSpectrum((CORENUM-1),BruceOscSpectra)
+        print("Graphing Survival Probability of electron antineutrio now...")
+        oplt.plotCoreSurvivalProb((CORENUM-1),BruceOscSpectra)
+        print("Graphing sum of oscillated spectra for BRUCE:")
+        splt.plotSumOscSpectrum(BruceOscSpectra)
+
+        print("#---- END EXERCISES FOR BRUCE -----#")
+    print(" ")
+    print("GRAPHING THE SUM OF CANADIAN REACTORS")
+    Total_Spectra = np.zeros(len(ENERGIES_TO_EVALUATE_AT))
+    for reactor in CAList:
+        ReacDetails = rp.ReactorDetails(reactor)
+        ReacStatus = rp.ReactorStatus(reactor)
+        ReacUnoscSpectra = UnoscSpectra(ReacDetails,ReacStatus, \
+                Isotope_Information, ENERGIES_TO_EVALUATE_AT)
+        ReacOscSpectra = OscSpectra(ReacUnoscSpectra)
+        Total_Spectra += ReacOscSpectra.Summed_Spectra
+    splt.CAspectrumPlot(ENERGIES_TO_EVALUATE_AT,Total_Spectra)
+    CA_dNdE = dNdE(ENERGIES_TO_EVALUATE_AT,Total_Spectra)
+    splt.dNdEPlot(ENERGIES_TO_EVALUATE_AT,CA_dNdE.dNdE)
