@@ -14,22 +14,40 @@ import inspect as ins
 
 
 DATE = '11/20/2016' #Date queried on NRC.gov to get operating US reactor names
-RUNTIME = 31536000
-EFFICIENCY = 0.8
+RUNTIME = 8760    #One year in hours
+EFFICIENCY = 1  #Assume 100% signal detection efficiency
+LF = 0.8    #Assume all power plants operate at 80% of licensed MWt
+MWHTOMEV = 2.247E22 #One MW*h equals this many MeV
 NP = 1E32   #Need to approximate SNO+'s number of proton targets
 ISOTOPES = ['235U', '238U', '239Pu', '241Pu']
-ENERGIES_TO_EVALUATE_AT = np.arange(2,9,0.01)
+ENERGIES_TO_EVALUATE_AT = np.arange(1.82,9,0.01)
 
-SK_PARAMS = True
-KAMLAND_PARAMS = False
+
+SK_PARAMS = False
+KAMLAND_PARAMS = True
+
 #-----OSCILLATION PARAMETERS-----#
+#-----ALL PARAMETERS PULLED FROM Abe, K., Haga, Y. et al. "Solar Neutrino" ---#
+#-----Measurements in Super-Kamiokande-IV", arXiv:1606.07538v1 [hep-ex] ------#
+#-----24 Jun 2016 ------------------------------------------------------------#
+
+hbarc = 1.9733E-16 #in MeV * km
+SINSQT13 = 0.0219 
+SINSQTWO13 = 0.0851 #calculated from SINSQT13
+COS4THT13 = 0.9570  #calculated from SINSQT13
+#Approximate DELTAMSQ31 = DELTAMSQ32 for now
+DELTAMSQ31 = 2.5E-3
+DELTAMSQ32 = 2.5E-3
 if SK_PARAMS:
-    hbc = 197.33E-18 #in MeV * km
-    SINSQT12 = 0.334  #unitless
+    SINSQT12 = 0.334
+    COSSQT12 = 0.666
     SINSQTWO12 = 0.890 #calculated from SINSQT12
-    SINSQT13 = 0.02
-    COS4THT13 = 0.96  #calculated from SINSQT13
-    DELTAMSQ21 = 4.8E-05  #in ev^2
+    DELTAMSQ21 = 4.85E-05  #in ev^2
+if KAMLAND_PARAMS:
+    SINSQT12 = 0.316
+    COSSQT12 = 0.684
+    SINSQTWO12 = 0.865 #calculated from SINSQT12
+    DELTAMSQ21 = 7.54E-05
 
 
 #-----CROSS-SECTION CONSTANTS------#
@@ -101,6 +119,7 @@ class UnoscSpectra(object):
 
         self.Core_Distances = []
         self.CoreDistancesFromSNO()
+        print(self.Core_Distances)
         self.Unosc_Spectra = []
         self.calcSpectra()
 
@@ -134,7 +153,7 @@ class UnoscSpectra(object):
             for E in self.E_arr:
                 LambdaFunction = Lambda(self.iso_array, isotope_composition,E).value
                 coreLambda = LambdaFunction / self.spectrumDenom(isotope_composition)
-                coreSpectrum.append( coreMWt * EFFICIENCY * coreLambda / \
+                coreSpectrum.append( coreMWt * LF * coreLambda / \
                         (4*np.pi * (coreDistance**2)))
             self.Unosc_Spectra.append(coreSpectrum)
 
@@ -171,9 +190,14 @@ class OscSpectra(object):
 
     def Pee(self,E,L):
         #L must be given in kilometers, energy in MeV
-        term = (1 - (SINSQTWO12 * \
-                (np.sin(1E-12 * DELTAMSQ21 * L /(4 * E * hbc))**2)))
-        result = (COS4THT13 * term) + (SINSQT13**2)
+        #term = (1 - (SINSQTWO12 * \
+        #        (np.sin(1E-12 * DELTAMSQ21 * L /(4 * E * hbarc))**2)))
+        #result = (COS4THT13 * term) + (SINSQT13**2)
+        #USING THE EQN. FROM SVOBODA/LEARNED
+        term1 = COS4THT13*SINSQTWO12*(np.sin(1E-12 * DELTAMSQ21 * L /(4 * E * hbarc))**2)
+        term2 = COSSQT12*SINSQTWO13*(np.sin(1E-12 * DELTAMSQ31 * L /(4 * E * hbarc))**2)
+        term3 = SINSQT12*SINSQTWO13*(np.sin(1E-12 * DELTAMSQ32 * L /(4 * E * hbarc))**2)
+        result = 1 - (term1 + term2 + term3)
         #OR, USING 2-PARAMETER APPROXIMATION USED BY KAMLAND
         #result = 1 - SINSQTWO12 * np.sin((1.27 * DELTAMSQ21*L)/(E/1000))**2
 
@@ -201,7 +225,8 @@ class dNdE(object):
     def evaldNdE(self):
         dNdE = []
         for j,E in enumerate(self.Energy_Array):
-            dNdE.append(EFFICIENCY * NP * RUNTIME * self.XC(E)* self.Spectrum[j])
+            dNdE.append(EFFICIENCY * NP * RUNTIME * MWHTOMEV * \
+                    self.XC(E)* self.Spectrum[j])
         self.dNdE = dNdE
 
     def Array_Check(self):
