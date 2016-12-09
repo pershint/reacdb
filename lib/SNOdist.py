@@ -56,13 +56,11 @@ def getDistFromSNOLAB(longlatalt):
     X=(REARTH-SNODEPTH+longlatalt[2])*np.cos(((np.pi)*longlatalt[1])/180)*np.cos(((np.pi)*longlatalt[0])/180)
     Y=(REARTH-SNODEPTH+longlatalt[2])*np.cos(((np.pi)*longlatalt[1])/180)*np.sin(((np.pi)*longlatalt[0])/180)
     Z=(REARTH-SNODEPTH+longlatalt[2])*np.sin(((np.pi)*longlatalt[1])/180)
-    print('Calculated cartesian coordinates: ' + str(X) + ',' + str(Y) + ',' + str(Z))
     dist = np.sqrt(((X-SNOLAB_XYZ[0])**2) + ((Y-SNOLAB_XYZ[1])**2) + ((Z-SNOLAB_XYZ[2])**2))
     #give the distance in kilometers; cut off decimals, as uncertainties definitely
     #are too large for meter resolution
     dist = int(dist/1000)
     #dist = round(dist, -1)  USE IN FUTURE TO ROUND TO THE TENS IN KM
-    print('Calculated distance from SNOLAB: ' + str(dist) + 'km')
     return dist
 
 if __name__ == '__main__':

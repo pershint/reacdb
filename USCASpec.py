@@ -1,10 +1,11 @@
 #Python script for building the expected number of events per day as a function
 #of energy at SNO+.  Bins are in 50 keV increments.
 
+import sys
+
 import lib.GetNRCDailyInfo as nrc
 import lib.rdbbuild as rb
 import lib.rdbparse as rp
-import lib.func.FF as ff
 import lib.SNOdist as sd
 import tools.graph.SpectraPlots as splt
 import tools.graph.OscPlot as oplt
@@ -14,7 +15,7 @@ import inspect as ins
 
 
 DATE = '11/20/2016' #Date queried on NRC.gov to get operating US reactor names
-RUNTIME = 8760    #One year in hours
+RUNTIME = 8760   #One year in hours
 EFFICIENCY = 1  #Assume 100% signal detection efficiency
 LF = 0.8    #Assume all power plants operate at 80% of licensed MWt
 MWHTOMEV = 2.247E22 #One MW*h equals this many MeV
@@ -67,12 +68,13 @@ class Lambda(object):
     def __init__(self,iso_array,isofracs, E):
         self.E = E
 
-        self.value = 'none'
-
+        self.iso_arr = iso_array
         self.sl_array = []
-        for iso in iso_array:
+        for iso in self.iso_arr:
             self.sl_array.append(self.smallLambda(iso))
         self.isofracs = isofracs
+
+        self.value = 'none'
         self.defineBigLambda()
 
     def smallLambda(self,iso):
@@ -99,8 +101,8 @@ class Lambda(object):
                     " is " + str(bl))     
         self.value = bl
 
-    def polyTerm(self, c, x, a):
-        return c * (x**a)
+    def polyTerm(self, a, e, c):
+        return a * (e**c)
 
 #Class takes in permanent details for a reactor plant (ReacDetails RATDB entry)
 #And the reactor's status (ReacStatus RATDB entry), and the RATDB entries of 
@@ -119,7 +121,6 @@ class UnoscSpectra(object):
 
         self.Core_Distances = []
         self.CoreDistancesFromSNO()
-        print(self.Core_Distances)
         self.Unosc_Spectra = []
         self.calcSpectra()
 
@@ -167,7 +168,6 @@ class UnoscSpectra(object):
 #The oscillated Spectrums.
 class OscSpectra(object):
     def __init__(self, UnoscSpectra):
-        print("The init area")
         self.Unosc_Spectra = UnoscSpectra.Unosc_Spectra
         self.ReacDetails = UnoscSpectra.ReacDetails
         self.ReacStatus = UnoscSpectra.ReacStatus
@@ -207,13 +207,12 @@ class OscSpectra(object):
         if self.Osc_Spectra:
             summed_spectra = np.zeros(len(self.E_arr))
             for spectrum in self.Osc_Spectra:
-                summed_spectra += np.add(summed_spectra,spectrum)
+                summed_spectra = np.add(summed_spectra,spectrum)
             self.Summed_Spectra = summed_spectra
+            print(self.Summed_Spectra)[0]
 
-#FIXME: need to check this actually works.
 class dNdE(object):
     def __init__(self,Energy_Array,Spectrum):
-        print("The init area")
         self.Energy_Array = Energy_Array
         self.Spectrum = Spectrum
 
@@ -241,6 +240,42 @@ class dNdE(object):
         pe = np.sqrt((Ee**2) - (Me**2))
         poly = E**(A1 + (A2 * np.log(E)) + (A3 * ((np.log(E))**3)))
         return (1E-53) * pe * Ee * poly #1E-53, instead of -43, for km^2 units
+
+#FIXME: Need to make a class that can take in the unoscilated spectrum info.
+#for a reactor, and uses scipy to integrate over that function times
+#The survival probability function times the cross-section.  Right now, how
+#The classes are written, you can't use the individual pieces cleanly, so we
+#May have to restructure a bit.
+
+def RoughIntegrate(y_array,x_array):
+    """
+    Returns the area under the y_array given from range (a,b) in the
+    x_array.  The bin width for y_array[i] is defined here as
+    x_array[i+1] - x_array[i].
+    """
+#    if not a or b:
+#        print("no range given, integratine entire array.")
+#        a_bin = x_array[0]
+#        b_bin = x_array[len(x_array)-1]
+#    if a>b:
+#        return ValueError("CHOOSE AN INTEGRATION RANGE WHERE a<b")
+#    if a<x_array[0] or b>x_array[len(x_array)-1]:
+#        print("range given is outside of array's endpoints." + \
+#                "stopping at endpoints of defined array.")
+#    for x,i in enumerate(x_array):
+#        if a>x_array[i-1] and a<x_array[i]:
+#            a_bin = i
+#        if b>x_array[i-1] and b<x_array[i]:
+#            b_bin = i
+    #strips y_array to the range to be integrated over
+#    y_array = y_array[a:b]
+    print("NOTE: Final endpoint of array is not considered in integral.")
+    integral = 0.0
+    for i,y in enumerate(y_array):
+        if i == len(y_array)-1:
+            print("At end of array.  Result: " + str(integral))
+            return integral
+        integral += y_array[i] * (x_array[i+1]-x_array[i])
 
 def getUSList():
     NRClist = nrc.NRCDayList()
@@ -272,20 +307,22 @@ if __name__ == '__main__':
 #        print("EXERCISE RESULT:" + str(lambda_values))
     
         print("#----- AN EXERCISE IN CALCULATING AN UNOSC. SPECTRA FOR BRUCE --#")
-        CORENUM = 1
+
+
         BruceDetails = rp.ReactorDetails("BRUCE")
         BruceStatus = rp.ReactorStatus("BRUCE")
         BruceUnoscSpectra = UnoscSpectra(BruceDetails,BruceStatus,Isotope_Information, \
                 ENERGIES_TO_EVALUATE_AT)
-        print("UNOSC RESULT: " + str(BruceUnoscSpectra.Unosc_Spectra))
-        print("GRAPHING UNOSC SPECTRA FOR " + str(CORENUM) + " NOW...")
-        splt.plotCoreUnoscSpectrum((CORENUM-1),BruceUnoscSpectra)
         BruceOscSpectra = OscSpectra(BruceUnoscSpectra)
-        print("OSC RESULT: " + str(BruceOscSpectra.Osc_Spectra))
-        print("GRAPHING OSC SPECTRA FOR " + str(CORENUM) + " NOW...")
-        splt.plotCoreOscSpectrum((CORENUM-1),BruceOscSpectra)
-        print("Graphing Survival Probability of electron antineutrio now...")
-        oplt.plotCoreSurvivalProb((CORENUM-1),BruceOscSpectra)
+        for CORENUM in np.arange(1,BruceUnoscSpectra.no_cores+1):
+#            print("UNOSC RESULT: " + str(BruceUnoscSpectra.Unosc_Spectra))
+#            print("GRAPHING UNOSC SPECTRA FOR " + str(CORENUM) + " NOW...")
+ #           splt.plotCoreUnoscSpectrum((CORENUM-1),BruceUnoscSpectra)
+#            print("OSC RESULT: " + str(BruceOscSpectra.Osc_Spectra))
+            print("GRAPHING OSC SPECTRA FOR " + str(CORENUM) + " NOW...")
+            splt.plotCoreOscSpectrum((CORENUM-1),BruceOscSpectra)
+#            print("Graphing Survival Probability of electron antineutrio now...")
+#            oplt.plotCoreSurvivalProb((CORENUM-1),BruceOscSpectra)
         print("Graphing sum of oscillated spectra for BRUCE:")
         splt.plotSumOscSpectrum(BruceOscSpectra)
 
@@ -293,7 +330,16 @@ if __name__ == '__main__':
     print(" ")
     print("GRAPHING THE SUM OF CANADIAN REACTORS")
     Total_Spectra = np.zeros(len(ENERGIES_TO_EVALUATE_AT))
-    for reactor in CAList:
+    if "US" in (sys.argv):
+        List = USList
+    elif "CA" in (sys.argv):
+        List = CAList
+    elif "USCA" in (sys.argv):
+        List = USCAList
+    else:
+        print("Please write US, CA, or USCA as a flag for what reactors to use")
+        exit()
+    for reactor in List:
         ReacDetails = rp.ReactorDetails(reactor)
         ReacStatus = rp.ReactorStatus(reactor)
         ReacUnoscSpectra = UnoscSpectra(ReacDetails,ReacStatus, \
@@ -301,5 +347,7 @@ if __name__ == '__main__':
         ReacOscSpectra = OscSpectra(ReacUnoscSpectra)
         Total_Spectra += ReacOscSpectra.Summed_Spectra
     splt.CAspectrumPlot(ENERGIES_TO_EVALUATE_AT,Total_Spectra)
-    CA_dNdE = dNdE(ENERGIES_TO_EVALUATE_AT,Total_Spectra)
-    splt.dNdEPlot(ENERGIES_TO_EVALUATE_AT,CA_dNdE.dNdE)
+    USCA_dNdE = dNdE(ENERGIES_TO_EVALUATE_AT,Total_Spectra)
+    RoughIntegrate(USCA_dNdE.dNdE,ENERGIES_TO_EVALUATE_AT)
+    splt.dNdEPlot(ENERGIES_TO_EVALUATE_AT,USCA_dNdE.dNdE, SINSQT12, DELTAMSQ21)
+

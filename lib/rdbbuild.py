@@ -34,6 +34,12 @@ def USListToRATDBFormat(AllReactors):
             ReacName = ReacName.replace('-',' ')
         if ReacName == 'La Salle':
             ReacName = ReacName.replace(" ","")
+        if ReacName == 'Columbia Generating Station':
+            ReacName = ReacName.replace(" Generating Station","")
+        if ReacName == 'Arkansas Nuclear':
+            ReacName = 'ANO'
+        if ReacName == 'Saint Lucie':
+            ReacName = ReacName.replace("Saint","st.")
         AllReacRATDBFormat.append(ReacName.upper())
     AllReacRATDBFormat=list(set(AllReacRATDBFormat)) #Removes duplicate entries
     return AllReacRATDBFormat

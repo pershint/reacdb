@@ -454,7 +454,6 @@ class ReactorStatus(ratdbEntry):
         self.core_types = []
         super(ReactorStatus, self).__init__(self.filename, self.rdb_type, index)
         self.parseMisc()
-        self.show()
 
     def show(self):
         super(ReactorStatus,self).show() #performs the parent method show()

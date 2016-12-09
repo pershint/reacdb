@@ -41,14 +41,18 @@ def normalizeArrSum(array):
     print(array)
     return array
 
-def dNdEPlot(energies,numSpec):
+def dNdEPlot(energies,numSpec,sst12,m12):
     num_points = len(energies)
     opacity = 0.9
     fix, ax = plt.subplots()
-    plt.plot(energies,numSpec, alpha=opacity, color='g')
+    plt.plot(energies,numSpec, alpha=opacity, color='m')
+    plt.fill_between(energies, 1e-10, numSpec, facecolor ='magenta',alpha = 0.4)
+    ax.annotate(r'$\sin^{2}(\theta _{12})$ =' + str(sst12) + '\n' + \
+            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,40), fontsize = '16', 
+            xytext=(6.5,40))
     plt.xlabel('Energy (MeV)')
-    plt.ylabel(r'(\frac{dN}{dE}(TNU MeV^{-1} yr^{-1})')
-    plt.title(r'\frac{dN}{dE} at SNO+ for all Canadian Reactors')
+    plt.ylabel(r'events/$10^{32}proton-years/MeV$')
+    plt.title(r'SNO+ Neutrino Spectrum for all US and Canadian Reactors')
     plt.show()
 
 def CAspectrumPlot(energies,spectrum):

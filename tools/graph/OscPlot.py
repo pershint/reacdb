@@ -21,7 +21,7 @@ def plotCoreSurvivalProb(core_number,OscSpectra):
     plt.plot(energies, Pee_arr, alpha=opacity, color='r')
     plt.xlabel('Energy (MeV)')
     plt.ylabel(r'Survival Probability')
-    plt.title(r'Survival probability of #\nu _{e} from ' + str(core_number) + \
+    plt.title(r'Survival probability of \nu_{e} from ' + str(core_number) + \
     r'th core of Plant ' + str(OscSpectra.ReacDetails.index) + ' at SNO+')
     #plt.xticks(index + bar_width, x, y=0.001)
     #plt.legend()
