@@ -12,6 +12,7 @@ import tools.graph.OscPlot as oplt
 import numpy as np
 
 import inspect as ins
+import optparse
 
 
 DATE = '11/20/2016' #Date queried on NRC.gov to get operating US reactor names
@@ -23,9 +24,15 @@ NP = 1E32   #Need to approximate SNO+'s number of proton targets
 ISOTOPES = ['235U', '238U', '239Pu', '241Pu']
 ENERGIES_TO_EVALUATE_AT = np.arange(1.82,9,0.01)
 
-
-SK_PARAMS = False
-KAMLAND_PARAMS = True
+parser = optparse.OptionParser()
+parser.add_option("--debug",action="store_true",default="False")
+parser.add_option("-p", "--parameters",action="store",dest="parameters",
+                  type="string",default="KAMLAND",
+                  help="Specify which experiment's oscillation parameters to use")
+parser.add_option("-r", "--reactors",action="store",dest="reactors",
+                  type="string",default="USCA",
+                  help="Specify what set of reactors to use (US, CA, or USCA)")
+(options,args) = parser.parse_args()
 
 #-----OSCILLATION PARAMETERS-----#
 #-----ALL PARAMETERS PULLED FROM Abe, K., Haga, Y. et al. "Solar Neutrino" ---#
@@ -39,12 +46,14 @@ COS4THT13 = 0.9570  #calculated from SINSQT13
 #Approximate DELTAMSQ31 = DELTAMSQ32 for now
 DELTAMSQ31 = 2.5E-3
 DELTAMSQ32 = 2.5E-3
-if SK_PARAMS:
+if options.parameters == "KAMLAND":
+    print("USING KAMLAND OSCILLATION PARAMETERS")
     SINSQT12 = 0.334
     COSSQT12 = 0.666
     SINSQTWO12 = 0.890 #calculated from SINSQT12
     DELTAMSQ21 = 4.85E-05  #in ev^2
-if KAMLAND_PARAMS:
+if options.parameters == "SK":
+    print("USING SUPERKAMIOKANDE OSCILLATION PARAMETERS")
     SINSQT12 = 0.316
     COSSQT12 = 0.684
     SINSQTWO12 = 0.865 #calculated from SINSQT12
@@ -87,7 +96,7 @@ class Lambda(object):
         return sl
 
     def defineBigLambda(self):
-        if __debug__:
+        if options.debug:
             print("SMALL LAMBDAS AND ISOTOPE FRACTIONS FED TO THIS BIGLAMBDA:" )
             print(self.sl_array)
             print(self.isofracs)
@@ -96,7 +105,7 @@ class Lambda(object):
             bl_term = self.isofracs[i] * sl
             bl_terms.append(bl_term)
         bl = np.sum(bl_terms) #Not a functional: just a function now
-        if __debug__:
+        if options.debug:
             print("Big Lambda built. Output value for energy " + str(self.E) + "MeV" + \
                     " is " + str(bl))     
         self.value = bl
@@ -139,7 +148,7 @@ class UnoscSpectra(object):
             altitude = self.ReacDetails.core_altitudes[i]
             coreDistance = sd.getDistFromSNOLAB([longitude,latitude,altitude])
             self.Core_Distances.append(coreDistance)
-        if __debug__:
+        if options.debug:
             print("Core distances calculated! In km... " + str(self.Core_Distances))
 
     def calcSpectra(self):
@@ -285,20 +294,34 @@ def getUSList():
     USlist = rb.USListToRATDBFormat(USlist)
     return USlist
 
-if __name__ == '__main__':
-    WorldList = rp.getRLIndices()
-    #Could make a US REACTOR LIST entry in REACTORS.ratdb and read it later
-    USList = getUSList()
-    CAList = ["BRUCE","DARLINGTON", "PICKERING","POINT LEPREAU"]
-    USCAList = USList + CAList
+#Uses whatever type is set in the arguments for -r to pick a reactor name list
+def setListType():
+    if options.reactors == "WORLD":
+        WorldList = rp.getRLIndices()
+        return WorldList
+    if options.reactors == "US":
+        USList = getUSList()
+        return USList
+    if options.reactors == ("CA"):
+        CAList = ["BRUCE","DARLINGTON", "PICKERING","POINT LEPREAU"]
+        return CAList
+    if options.reactors == ("USCA"):
+        USList = getUSList()
+        CAList = ["BRUCE","DARLINGTON", "PICKERING","POINT LEPREAU"]
+        USCAList = USList + CAList
+        return USCAList
 
+
+if __name__ == '__main__':
+    List = setListType()
+    
     #Build array containing details for each isotope found in reactors
     Isotope_Information = []
     lambda_values = []
     for isotope in ISOTOPES:
         Isotope_Information.append(rp.Reactor_Isotope_Info(isotope))
 
-    if __debug__:
+    if options.debug:
 #        print("#------ AN EXERCIES IN CALCULATING A LARGE LAMBDA ------#")
 #        for energy in ENERGIES_TO_EVALUATE_AT:
 #            lamb_value= Lambda(Isotope_Information, \
@@ -330,15 +353,15 @@ if __name__ == '__main__':
     print(" ")
     print("GRAPHING THE SUM OF CANADIAN REACTORS")
     Total_Spectra = np.zeros(len(ENERGIES_TO_EVALUATE_AT))
-    if "US" in (sys.argv):
-        List = USList
-    elif "CA" in (sys.argv):
-        List = CAList
-    elif "USCA" in (sys.argv):
-        List = USCAList
-    else:
-        print("Please write US, CA, or USCA as a flag for what reactors to use")
-        exit()
+#    if "US" in (sys.argv):
+#        List = USList
+#    elif "CA" in (sys.argv):
+#        List = CAList
+#    elif "USCA" in (sys.argv):
+#        List = USCAList
+#    else:
+#        print("Please write US, CA, or USCA as a flag for what reactors to use")
+#        exit()
     for reactor in List:
         ReacDetails = rp.ReactorDetails(reactor)
         ReacStatus = rp.ReactorStatus(reactor)
