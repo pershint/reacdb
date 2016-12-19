@@ -1,0 +1,5 @@
+// Here we will store entries that have the timestamp
+//Associated with when a plant was last refuelled.  
+//We would probably want an entry that says what core
+//the refuelling is associated with, and then antoher
+//with the fraction of the core that was replaced.`
