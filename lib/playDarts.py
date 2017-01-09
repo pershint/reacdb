@@ -34,13 +34,13 @@ def playDarts(n,spectrum,bin_left,bin_right,bin_center):
                     break
                 else:
                     break
-    return exp_spectrum
+    return np.array(exp_spectrum)
 
 def arr_average(arrays):
     '''
     Takes in an array of arrays.  Calculates the average and standard deviation
     for each index.  Returns them as arrays.
     '''
-    average = np.sum(arrays,axis=0)
+    average = np.average(arrays,axis=0)
     stdevs = np.std(arrays,axis=0)
     return average, stdevs

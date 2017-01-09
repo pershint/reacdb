@@ -69,6 +69,34 @@ setOscParams(options.parameters)
 ns.setDebug(options.debug)
 print(options.debug)
 
+def GetBruceSpectra(List,Isotope_Information):
+#    print("#------ AN EXERCIES IN CALCULATING A LARGE LAMBDA ------#")
+#    for energy in ENERGIES_TO_EVALUATE_AT:
+#        lamb_value= Lambda(Isotope_Information, \
+#            rp.Reactor_Spectrum("PHWR").param_composition, energy).value
+#       lambda_values.append(lamb_value)
+#    print("EXERCISE RESULT:" + str(lambda_values))
+
+    print("#----- AN EXERCISE IN CALCULATING AN UNOSC. SPECTRA FOR BRUCE --#")
+
+    BruceDetails = rp.ReactorDetails("BRUCE")
+    BruceStatus = rp.ReactorStatus("BRUCE")
+    BruceUnoscSpectra = ns.UnoscSpectra(BruceDetails,BruceStatus,Isotope_Information, \
+            ENERGIES_TO_EVALUATE_AT)
+    BruceOscSpectra = ns.OscSpectra(BruceUnoscSpectra)
+    for CORENUM in np.arange(1,BruceUnoscSpectra.no_cores+1):
+#        print("UNOSC RESULT: " + str(BruceUnoscSpectra.Unosc_Spectra))
+#        print("GRAPHING UNOSC SPECTRA FOR " + str(CORENUM) + " NOW...")
+#        splt.plotCoreUnoscSpectrum((CORENUM-1),BruceUnoscSpectra)
+#        print("OSC RESULT: " + str(BruceOscSpectra.Osc_Spectra))
+        print("GRAPHING OSC SPECTRA FOR " + str(CORENUM) + " NOW...")
+        splt.plotCoreOscSpectrum((CORENUM-1),BruceOscSpectra)
+#        print("Graphing Survival Probability of electron antineutrio now...")
+#        oplt.plotCoreSurvivalProb((CORENUM-1),BruceOscSpectra)
+    print("Graphing sum of oscillated spectra for BRUCE:")
+    splt.plotSumOscSpectrum(BruceOscSpectra)
+
+    print("#---- END EXERCISES FOR BRUCE -----#")
 
 def GaussRand(mu, sigma, n):
     """
@@ -150,6 +178,29 @@ def build_dNdE(All_unosc_spectra,oscParams):
     splt.CAspectrumPlot(ENERGIES_TO_EVALUATE_AT,Total_Spectra)
     return ns.dNdE(ENERGIES_TO_EVALUATE_AT,Total_Spectra)
 
+#builds the chi-squared between the expected SNO+ spectrum with
+#systematics included and an oscillated spectrum with no systematics
+#that is oscillated with a (sine-squared theta12) and b
+#(Delta m-squared). In this case, an unoscillated spectra is
+#passed in to be oscillated with a,b.
+#Check your bin sizes; don't want to feed in an un-scaled true spectrum
+def osc_chisq((a,b),All_unosc_spectra,true_spectrum):
+    dNdE = build_dNdE(All_unosc_spectra, [a,b])
+    #do a rebinning on the dNdEs first
+    spec, bin_centers, bin_lefts, bin_rights = hb.reBin_EW(dNdE.dNdE, \
+            ENERGIES_TO_EVALUATE_AT,25)
+    events_per_year = RoughIntegrate(true_spectrum,bin_lefts)
+    n = pd.RandShoot(events_per_year, np.sqrt(events_per_year),1)
+    print("NUMBER OF EVENTS FIRED:" + str(n))
+    tspec_wstat = pd.playDarts(n,true_spectrum,bin_lefts,bin_rights,bin_centers)
+    print(tspec_wstat)
+    chisquare = np.sum(((spec - tspec_wstat)**2)/true_spectrum)
+    #use uncertainty of the true_spectrum; that is, variance = sqrt(true_spectrum)
+    return chisquare
+
+def chisquared(test,true):
+    return np.sum(((true-test)**2)/true)
+
 if __name__ == '__main__':
     List = setListType()
     
@@ -163,34 +214,8 @@ if __name__ == '__main__':
     if DEBUG == True:
         print("IN")
         time.sleep(5)
-#        print("#------ AN EXERCIES IN CALCULATING A LARGE LAMBDA ------#")
-#        for energy in ENERGIES_TO_EVALUATE_AT:
-#            lamb_value= Lambda(Isotope_Information, \
-#                rp.Reactor_Spectrum("PHWR").param_composition, energy).value
-#            lambda_values.append(lamb_value)
-#        print("EXERCISE RESULT:" + str(lambda_values))
-    
-        print("#----- AN EXERCISE IN CALCULATING AN UNOSC. SPECTRA FOR BRUCE --#")
+        getBruceSpectra(List, Isotope_Information)
 
-
-        BruceDetails = rp.ReactorDetails("BRUCE")
-        BruceStatus = rp.ReactorStatus("BRUCE")
-        BruceUnoscSpectra = ns.UnoscSpectra(BruceDetails,BruceStatus,Isotope_Information, \
-                ENERGIES_TO_EVALUATE_AT)
-        BruceOscSpectra = ns.OscSpectra(BruceUnoscSpectra)
-        for CORENUM in np.arange(1,BruceUnoscSpectra.no_cores+1):
-#            print("UNOSC RESULT: " + str(BruceUnoscSpectra.Unosc_Spectra))
-#            print("GRAPHING UNOSC SPECTRA FOR " + str(CORENUM) + " NOW...")
- #           splt.plotCoreUnoscSpectrum((CORENUM-1),BruceUnoscSpectra)
-#            print("OSC RESULT: " + str(BruceOscSpectra.Osc_Spectra))
-            print("GRAPHING OSC SPECTRA FOR " + str(CORENUM) + " NOW...")
-            splt.plotCoreOscSpectrum((CORENUM-1),BruceOscSpectra)
-#            print("Graphing Survival Probability of electron antineutrio now...")
-#            oplt.plotCoreSurvivalProb((CORENUM-1),BruceOscSpectra)
-        print("Graphing sum of oscillated spectra for BRUCE:")
-        splt.plotSumOscSpectrum(BruceOscSpectra)
-
-        print("#---- END EXERCISES FOR BRUCE -----#")
     print(" ")
     showReactors()
     unosc_spectra = build_unoscSpectra(List)
@@ -199,11 +224,25 @@ if __name__ == '__main__':
     RoughIntegrate(USCA_dNdE.dNdE,ENERGIES_TO_EVALUATE_AT)
     splt.dNdEPlot_line(ENERGIES_TO_EVALUATE_AT,USCA_dNdE.dNdE, oscParams[1],\
             oscParams[0])
+    #FIXME: So, the spec here is actually not your expected events per bin.
+    #It's still dNdE, just averaged over the 250 keV regions.  To get your
+    #Number per bin, each should be multiplied by 1/4 basically (i.e. you
+    #need to scale by the bin widths
     spec, bin_centers, bin_lefts, bin_rights = hb.reBin_EW(USCA_dNdE.dNdE, \
             ENERGIES_TO_EVALUATE_AT,25)
     splt.dNdEPlot_pts(bin_centers,spec,bin_lefts,bin_rights, oscParams[1], \
             oscParams[0])
     events_per_year = RoughIntegrate(spec,bin_lefts)
+
+
+    #----- TRY THE MINIMIZATION OF THE CHISQUARE FUNCTION FOR -----#
+    #----- THE TRUE SPECTRA AT SNO+ AND A FLUX WITH EXPERIMENTAL --#
+    #----- UNCERTAINTY                                       ------#
+    x0 = np.array(oscParams)
+    print("CHISQUARE BEING CALCULATED NOW FOR A RANDOM EXPERIMENT...")
+    print("FED IN SPEC:" + str(spec))
+    print(osc_chisq((oscParams[0],oscParams[1]), unosc_spectra, spec))
+    
     #----- RUN 100 RANDOM EXPERIMENTS, SEE WHAT YOU GET ----#
     #----- ASSUME EVENTS PER YEAR AS GIVEN WITH 250 KEV BINNING ----#
     experiments = []
@@ -220,3 +259,6 @@ if __name__ == '__main__':
     exp_avg_spec, bin_stdevs = pd.arr_average(experiments)
     splt.dNdEPlot_pts(bin_centers,exp_avg_spec, bin_lefts,bin_rights, \
             oscParams[1], oscParams[0])
+    print("CHECK: THE CHI-SQUARED BETWEEN THE AVERAGE OF ALL AND THE" + \
+            "EXPECTED SPECTRUM AT SNO+")
+    print(chisquared(exp_avg_spec,spec))
