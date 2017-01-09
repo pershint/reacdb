@@ -55,6 +55,23 @@ def dNdEPlot_pts(energies,numSpec,bin_left,bin_right,sst12,m12):
     plt.title(r'SNO+ Neutrino Spectrum for all US and Canadian Reactors')
     plt.show()
 
+#Takes in a Histogram object as defined in /lib/histogram and plots it
+def plot_hist(Histogram,sst12,m12):
+    num_points = len(Histogram.bin_centers)
+    opacity = 0.9
+    fix, ax = plt.subplots()
+    plt.plot(Histogram.bin_centers,Histogram.bin_values,'ro', \
+            alpha=opacity, color='b')
+    plt.hlines(Histogram.bin_values,Histogram.bin_lefts, \
+            Histogram.bin_rights, color = 'b')
+    ax.annotate(r'$\sin^{2}(\theta _{12})$ =' + str(sst12) + '\n' + \
+            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,40), fontsize = '16', 
+            xytext=(6.5,40))
+    plt.xlabel('Energy (MeV)')
+    plt.ylabel(r'events/$10^{32}proton-years/MeV$')
+    plt.title(r'SNO+ Neutrino Spectrum for all US and Canadian Reactors')
+    plt.show()
+
 def dNdEPlot_line(energies,numSpec,sst12,m12):
     num_points = len(energies)
     opacity = 0.9

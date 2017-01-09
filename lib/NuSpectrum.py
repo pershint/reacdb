@@ -200,6 +200,9 @@ class OscSpectra(object):
                 summed_spectra = np.add(summed_spectra,spectrum)
             self.Summed_Spectra = summed_spectra
 
+#Class takes in a reactor spectrum array (oscillated or unoscillated) and the
+#relative x-axis array (Energy_Array in the class) and calculates the
+#dNdE function for the spectrum 
 class dNdE(object):
     def __init__(self,Energy_Array,Spectrum):
         self.Energy_Array = Energy_Array
@@ -228,38 +231,4 @@ class dNdE(object):
         pe = np.sqrt((Ee**2) - (Me**2))
         poly = E**(A1 + (A2 * np.log(E)) + (A3 * ((np.log(E))**3)))
         return (1E-53) * pe * Ee * poly #1E-53, instead of -43, for km^2 units
-
-class Histogram(object):
-    def __init__(self, spectrum, x_axis, numbins):
-        self.spectrum = spectrum
-        self.x_axis = x_axis
-        self.numbins = numbins
-        self.specvals_perbin = self.numbins / len(self.spectrum)
-        self.bincheck()
-
-        #Initialize arrays that hold bin end locations
-        self.bin_left = []
-        self.bin_right = []
-        self.bin_center = []
-        self.bin_values = []
-
-        #FIXME: FILL IN BIN VALUES USING reBin_EW from tools/hist/binning.py
-        #MAYBE MOVE THAT TO BE A METHOD YEAH?
-
-    def bincheck(self):
-        '''
-        Function that checks the number of bins is not greater than the
-        number of spectrum entries.
-        '''
-        if len(self.numbins) > len(self.spectrum):
-            print("ERROR: CANNOT USE MORE BINS THAN SPECTRUM ARRAY ENTRIES." +\
-                    "SETTING NUMBER OF BINS TO NUMBER OF SPECTRUM VALUES.")
-            self.numbins = self.spectrum
-
-#FIXME: Need to make a class that can take in the unoscilated spectrum info.
-#for a reactor, and uses scipy to integrate over that function times
-#The survival probability function times the cross-section.  Right now, how
-#The classes are written, you can't use the individual pieces cleanly, so we
-#May have to restructure a bit.
-
 

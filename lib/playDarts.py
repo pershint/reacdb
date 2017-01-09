@@ -36,6 +36,29 @@ def playDarts(n,spectrum,bin_left,bin_right,bin_center):
                     break
     return np.array(exp_spectrum)
 
+def playDarts_h(n,EventHist):
+    '''
+    Takes in an event histogram. Returns a new histogram with n events as
+    picked with random x and y value shots; if y<EventHist.bin_value for the
+    considered bin, the event is added to the new spectrum.
+    '''
+    events = 0
+    exp_spectrum = np.zeros(len(EventHist.bin_values))
+    while events < n:
+        x = EventHist.bin_lefts[0] + np.random.random(1) * \
+                (EventHist.bin_rights[len(EventHist.bin_rights)-1] - \
+                EventHist.bin_lefts[0])
+        y = np.random.random(1)*(np.max(EventHist.bin_values))
+        for i,thebin in enumerate(EventHist.bin_lefts):
+            if x > EventHist.bin_lefts[i] and x < EventHist.bin_rights[i]:
+                if y < EventHist.bin_values[i]:
+                    exp_spectrum[i] += 1
+                    events +=1
+                    break
+                else:
+                    break
+    return np.array(exp_spectrum)
+
 def arr_average(arrays):
     '''
     Takes in an array of arrays.  Calculates the average and standard deviation
