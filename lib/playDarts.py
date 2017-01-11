@@ -5,6 +5,7 @@
 #Experiment's histogram.
 
 import numpy as np
+import Histogram as h
 
 def RandShoot(mu, sigma,n):
     '''
@@ -57,7 +58,8 @@ def playDarts_h(n,EventHist):
                     break
                 else:
                     break
-    return np.array(exp_spectrum)
+    return h.Histogram(np.array(exp_spectrum),EventHist.bin_centers, \
+            EventHist.bin_lefts, EventHist.bin_rights)
 
 def arr_average(arrays):
     '''
@@ -67,3 +69,21 @@ def arr_average(arrays):
     average = np.average(arrays,axis=0)
     stdevs = np.std(arrays,axis=0)
     return average, stdevs
+
+def hist_average(histograms):
+    """
+    Takes in an array of histograms. Calculates the average and standard
+    deviation for each bin.  Returns them each as a histogram.
+    ALL HISTOGRAMS MUST HAVE SAME BIN WIDTHS.
+    """
+    #Use first histogram to define bin regions
+    bc, bl, br = histograms[0].bin_centers, histograms[0].bin_lefts, \
+            histograms[0].bin_rights
+    allhist_binvalues = []
+    for hist in histograms:
+        allhist_binvalues.append(hist.bin_values)
+    average = np.average(allhist_binvalues, axis=0)
+    stdevs = np.std(allhist_binvalues, axis=0)
+    avg_hist = h.Histogram(average, bc, bl, br)
+    stddev_hist = h.Histogram(stdevs, bc, bl, br)
+    return avg_hist, stddev_hist

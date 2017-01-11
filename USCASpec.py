@@ -1,5 +1,5 @@
 #:ython script for building the expected number of events per day as a function
-#of energy at SNO+.  Bins are in 50 keV increments.
+#of energy at SNO+.
 
 import sys
 
@@ -159,7 +159,6 @@ def showReactors():
 #Takes in a list of reactor names from REACTORS.ratdb and
 #Returns the dNdE class from all the reactor's operational
 #cores
-#FIXME: want the return of this to be the final spectrum.
 
 def build_unoscSpectra(List):
     All_unosc_spectra = []
@@ -185,20 +184,22 @@ def build_dNdE(All_unosc_spectra,oscParams):
 #(Delta m-squared). In this case, an unoscillated spectra is
 #passed in to be oscillated with a,b.
 #Check your bin sizes; don't want to feed in an un-scaled true spectrum
+
 #FIXME: EVENTUALLY, HAVE pd.playDarts_h RETURN A HISTOGRAM OBJECT.  DEFINE
 #THE HISTOGRAM OBJECT IN lib/Histogram.py
 def osc_chisq((a,b),All_unosc_spectra,True_EventHist):
     dNdE = build_dNdE(All_unosc_spectra, [a,b])
     #Build your histogram for the input oscillation parameters
-    EventHist = h.Histogram(dNdE, 30)
+    EventHist = h.dNdE_Hist(dNdE, 30)
     events_per_year = sum(True_EventHist.bin_values)
     n = pd.RandShoot(events_per_year, np.sqrt(events_per_year),1)
     print("NUMBER OF EVENTS FIRED:" + str(n))
-    tspec_wstat = pd.playDarts_h(n,True_EventHist)
-    print("BIN VALUES THAT WILL COME OUT: " + str(tspec_wstat))
-    chisquare = np.sum(((EventHist.bin_values - tspec_wstat)**2)/ \
+    tspec_Hist = pd.playDarts_h(n,True_EventHist)
+    print("BIN VALUES THAT WILL COME OUT: " + str(tspec_Hist.bin_values))
+    chisquare = np.sum(((EventHist.bin_values - tspec_Hist.bin_values)**2)/ \
             True_EventHist.bin_values)
-    #use uncertainty of the true event histogram spectrum; that is, variance = sqrt(true_spectrum)
+    #use uncertainty of the true event histogram spectrum; that is, variance =
+    #True_EventHist.bin_values)
     return chisquare
 
 def chisquared(test,true):
@@ -229,7 +230,7 @@ if __name__ == '__main__':
             oscParams[0])
 
     #Now, create your "perfect" event histogram, events binned into 30 bins
-    EventHist = h.Histogram(USCA_dNdE, 30)
+    EventHist = h.dNdE_Hist(USCA_dNdE, 30)
     splt.plot_hist(EventHist, oscParams[1], oscParams[0])
     events_per_year = sum(EventHist.bin_values)
     print("EVENTS PER YEAR FROM HISTOGRAM: " + str(events_per_year))
@@ -241,23 +242,25 @@ if __name__ == '__main__':
     print("CHISQUARE BEING CALCULATED NOW FOR A RANDOM EXPERIMENT...")
     print("FED IN SPEC:" + str(EventHist.bin_values))
     print(osc_chisq((oscParams[0],oscParams[1]), unosc_spectra, EventHist))
-    
+
+    #FIXME: NEED TO SWITCH THE OUTPUT OF PLAYDARTS_h TO A HISTOGRAM
     #----- RUN 100 RANDOM EXPERIMENTS, SEE WHAT YOU GET ----#
     #----- ASSUME EVENTS PER YEAR AS GIVEN WITH 250 KEV BINNING ----#
-    experiments = []
+    RandExpHists = []
+    RandExpHists_binVals = []
     num_experiments = 100
     experiment = 0
     while experiment < num_experiments:
         n = pd.RandShoot(events_per_year, np.sqrt(events_per_year),1)
-        random_exp_spec = pd.playDarts(n,spec,bin_lefts,bin_rights,bin_centers)
-        experiments.append(random_exp_spec)
+        RandExpHist  = pd.playDarts_h(n,EventHist)
+        RandExpHists_binVals.append(RandExpHist.bin_values)
+        RandExpHists.append(RandExpHist)
         if experiment < 5:
-            splt.dNdEPlot_pts(bin_centers,random_exp_spec,bin_lefts,bin_rights, \
-                    oscParams[1], oscParams[0])
+            splt.plot_hist(RandExpHist, oscParams[1], oscParams[0])
         experiment += 1
-    exp_avg_spec, bin_stdevs = pd.arr_average(experiments)
-    splt.dNdEPlot_pts(bin_centers,exp_avg_spec, bin_lefts,bin_rights, \
-            oscParams[1], oscParams[0])
+        
+    exp_avg_hist, bin_stdev_hist = pd.hist_average(RandExpHists)
+    splt.plot_hist(exp_avg_hist, oscParams[1], oscParams[0])
     print("CHECK: THE CHI-SQUARED BETWEEN THE AVERAGE OF ALL AND THE" + \
             "EXPECTED SPECTRUM AT SNO+")
-    print(chisquared(exp_avg_spec,spec))
+    print(chisquared(exp_avg_hist.bin_values,EventHist.bin_values))

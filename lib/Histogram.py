@@ -12,6 +12,18 @@ import numpy as np
 #dNdE class) and produces a histogram that gives the number of events per
 #bin with a total number of numbins
 class Histogram(object):
+    def __init__(self, bin_values, bin_centers, bin_lefts, bin_rights):
+        #Initialize arrays that hold bin end locations
+        self.bin_lefts = bin_lefts
+        self.bin_rights = bin_rights
+        #initialize array for each bin's center value
+        self.bin_centers = bin_centers
+        #initialize array to hold the bin's value
+        self.bin_values = bin_values
+        #initialize value that tells you the bin width in x-axis units
+        self.bin_width = self.bin_rights[0] - self.bin_lefts[0]
+
+class dNdE_Hist(Histogram):
     def __init__(self, dNdE, numbins):
         self.spectrum = dNdE.dNdE
         self.x_axis = dNdE.Energy_Array
@@ -31,7 +43,8 @@ class Histogram(object):
 
         self.reBin_spectrum()
         self.fill_binvalues()
-        
+        super(dNdE_Hist, self).__init__(self.bin_values, self.bin_centers, \
+                self.bin_lefts, self.bin_rights)
 
     def bincheck(self):
         '''
@@ -43,12 +56,15 @@ class Histogram(object):
                     "SETTING NUMBER OF BINS TO NUMBER OF SPECTRUM VALUES.")
             self.numbins = self.spectrum
 
+       
     def fill_binvalues(self):
         cbin = 0
         while cbin < self.numbins:
-            dNdE_binavg = np.mean(self.spectrum[(self.specvals_perbin * \
+            #First, average over spectrum values in the cbin region
+            binavg = np.mean(self.spectrum[(self.specvals_perbin * \
                     cbin):(self.specvals_perbin * (cbin+1))])
-            binvalue = dNdE_binavg * self.binwidth
+            #Now, calculate the number of values in the bin
+            binvalue = binavg * self.binwidth
             self.bin_values.append(binvalue)
             cbin+=1
 
