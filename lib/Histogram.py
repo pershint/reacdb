@@ -82,11 +82,9 @@ class dNdE_Hist(Histogram):
             self.bin_rights.append(self.x_axis[(self.specvals_perbin * (cbin+1)) - 1])
             axisvalue = np.mean(self.x_axis[(self.specvals_perbin * \
                     cbin):(self.specvals_perbin * (cbin+1))])
-            print(axisvalue)
             self.bin_centers.append(axisvalue)
             cbin += 1
         self.binwidth = self.x_axis[self.specvals_perbin] - self.x_axis[0]
-        print("THE WIDTH OF A BIN IS" + str(self.binwidth))
     
 #FIXME: Need to make a class that can take in the unoscilated spectrum info.
 #for a reactor, and uses scipy to integrate over that function times
