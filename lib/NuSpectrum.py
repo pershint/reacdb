@@ -162,10 +162,12 @@ class OscSpectra(object):
 
     def oscillateSpectra(self):
         self.osc_spectrums = [] #Refresh array before adding spectrums
-        for i,spectrum in enumerate(self.Unosc_Spectra):
-            osc_spectrum = []
-            for j,entry in enumerate(spectrum):
-                osc_spectrum.append(entry * self.Pee(self.E_arr[j],self.Core_Distances[i]))
+        for spectrum in enumerate(self.Unosc_Spectra):
+             osc_spectrum.append(np.product([spectrum,self.Pee(self.E_arr, \
+                     self.Core_Distances)],axis=0))
+#            osc_spectrum = []
+#            for j,entry in enumerate(spectrum):
+#                osc_spectrum.append(entry * self.Pee(self.E_arr[j],self.Core_Distances[i]))
             self.Osc_Spectra.append(osc_spectrum)
 
     def calcSINSQTWO(self, sst12):
@@ -179,6 +181,8 @@ class OscSpectra(object):
         return (np.cos(t12))**2
 
     def Pee(self,E,L):
+        #Takes in an array of energies and lengths and returns an array
+        #of the Pee spectrum.
         #L must be given in kilometers, energy in MeV
         #USING THE EQN. FROM SVOBODA/LEARNED
         term1 = COS4THT13*self.SINSQTWO12*(np.sin(1E-12 * \
@@ -194,11 +198,8 @@ class OscSpectra(object):
         return result
 
     def sumSpectra(self):
-        if self.Osc_Spectra:
-            summed_spectra = np.zeros(len(self.E_arr))
-            for spectrum in self.Osc_Spectra:
-                summed_spectra = np.add(summed_spectra,spectrum)
-            self.Summed_Spectra = summed_spectra
+        summed_spectra = np.sum(self.Osc_Spectra, axis=0)
+        self.Summed_Spectra = summed_spectra
 
 #Class takes in a reactor spectrum array (oscillated or unoscillated) and the
 #relative x-axis array (Energy_Array in the class) and calculates the
