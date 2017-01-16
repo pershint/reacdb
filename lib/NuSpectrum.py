@@ -161,14 +161,10 @@ class OscSpectra(object):
         self.sumSpectra()
 
     def oscillateSpectra(self):
-        self.osc_spectrums = [] #Refresh array before adding spectrums
-        for spectrum in enumerate(self.Unosc_Spectra):
-             osc_spectrum.append(np.product([spectrum,self.Pee(self.E_arr, \
-                     self.Core_Distances)],axis=0))
-#            osc_spectrum = []
-#            for j,entry in enumerate(spectrum):
-#                osc_spectrum.append(entry * self.Pee(self.E_arr[j],self.Core_Distances[i]))
-            self.Osc_Spectra.append(osc_spectrum)
+        self.Osc_Spectra = [] #Refresh array before adding spectrums
+        for i,spectrum in enumerate(self.Unosc_Spectra):
+             self.Osc_Spectra.append(np.product([spectrum,self.Pee(self.E_arr, \
+                     self.Core_Distances[i])],axis=0))
 
     def calcSINSQTWO(self, sst12):
         st12 = np.sqrt(sst12)
@@ -181,7 +177,7 @@ class OscSpectra(object):
         return (np.cos(t12))**2
 
     def Pee(self,E,L):
-        #Takes in an array of energies and lengths and returns an array
+        #Takes in an array of energies and one length and returns an array
         #of the Pee spectrum.
         #L must be given in kilometers, energy in MeV
         #USING THE EQN. FROM SVOBODA/LEARNED
@@ -213,20 +209,20 @@ class dNdE(object):
 
         self.dNdE = []
         self.evaldNdE()
+        print("DNDE: " + str(self.dNdE))
 
     def evaldNdE(self):
-        dNdE = []
-        for j,E in enumerate(self.Energy_Array):
-            dNdE.append(EFFICIENCY * NP * RUNTIME * MWHTOMEV * \
-                    self.XC(E)* self.Spectrum[j])
-        self.dNdE = dNdE
+        self.dNdE = [] #Remove any previous values in dNdE
+        self.dNdE = EFFICIENCY * NP * RUNTIME * MWHTOMEV * \
+            self.XC(self.Energy_Array) * self.Spectrum
 
     def Array_Check(self):
         if len(self.Energy_Array) != len(self.Spectrum):
             raise UserWarning("WARNING: Energy array length does not equal" + \
                     "length of spectrum given.  Check your entries.")
 
-
+    #takes in an array of energies and returns an array of cross-section values
+    #as a function of energy
     def XC(self, E):
         Ee = (E - DELTA)
         pe = np.sqrt((Ee**2) - (Me**2))
