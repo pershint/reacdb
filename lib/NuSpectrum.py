@@ -209,7 +209,6 @@ class dNdE(object):
 
         self.dNdE = []
         self.evaldNdE()
-        print("DNDE: " + str(self.dNdE))
 
     def evaldNdE(self):
         self.dNdE = [] #Remove any previous values in dNdE

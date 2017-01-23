@@ -30,7 +30,7 @@ ISOTOPES = ['235U', '238U', '239Pu', '241Pu']
 ENERGIES_TO_EVALUATE_AT = np.arange(1.82,9,0.01)
 DATE = '11/20/2016' #Date queried on NRC.gov to get operating US reactor names
 
-OSCPARAM_BOUNDS = ((1.0E-05, 3.0E-04),(0.0,1.0))
+OSCPARAM_BOUNDS = ((1.0E-05, 3.0E-04),(0.000000001,0.999999999999))
 MIN_METHOD = 'TNC'
 
 #Oscillation variables that will be measured by SNO+/vary
