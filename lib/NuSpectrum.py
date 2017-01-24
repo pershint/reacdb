@@ -7,7 +7,7 @@ import numpy as np
 parameters = 'none'
 DEBUG = False
 
-RUNTIME = 8760   #One year in hours
+RUNTIME = 8760*5   #One year in hours
 EFFICIENCY = 1  #Assume 100% signal detection efficiency
 LF = 0.8    #Assume all power plants operate at 80% of licensed MWt
 MWHTOMEV = 2.247E22 #One MW*h equals this many MeV

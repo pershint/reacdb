@@ -1,7 +1,7 @@
 #:ython script for building the expected number of events per day as a function
 #of energy at SNO+.
 
-import sys
+import sys,time,optparse
 
 import lib.GetNRCDailyInfo as nrc
 import lib.rdbbuild as rb
@@ -11,13 +11,14 @@ import lib.NuSpectrum as ns
 import tools.graph.SpectraPlots as splt
 import tools.graph.OscPlot as oplt
 import tools.hist.binning as hb
+import tools.graph.ChiSquaredGrid as csg
 import lib.Histogram as h
 import lib.playDarts as pd
+
 import numpy as np
 import scipy.optimize as spo
-import time
-import inspect as ins
-import optparse
+
+import iminuit as im
 
 
 #DATE = '11/20/2016' #Date queried on NRC.gov to get operating US reactor names
@@ -199,24 +200,22 @@ def getExpt_wstats(oscParams, All_unosc_spectra,numBins):
 #INPUTS: oscillation parameter array [Delta m-squared, sst12], Unoscilated
 #spectra used to generate the event histograms, Event histogram with statistical
 #fluctuation, Event histogram without statistical fluctuation
-def osc_chisq(oscParams, unosc_spectra,Stat_EventHist,NoStat_EventHist):
-    '''
-    Function returns the chisquare test result comparinga nonstatistically
-    fluctuated SNO+ oscillated spectrum generated with oscillation parameters
-    oscParams and a statistically fluctuated spectrum generated with the
-    oscillation paramaters chosen at program initialization.
-    '''
-    print("OSC PARAMS FED IN: " + str(oscParams))
-    dNdE = build_dNdE(unosc_spectra, oscParams)
-    #Build your histogram for the input oscillation parameters
-    FitHist = h.dNdE_Hist(dNdE, 30)
-    chisquare = np.sum(((FitHist.bin_values - Stat_EventHist.bin_values)**2)/ \
-            NoStat_EventHist.bin_values)
-    #use uncertainty of the no-statistics event histogram spectrum; that is, 
-    #variance =NoStat_EventHist.bin_values)
-    print("CHISQ RESULT: " + str(chisquare))
-    return chisquare
-
+class ExperimentChi2(object):
+    def __init__(self, unosc_spectra, Stat_EventHist,NoStat_EventHist):
+        self.unosc_spectra = unosc_spectra
+        self.Stat_EventHist = Stat_EventHist
+        self.NoStat_EventHist = NoStat_EventHist
+    def __call__(self, dms, sst):
+        print("OSC PARAMS FED IN: " + str([dms,sst]))
+        dNdE = build_dNdE(self.unosc_spectra, [dms,sst])
+        #Build your histogram for the input oscillation parameters
+        FitHist = h.dNdE_Hist(dNdE, 30)
+        chisquare = np.sum(((FitHist.bin_values - 
+            self.Stat_EventHist.bin_values)**2)/ self.NoStat_EventHist.bin_values)
+        #use uncertainty of the no-statistics event histogram spectrum; that is, 
+        #variance =NoStat_EventHist.bin_values)
+        print("CHISQ RESULT: " + str(chisquare))
+        return chisquare
 
 
 def chisquared(test,true):
@@ -259,13 +258,27 @@ if __name__ == '__main__':
     x0 = np.array(oscParams)
     print("CHISQUARE BEING CALCULATED NOW FOR A RANDOM EXPERIMENT...")
     print("FED IN SPEC:" + str(EventHist.bin_values))
-    print(osc_chisq(x0, unosc_spectra,EventHist_wstats, EventHist))
-    print("LET'S TRY TO MINIMIZE THE CHI-SQUARED...")
-    result = spo.minimize(osc_chisq, x0, \
-            args=(unosc_spectra,EventHist_wstats, EventHist), \
-            bounds=OSCPARAM_BOUNDS, method=MIN_METHOD)
-    print("MINIMIZATION OUTPUT: " + str(result))
+    print("LET'S TRY TO MINIMIZE THE CHI-SQUARED WITH MINUIT...")
+    chi2 = ExperimentChi2(unosc_spectra,EventHist_wstats,EventHist)
+    print("CHI-SQUARED RESULT WITH TRUE OSCILLATION PARAMETERS: \n")
+    chi2(x0[0], x0[1])
+    im.describe(chi2)
+    m = im.Minuit(chi2, limit_sst=(0.0,1.0),limit_dms = (1e-07, 1e-03),dms = 4e-05, sst = .334)
+    m.migrad()
+    print("MINIMIZATION OUTPUT: " + str(m.values))
 
+    #----- HEAT PLOT OF CHISQUARES AROUND SK AND KL VALUES -----#
+    dms_array = np.arange(1E-06,1E-04, 0.000001)
+    sst_array = np.arange(0.300,0.400, 0.001)
+    chisq_array = []
+    dms_value = []
+    sst_value = []
+    for dms in dms_array:
+        for sst in sst_array:
+            chisq_array.append(chi2(dms,sst))
+            dms_value.append(dms)
+            sst_value.append(sst)
+    csg.chi2grid(dms_value,sst_value,chisq_array)
 
     #----- RUN 100 RANDOM EXPERIMENTS, SEE WHAT YOU GET ----#
     #----- ASSUME EVENTS PER YEAR AS GIVEN WITH 250 KEV BINNING ----#
