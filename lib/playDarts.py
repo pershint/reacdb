@@ -14,6 +14,13 @@ def RandShoot(mu, sigma,n):
     '''
     return mu + sigma * np.random.randn(n)
 
+def RandShoot_p(lamb, n):
+    '''
+    Returns an array of n numbers from a Poisson distribution of
+    average lamb.
+    '''
+    return np.random.poisson(lamb, n)
+
 def playDarts(n,spectrum,bin_left,bin_right,bin_center):
     '''
     Takes in a spectrum and the dimensions of the bins for each

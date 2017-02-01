@@ -63,7 +63,7 @@ class NRCDayList(object):
         http://www.nrc.gov/reading-rm/doc-collections/event-status/reactor-status/PowerReactorStatusForLast365Days.txt
         """
         reactor_list = []
-        f = urllib2.urlopen('http://www.nrc.gov/reading-rm/doc-collections/event-status/reactor-status/PowerReactorStatusForLast365Days.txt')
+        f = urllib2.urlopen('http://www.nrc.gov/reading-rm/doc-collections/event-status/reactor-status/PowerReactorStatusForLast365Days.txt', timeout =3)
         f.next()
         for line in f:
             clean=str.rstrip(line,"\r\n")

@@ -33,6 +33,7 @@ DATE = '11/20/2016' #Date queried on NRC.gov to get operating US reactor names
 
 OSCPARAM_BOUNDS = ((1.0E-05, 3.0E-04),(0.000000001,0.999999999999))
 MIN_METHOD = 'TNC'
+NUMBINS = 30 #Number of bins for the discretized dNdE spectrum
 
 #Oscillation variables that will be measured by SNO+/vary
 #between SuperK and KamLAND; others are found hard-coded in
@@ -72,40 +73,18 @@ setOscParams(options.parameters)
 ns.setDebug(options.debug)
 
 def GetBruceSpectra(List,Isotope_Information):
-#    print("#------ AN EXERCIES IN CALCULATING A LARGE LAMBDA ------#")
-#    for energy in ENERGIES_TO_EVALUATE_AT:
-#        lamb_value= Lambda(Isotope_Information, \
-#            rp.Reactor_Spectrum("PHWR").param_composition, energy).value
-#       lambda_values.append(lamb_value)
-#    print("EXERCISE RESULT:" + str(lambda_values))
-
     print("#----- AN EXERCISE IN CALCULATING AN UNOSC. SPECTRA FOR BRUCE --#")
-
     BruceDetails = rp.ReactorDetails("BRUCE")
     BruceStatus = rp.ReactorStatus("BRUCE")
     BruceUnoscSpectra = ns.UnoscSpectra(BruceDetails,BruceStatus,Isotope_Information, \
             ENERGIES_TO_EVALUATE_AT)
     BruceOscSpectra = ns.OscSpectra(BruceUnoscSpectra)
     for CORENUM in np.arange(1,BruceUnoscSpectra.no_cores+1):
-#        print("UNOSC RESULT: " + str(BruceUnoscSpectra.Unosc_Spectra))
-#        print("GRAPHING UNOSC SPECTRA FOR " + str(CORENUM) + " NOW...")
-#        splt.plotCoreUnoscSpectrum((CORENUM-1),BruceUnoscSpectra)
-#        print("OSC RESULT: " + str(BruceOscSpectra.Osc_Spectra))
         print("GRAPHING OSC SPECTRA FOR " + str(CORENUM) + " NOW...")
         splt.plotCoreOscSpectrum((CORENUM-1),BruceOscSpectra)
-#        print("Graphing Survival Probability of electron antineutrio now...")
-#        oplt.plotCoreSurvivalProb((CORENUM-1),BruceOscSpectra)
     print("Graphing sum of oscillated spectra for BRUCE:")
     splt.plotSumOscSpectrum(BruceOscSpectra)
-
     print("#---- END EXERCISES FOR BRUCE -----#")
-
-def GaussRand(mu, sigma, n):
-    """
-    Returns an array of n random values sampled from a gaussian of
-    average mu and variance sigma.
-    """
-    return mu + sigma * np.random.randn(n)
 
 def RoughIntegrate(y_array,x_array):
     """
@@ -192,7 +171,7 @@ def getExpt_wstats(oscParams, All_unosc_spectra,numBins):
     dNdE = build_dNdE(All_unosc_spectra, oscParams)
     NoStat_EventHist = h.dNdE_Hist(dNdE, numBins)
     events_per_year = sum(NoStat_EventHist.bin_values)
-    n = pd.RandShoot(events_per_year, np.sqrt(events_per_year),1)
+    n = pd.RandShoot_p(events_per_year,1)
     print("NUMBER OF EVENTS FIRED:" + str(n))
     Stat_EventHist = pd.playDarts_h(n,NoStat_EventHist)
     return Stat_EventHist, NoStat_EventHist
@@ -222,8 +201,9 @@ def chisquared(test,true):
     return np.sum(((true-test)**2)/true)
 
 if __name__ == '__main__':
+
+    showReactors()
     List = setListType()
-    
     #Build array containing details for each isotope found in reactors
     Isotope_Information = []
     lambda_values = []
@@ -233,21 +213,21 @@ if __name__ == '__main__':
 
     if DEBUG == True:
         print("IN DEBUG MODE")
-        time.sleep(5)
+        time.sleep(1)
         getBruceSpectra(List, Isotope_Information)
 
     print(" ")
-    showReactors()
     unosc_spectra = build_unoscSpectra(List)
     
     #First, show the dNdE function
     USCA_dNdE = build_dNdE(unosc_spectra,oscParams)
     RoughIntegrate(USCA_dNdE.dNdE,ENERGIES_TO_EVALUATE_AT)
-    splt.dNdEPlot_line(ENERGIES_TO_EVALUATE_AT,USCA_dNdE.dNdE, oscParams[1],\
-            oscParams[0])
+    if DEBUG == True:
+        splt.dNdEPlot_line(ENERGIES_TO_EVALUATE_AT,USCA_dNdE.dNdE, oscParams[1],\
+                oscParams[0])
     
     #Now, create your "perfect" event histogram, events binned into 30 bins
-    EventHist_wstats, EventHist = getExpt_wstats(oscParams, unosc_spectra,30)
+    EventHist_wstats, EventHist = getExpt_wstats(oscParams, unosc_spectra,NUMBINS)
     splt.plot_hist(EventHist, oscParams[1], oscParams[0])
     events_per_year = sum(EventHist.bin_values)
     print("EVENTS PER YEAR FOR STAT-FLUCTUATED HIST: " + str(events_per_year))
@@ -257,28 +237,27 @@ if __name__ == '__main__':
     #----- UNCERTAINTY                                       ------#
     x0 = np.array(oscParams)
     print("CHISQUARE BEING CALCULATED NOW FOR A RANDOM EXPERIMENT...")
-    print("FED IN SPEC:" + str(EventHist.bin_values))
-    print("LET'S TRY TO MINIMIZE THE CHI-SQUARED WITH MINUIT...")
     chi2 = ExperimentChi2(unosc_spectra,EventHist_wstats,EventHist)
-    print("CHI-SQUARED RESULT WITH TRUE OSCILLATION PARAMETERS: \n")
-    chi2(x0[0], x0[1])
     im.describe(chi2)
     m = im.Minuit(chi2, limit_sst=(0.0,1.0),limit_dms = (1e-07, 1e-03),dms = 4e-05, sst = .334)
     m.migrad()
     print("MINIMIZATION OUTPUT: " + str(m.values))
 
+
     #----- HEAT PLOT OF CHISQUARES AROUND SK AND KL VALUES -----#
-    dms_array = np.arange(1E-06,1E-04, 0.000001)
-    sst_array = np.arange(0.300,0.400, 0.001)
-    chisq_array = []
-    dms_value = []
-    sst_value = []
-    for dms in dms_array:
-        for sst in sst_array:
-            chisq_array.append(chi2(dms,sst))
-            dms_value.append(dms)
-            sst_value.append(sst)
-    csg.chi2grid(dms_value,sst_value,chisq_array)
+    #dms_array = np.arange(1E-06,1E-04, 0.000001)
+    #sst_array = np.arange(0.300,0.400, 0.001)
+    #chisq_array = []
+    #dms_value = []
+    #sst_value = []
+    #for dms in dms_array:
+    #    for sst in sst_array:
+    #        chisq_array.append(chi2(dms,sst))
+    #        dms_value.append(dms)
+    #        sst_value.append(sst)
+    #csg.chi2grid(dms_value,sst_value,chisq_array)
+
+
 
     #----- RUN 100 RANDOM EXPERIMENTS, SEE WHAT YOU GET ----#
     #----- ASSUME EVENTS PER YEAR AS GIVEN WITH 250 KEV BINNING ----#
@@ -287,7 +266,7 @@ if __name__ == '__main__':
     num_experiments = 100
     experiment = 0
     while experiment < num_experiments:
-        n = pd.RandShoot(events_per_year, np.sqrt(events_per_year),1)
+        n = pd.RandShoot_p(events_per_year,1)
         RandExpHist  = pd.playDarts_h(n,EventHist)
         RandExpHists_binVals.append(RandExpHist.bin_values)
         RandExpHists.append(RandExpHist)
