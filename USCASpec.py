@@ -196,6 +196,31 @@ class ExperimentChi2(object):
         print("CHISQ RESULT: " + str(chisquare))
         return chisquare
 
+def GetStatSpread(num_experiments, unosc_spectra,oscParams, EventHist):
+    '''
+    Function returns three arrays that have the best fit oscillation parameters
+    And chi-squared results for the best fit of a statistically fluctuated
+    SNO+ Antineutrino spectrum against a non-fluctuated spectrum with the
+    input oscillation parameters.
+    '''
+    dms_fits=[]
+    sst_fits=[]
+    chi2_results = []
+    experiment = 0
+    while experiment < num_experiments:
+        EventHist_wstats, EventHist = getExpt_wstats(oscParams,unosc_spectra,NUMBINS)
+        print("CHISQUARE BEING CALCULATED NOW FOR A RANDOM EXPERIMENT...")
+        chi2 = ExperimentChi2(unosc_spectra,EventHist_wstats,EventHist)
+        im.describe(chi2)
+        m = im.Minuit(chi2, limit_sst=(0.0,1.0),limit_dms = (1e-07, 1e-03),dms = oscParams[0], sst = oscParams[1])
+        m.migrad()
+        print("MINIMIZATION OUTPUT: " + str(m.values))
+        print("MINIMUM VALUE: " + str(m.fval))
+        dms_fits.append(m.values['dms'])
+        sst_fits.append(m.values['sst'])
+        chi2_results.append(m.fval)
+        experiment += 1
+    return dms_fits, sst_fits, chi2_results
 
 def chisquared(test,true):
     return np.sum(((true-test)**2)/true)
@@ -235,47 +260,11 @@ if __name__ == '__main__':
     #----- TRY THE MINIMIZATION OF THE CHISQUARE FUNCTION FOR -----#
     #----- THE TRUE SPECTRA AT SNO+ AND A FLUX WITH EXPERIMENTAL --#
     #----- UNCERTAINTY                                       ------#
-    x0 = np.array(oscParams)
-    print("CHISQUARE BEING CALCULATED NOW FOR A RANDOM EXPERIMENT...")
-    chi2 = ExperimentChi2(unosc_spectra,EventHist_wstats,EventHist)
-    im.describe(chi2)
-    m = im.Minuit(chi2, limit_sst=(0.0,1.0),limit_dms = (1e-07, 1e-03),dms = 4e-05, sst = .334)
-    m.migrad()
-    print("MINIMIZATION OUTPUT: " + str(m.values))
+    #Repeat the above, but return an array of the values
+    num_experiments = 5
+    dms_fits, sst_fits, chi2_results = GetStatSpread(num_experiments, \
+            unosc_spectra,oscParams,EventHist)
+    print(dms_fits)
+    print(sst_fits)
+    print(chi2_results)
 
-
-    #----- HEAT PLOT OF CHISQUARES AROUND SK AND KL VALUES -----#
-    #dms_array = np.arange(1E-06,1E-04, 0.000001)
-    #sst_array = np.arange(0.300,0.400, 0.001)
-    #chisq_array = []
-    #dms_value = []
-    #sst_value = []
-    #for dms in dms_array:
-    #    for sst in sst_array:
-    #        chisq_array.append(chi2(dms,sst))
-    #        dms_value.append(dms)
-    #        sst_value.append(sst)
-    #csg.chi2grid(dms_value,sst_value,chisq_array)
-
-
-
-    #----- RUN 100 RANDOM EXPERIMENTS, SEE WHAT YOU GET ----#
-    #----- ASSUME EVENTS PER YEAR AS GIVEN WITH 250 KEV BINNING ----#
-    RandExpHists = []
-    RandExpHists_binVals = []
-    num_experiments = 100
-    experiment = 0
-    while experiment < num_experiments:
-        n = pd.RandShoot_p(events_per_year,1)
-        RandExpHist  = pd.playDarts_h(n,EventHist)
-        RandExpHists_binVals.append(RandExpHist.bin_values)
-        RandExpHists.append(RandExpHist)
-        if experiment < 5:
-            splt.plot_hist(RandExpHist, oscParams[1], oscParams[0])
-        experiment += 1
-        
-    exp_avg_hist, bin_stdev_hist = pd.hist_average(RandExpHists)
-    splt.plot_hist(exp_avg_hist, oscParams[1], oscParams[0])
-    print("CHECK: THE CHI-SQUARED BETWEEN THE AVERAGE OF ALL AND THE" + \
-            "EXPECTED SPECTRUM AT SNO+")
-    print(chisquared(exp_avg_hist.bin_values,EventHist.bin_values))
