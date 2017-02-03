@@ -8,10 +8,12 @@ import lib.rdbbuild as rb
 import lib.rdbparse as rp
 import lib.SNOdist as sd
 import lib.NuSpectrum as ns
+
 import tools.graph.SpectraPlots as splt
 import tools.graph.OscPlot as oplt
+import tools.graph.ChiSquaredPlots as cplt
+
 import tools.hist.binning as hb
-import tools.graph.ChiSquaredGrid as csg
 import lib.Histogram as h
 import lib.playDarts as pd
 
@@ -190,9 +192,10 @@ class ExperimentChi2(object):
         #Build your histogram for the input oscillation parameters
         FitHist = h.dNdE_Hist(dNdE, 30)
         chisquare = np.sum(((FitHist.bin_values - 
-            self.Stat_EventHist.bin_values)**2)/ self.NoStat_EventHist.bin_values)
-        #use uncertainty of the no-statistics event histogram spectrum; that is, 
-        #variance =NoStat_EventHist.bin_values)
+            self.Stat_EventHist.bin_values)**2)/ FitHist.bin_values)
+        #self.NoStat_EventHist.bin_values)
+        #use uncertainty of a bin in the "theoretically expected event rate"
+        #(i.e. the Spectrum for the input oscillation parameters) for denom
         print("CHISQ RESULT: " + str(chisquare))
         return chisquare
 
@@ -253,18 +256,19 @@ if __name__ == '__main__':
     
     #Now, create your "perfect" event histogram, events binned into 30 bins
     EventHist_wstats, EventHist = getExpt_wstats(oscParams, unosc_spectra,NUMBINS)
-    splt.plot_hist(EventHist, oscParams[1], oscParams[0])
+    splt.plot_EventHist(EventHist, oscParams[1], oscParams[0])
     events_per_year = sum(EventHist.bin_values)
     print("EVENTS PER YEAR FOR STAT-FLUCTUATED HIST: " + str(events_per_year))
 
     #----- TRY THE MINIMIZATION OF THE CHISQUARE FUNCTION FOR -----#
     #----- THE TRUE SPECTRA AT SNO+ AND A FLUX WITH EXPERIMENTAL --#
     #----- UNCERTAINTY                                       ------#
-    #Repeat the above, but return an array of the values
-    num_experiments = 5
+    #TODO: RUN THIS WITH SUPERK VALUES, 5YEARS
+    #
+    num_experiments = 1000
     dms_fits, sst_fits, chi2_results = GetStatSpread(num_experiments, \
             unosc_spectra,oscParams,EventHist)
     print(dms_fits)
     print(sst_fits)
     print(chi2_results)
-
+    cplt.chi2scatter(dms_fits,sst_fits,oscParams)

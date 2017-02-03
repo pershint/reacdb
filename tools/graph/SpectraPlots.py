@@ -5,42 +5,6 @@ import scipy as sp
 import sys
 
 
-def cumulSum(array):
-    """
-    Takes in an array of numbers and returns an array with the cumulative
-    sum values.  Example: cumulSum([2,4,5,7])
-    will return [7, 12, 16, 18].
-    """
-    array = np.sort(array)[::-1] #Sorts any array from low to high
-    csarray = np.zeros(array.size)
-    for i, val in enumerate(array):
-        if i == 0:
-            csarray[i] = val
-        else:
-           csarray[i] = csarray[i-1] + val
-    print(csarray)
-    return csarray
-
-def normalizeArrMax(array):
-    """
-    Takes in any numpyarray and normalizes it's elements by the largest value.
-    """
-    largest = np.amax(array)
-    for i,entry in enumerate(array):
-        array[i] = entry/largest
-    print(array)
-    return array
-        
-def normalizeArrSum(array):
-    """
-    Takes in any numpy array and normalizes all elements by the sum of all values.
-    """
-    largest = np.sum(array)
-    for i,entry in enumerate(array):
-        array[i] = entry/largest
-    print(array)
-    return array
-
 def dNdEPlot_pts(energies,numSpec,bin_left,bin_right,sst12,m12):
     num_points = len(energies)
     opacity = 0.9
@@ -56,7 +20,7 @@ def dNdEPlot_pts(energies,numSpec,bin_left,bin_right,sst12,m12):
     plt.show()
 
 #Takes in a Histogram object as defined in /lib/histogram and plots it
-def plot_hist(Histogram,sst12,m12):
+def plot_EventHist(Histogram,sst12,m12):
     num_points = len(Histogram.bin_centers)
     opacity = 0.9
     fix, ax = plt.subplots()

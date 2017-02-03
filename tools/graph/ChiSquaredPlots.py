@@ -6,7 +6,7 @@ import scipy as sp
 import sys
 import scipy.ndimage as ndimage
 
-def chi2grid(DeltaMSqs,sst12s,chisqs):
+def chi2contour(DeltaMSqs,sst12s,chisqs):
     opacity = 0.9
     fig = plt.figure()
     ax = fig.add_subplot(1,2,1)#,projection='2d')#3d')
@@ -29,10 +29,29 @@ def chi2grid(DeltaMSqs,sst12s,chisqs):
     fig.colorbar(cont,shrink=0.5, aspect=5)
     plt.show()
 
+def chi2scatter(dms_arr, sst_arr,oscParamsSeed):
+    '''
+    Takes in an array of sine-squared theta values and delta-m squared values
+    from performing a chi-squared minimization between the SNO+ event spectrum
+    with oscillation parameters oscParamsSeed = [dms, sst] and the same spectrum
+    with poisson fluctuations.
+    '''
+    fig = plt.figure()
+    ax = fig.add_subplot(1,1,1)
+    ax.plot(sst_arr, dms_arr, 'ro', alpha=0.7, color='m')
+    ax.plot(oscParamsSeed[1], oscParamsSeed[0], '*', markersize=20, alpha=0.7, color='b')
+    ax.set_xlabel(r'$\sin^{2}(\theta_{12})$')
+    ax.set_ylabel(r'$\Delta m^{2}_{12} (ev^{2})$')
+    ax.set_title('Scatter plot of best-fit oscillation parameters')
+    ax.grid(True)
+    plt.show()
+
 if __name__ == '__main__':
     print("SOME TESTS OF CHISQ GRAPH FUNCTIONS")
     x = np.arange(1,5,1)
     y = np.arange(1,5,1)
+    chi2scatter(x,y)
     X,Y = np.meshgrid(x, y, sparse=False)
     z = np.sin(X**2 + Y**2) / (X**2 + Y**2)
-    chi2grid(X,Y,z)
+    chi2contour(X,Y,z)
+
