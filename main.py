@@ -48,16 +48,18 @@ def setOscParams(parameter_choice):
         dmsq = 4.85E-05
         globals()["oscParams"] = [dmsq, sst12]
 
-    if parameter_choice == "KAMLAND":
+    elif parameter_choice == "KAMLAND":
         print("USING KAMLAND OSCILLATION PARAMETERS")
         sst12 = 0.316
         dmsq = 7.54E-05
         globals()["oscParams"] = [dmsq, sst12]
 
-    if parameter_choice == "none":
+    elif parameter_choice == "none":
         print("NO OSCILLATION PARAMETERS SET.  NOOOO")
 
-
+    else:
+        print("CHOOSE A VALID OSCILLATION PARAMETER SET (SK or KAMLAND).")
+        sys.exit(0)
 
 parser = optparse.OptionParser()
 parser.add_option("--debug",action="store_true",default="False")
