@@ -188,7 +188,7 @@ class ExperimentChi2(object):
         self.unosc_spectra = unosc_spectra
         self.Stat_EventHist = Stat_EventHist
         self.NoStat_EventHist = NoStat_EventHist
-    def __call__(self, dms, sst):
+    def __call__(self, sst, dms):
         print("OSC PARAMS FED IN: " + str([dms,sst]))
         dNdE = build_dNdE(self.unosc_spectra, [dms,sst])
         #Build your histogram for the input oscillation parameters
@@ -217,7 +217,7 @@ def GetStatSpread(num_experiments, unosc_spectra,oscParams, EventHist):
         print("CHISQUARE BEING CALCULATED NOW FOR A RANDOM EXPERIMENT...")
         chi2 = ExperimentChi2(unosc_spectra,EventHist_wstats,EventHist)
         im.describe(chi2)
-        m = im.Minuit(chi2, limit_sst=(0.0,1.0),limit_dms = (1e-07, 1e-03),dms = oscParams[0], sst = oscParams[1])
+        m = im.Minuit(chi2, limit_dms = (1e-07, 1e-03), limit_sst=(0.0,1.0), sst = (oscParams[1]+0.4), dms = oscParams[0])
         m.migrad()
         print("MINIMIZATION OUTPUT: " + str(m.values))
         print("MINIMUM VALUE: " + str(m.fval))
@@ -252,6 +252,8 @@ if __name__ == '__main__':
     #First, show the dNdE function
     USCA_dNdE = build_dNdE(unosc_spectra,oscParams)
     RoughIntegrate(USCA_dNdE.dNdE,ENERGIES_TO_EVALUATE_AT)
+    splt.dNdEPlot_line(ENERGIES_TO_EVALUATE_AT,USCA_dNdE.dNdE, oscParams[1],\
+            oscParams[0])
     if DEBUG == True:
         splt.dNdEPlot_line(ENERGIES_TO_EVALUATE_AT,USCA_dNdE.dNdE, oscParams[1],\
                 oscParams[0])
@@ -259,6 +261,7 @@ if __name__ == '__main__':
     #Now, create your "perfect" event histogram, events binned into 30 bins
     EventHist_wstats, EventHist = getExpt_wstats(oscParams, unosc_spectra,NUMBINS)
     splt.plot_EventHist(EventHist, oscParams[1], oscParams[0])
+    splt.plot_EventHist(EventHist_wstats, oscParams[1], oscParams[0])
     events_per_year = sum(EventHist.bin_values)
     print("EVENTS PER YEAR FOR STAT-FLUCTUATED HIST: " + str(events_per_year))
 
@@ -267,7 +270,7 @@ if __name__ == '__main__':
     #----- UNCERTAINTY                                       ------#
     #TODO: RUN THIS WITH SUPERK VALUES, 5YEARS
     #
-    num_experiments = 1000
+    num_experiments = 100
     dms_fits, sst_fits, chi2_results = GetStatSpread(num_experiments, \
             unosc_spectra,oscParams,EventHist)
     print(dms_fits)
