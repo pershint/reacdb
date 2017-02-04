@@ -201,7 +201,20 @@ class ExperimentChi2(object):
         print("CHISQ RESULT: " + str(chisquare))
         return chisquare
 
-def GetStatSpread(num_experiments, unosc_spectra,oscParams, EventHist):
+def GetChi2dmsFixed(unosc_spectra, oscParams, sst_array):
+    '''
+    Calculates an array of chi-squared results for a spectra with parameters
+    oscParams.  The seed for the fit is fixed delta-m squared, and each sst
+    value in the sst_array.
+    '''
+    EventHist_wstats, EventHist = getExpt_wstats(oscParams, unosc_spectra,NUMBINS)
+    chi2 = ExperimentChi2(unosc_spectra,EventHist_wstats,EventHist)
+    chi2_results = []
+    for sst in sst_array:
+        chi2_results.append(chi2(sst, oscParams[0]))
+    return chi2_results
+
+def GetStatSpread(num_experiments, unosc_spectra,oscParams):
     '''
     Function returns three arrays that have the best fit oscillation parameters
     And chi-squared results for the best fit of a statistically fluctuated
@@ -257,13 +270,13 @@ if __name__ == '__main__':
     if DEBUG == True:
         splt.dNdEPlot_line(ENERGIES_TO_EVALUATE_AT,USCA_dNdE.dNdE, oscParams[1],\
                 oscParams[0])
-    
+
+    #Calculate the chi-squared test results (fixed dms, vary sst)
+    sst_array = np.arange(0.01, 1.00, 0.01)
+    chi2_results = GetChi2dmsFixed(unosc_spectra, oscParams, sst_array)
+    cplt.chi2vssst(chi2_results, sst_array,oscParams)
     #Now, create your "perfect" event histogram, events binned into 30 bins
     EventHist_wstats, EventHist = getExpt_wstats(oscParams, unosc_spectra,NUMBINS)
-    splt.plot_EventHist(EventHist, oscParams[1], oscParams[0])
-    splt.plot_EventHist(EventHist_wstats, oscParams[1], oscParams[0])
-    events_per_year = sum(EventHist.bin_values)
-    print("EVENTS PER YEAR FOR STAT-FLUCTUATED HIST: " + str(events_per_year))
 
     #----- TRY THE MINIMIZATION OF THE CHISQUARE FUNCTION FOR -----#
     #----- THE TRUE SPECTRA AT SNO+ AND A FLUX WITH EXPERIMENTAL --#
@@ -272,7 +285,7 @@ if __name__ == '__main__':
     #
     num_experiments = 100
     dms_fits, sst_fits, chi2_results = GetStatSpread(num_experiments, \
-            unosc_spectra,oscParams,EventHist)
+            unosc_spectra,oscParams)
     print(dms_fits)
     print(sst_fits)
     print(chi2_results)

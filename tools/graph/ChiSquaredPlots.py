@@ -6,6 +6,23 @@ import scipy as sp
 import sys
 import scipy.ndimage as ndimage
 
+#Takes in an array of chi-squared test results and plots them as a function of the
+#sine squared theta values used to get the results.  dms is fixed.
+def chi2vssst(chi2_array,sst_array,oscParams):
+    opacity = 0.9
+    fig, ax = plt.subplots()
+    #plt.gcf().subplots_adjust(bottom=0.2)
+    plt.plot(sst_array, chi2_array, alpha=opacity, color='r')
+    plt.xlabel('Sine-squared theta 12')
+    plt.ylabel(r'chi-squared')
+    plt.title(r'Chi-squared value between a statistically fluctuated SNO+' + \
+            'spectrum (dms = {0}, sst={1}, and a non-fluctuated spectrum with' + \
+            'dms={0} and the y-axis sst value.'.format(oscParams[0],oscParams[1]))
+    #plt.xticks(index + bar_width, x, y=0.001)
+    #plt.legend()
+    #plt.tight_layout()  #could use instead of the subplots_adjust line
+    plt.show()
+
 def chi2contour(DeltaMSqs,sst12s,chisqs):
     opacity = 0.9
     fig = plt.figure()
