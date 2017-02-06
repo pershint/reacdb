@@ -8,28 +8,6 @@ import string, time, re
 #---------- UTILITIES FOR USE WITH COUCHDB ---------------#
 couch = couchdb.Server()
 
-def connectToDB(dbName):
-    status = "ok"
-    db = {}
-    try:
-        db = couch[dbName]
-    except:
-        print("Failed to connect to " + dbName, file = sys.stderr)
-        status = "bad"
-    return status, db
-
-def saveToreacdb(newentry):
-    """
-    Function takes a dictionary and saves it to reacdb.  For pushes containing
-    daily reactor operating info, the output format of the getDateReactorStatuses
-    function should be pushed to reacdb.
-    """
-    dbStatus, db = connectToDB('reacdb')
-    if dbStatus is 'ok':
-        db.save(newentry)
-        print("reacdb UPDATE: reactor info. added for date: " + newentry["date"])
-#----------- END COUCHDB UTILITIES ----------------#
-
 class NRCDayList(object):
     def __init__(self):
         self.NRCCurrent = self.getNRCCurrentList()
@@ -97,6 +75,8 @@ class NRCDayList(object):
                 self.date_info = reacdict
     
 
+# ----------- BEGIN METHODS FOR couch/ReacDB INTERFACING ----------#
+
 #Class takes in an NRCDayList class and uses the class to add reactor information to
 #the ReacDB couchDB.
 class NRCDailyClaws(object):
@@ -104,7 +84,6 @@ class NRCDailyClaws(object):
         self.NRCDayList = NRCDayList
         self.docsindb, self.datesindb = self.getAllReacDBDaily()
 
-    # ----------- BEGIN METHODS FOR couch/ReacDB INTERFACING ----------#
     def getAllReacDBDaily(self):
         """
         Polls the reactor database and grabs all entries from the "daily" view.

@@ -32,6 +32,15 @@ A1 = -0.07056
 A2 = 0.02018
 A3 = -0.001953
 
+#Takes in an array of unoscillated spectra (and the spectra's energy values for each entry)
+#And returns the dNdE function that results from them
+def build_dNdE(unosc_spectra,energy_array,oscParams):
+    Total_Spectra = np.zeros(len(energy_array))
+    for ReacSpectra in unosc_spectra:
+        ReacOscSpectra = OscSpectra(ReacSpectra, oscParams)
+        Total_Spectra += ReacOscSpectra.Summed_Spectra
+    return dNdE(energy_array,Total_Spectra)
+
 #Class takes in four RATDB type Isotope Info entries, one
 #Spectrum entry (has the isotope compositions), and an energy to evaulate at.
 #The class evaluates Isotope's associated small lambda, combines with the isotope
@@ -138,8 +147,8 @@ class UnoscSpectra(object):
             denominator += isocomp[i] * self.iso_array[i].Eperfission
         return denominator
 
-#Class takes an array of unoscillated spectrums and outputs the functions for
-#The oscillated Spectrums.  oscParams should have two entries: 
+#Class takes an UnoscSpectra class (contains spectrums for each core of one reactor)
+#and outputs the the oscillated Spectrums.  oscParams should have two entries: 
 #[delta m-squared, sin^2(theta12)]
 class OscSpectra(object):
     def __init__(self, UnoscSpectra, oscParams):
@@ -149,14 +158,16 @@ class OscSpectra(object):
         self.E_arr = UnoscSpectra.E_arr
         self.Core_Distances = UnoscSpectra.Core_Distances 
 
-        #define your oscillation paramaters;
+        #define your variable oscillation paramaters;
         self.SINSQT12 = oscParams[1]
         self.DELTAMSQ21 = oscParams[0]
+        #calculate needed fixed oscillation parameters
         self.SINSQTWO12 = self.calcSINSQTWO(self.SINSQT12)
         self.COSSQT12 = self.calcCOSSQ(self.SINSQT12)
+
+        #Oscillate each core spectra, then sum them
         self.Osc_Spectra = []
         self.oscillateSpectra()
-
         self.Summed_Spectra = []
         self.sumSpectra()
 

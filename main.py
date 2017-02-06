@@ -8,6 +8,7 @@ import lib.rdbbuild as rb
 import lib.rdbparse as rp
 import lib.SNOdist as sd
 import lib.NuSpectrum as ns
+import lib.chi2Utils as cu
 
 import tools.graph.SpectraPlots as splt
 import tools.graph.OscPlot as oplt
@@ -30,15 +31,13 @@ import iminuit as im
 #MWHTOMEV = 2.247E22 #One MW*h equals this many MeV
 #NP = 1E32   #Need to approximate SNO+'s number of proton targets
 ISOTOPES = ['235U', '238U', '239Pu', '241Pu']
-ENERGIES_TO_EVALUATE_AT = np.arange(1.82,9,0.01)
+ENERGY_ARRAY = np.arange(1.82,9,0.01)
 DATE = '11/20/2016' #Date queried on NRC.gov to get operating US reactor names
 
-OSCPARAM_BOUNDS = ((1.0E-05, 3.0E-04),(0.000000001,0.999999999999))
-MIN_METHOD = 'TNC'
 NUMBINS = 30 #Number of bins for the discretized dNdE spectrum
 
 #Oscillation variables that will be measured by SNO+/vary
-#between SuperK and KamLAND; others are found hard-coded in
+#between SuperK and KamLAND; fixed parameters are found hard-coded in
 #./lib/NuSPectrum.py
 oscParams = []
 def setOscParams(parameter_choice):
@@ -81,7 +80,7 @@ def GetBruceSpectra(List,Isotope_Information):
     BruceDetails = rp.ReactorDetails("BRUCE")
     BruceStatus = rp.ReactorStatus("BRUCE")
     BruceUnoscSpectra = ns.UnoscSpectra(BruceDetails,BruceStatus,Isotope_Information, \
-            ENERGIES_TO_EVALUATE_AT)
+            ENERGY_ARRAY)
     BruceOscSpectra = ns.OscSpectra(BruceUnoscSpectra)
     for CORENUM in np.arange(1,BruceUnoscSpectra.no_cores+1):
         print("GRAPHING OSC SPECTRA FOR " + str(CORENUM) + " NOW...")
@@ -150,98 +149,10 @@ def build_unoscSpectra(List):
         ReacDetails = rp.ReactorDetails(reactor)
         ReacStatus = rp.ReactorStatus(reactor)
         ReacUnoscSpectra = ns.UnoscSpectra(ReacDetails,ReacStatus, \
-                Isotope_Information, ENERGIES_TO_EVALUATE_AT)
+                Isotope_Information, ENERGY_ARRAY)
         unosc_spectra.append(ReacUnoscSpectra)
     return unosc_spectra
 
-def build_dNdE(unosc_spectra,oscParams):
-    Total_Spectra = np.zeros(len(ENERGIES_TO_EVALUATE_AT))
-    for unoscSpectrum in unosc_spectra:
-        ReacOscSpectra = ns.OscSpectra(unoscSpectrum, oscParams)
-        Total_Spectra += ReacOscSpectra.Summed_Spectra
-    return ns.dNdE(ENERGIES_TO_EVALUATE_AT,Total_Spectra)
-
-#builds the chi-squared between the expected SNO+ spectrum with
-#systematics included and an oscillated spectrum with no systematics
-#that is oscillated with a (sine-squared theta12) and b
-#(Delta m-squared). In this case, an unoscillated spectra is
-#passed in to be oscillated with a,b.
-#Check your bin sizes; don't want to feed in an un-scaled true spectrum
-
-#Function returns an oscillated SNO+ antineutrino spectrum with statistical
-#Fluctuation generated using the PlayDarts library.  Also returns the
-#Spectrum without statistical fluctuation
-def getExpt_wstats(oscParams, All_unosc_spectra,numBins):
-    dNdE = build_dNdE(All_unosc_spectra, oscParams)
-    NoStat_EventHist = h.dNdE_Hist(dNdE, numBins)
-    events_per_year = sum(NoStat_EventHist.bin_values)
-    n = pd.RandShoot_p(events_per_year,1)
-    print("NUMBER OF EVENTS FIRED:" + str(n))
-    Stat_EventHist = pd.playDarts_h(n,NoStat_EventHist)
-    return Stat_EventHist, NoStat_EventHist
-
-#INPUTS: oscillation parameter array [Delta m-squared, sst12], Unoscilated
-#spectra used to generate the event histograms, Event histogram with statistical
-#fluctuation, Event histogram without statistical fluctuation
-class ExperimentChi2(object):
-    def __init__(self, unosc_spectra, Stat_EventHist,NoStat_EventHist):
-        self.unosc_spectra = unosc_spectra
-        self.Stat_EventHist = Stat_EventHist
-        self.NoStat_EventHist = NoStat_EventHist
-    def __call__(self, sst, dms):
-        print("OSC PARAMS FED IN: " + str([dms,sst]))
-        dNdE = build_dNdE(self.unosc_spectra, [dms,sst])
-        #Build your histogram for the input oscillation parameters
-        FitHist = h.dNdE_Hist(dNdE, 30)
-        chisquare = np.sum(((FitHist.bin_values - 
-            self.Stat_EventHist.bin_values)**2)/ FitHist.bin_values)
-        #self.NoStat_EventHist.bin_values)
-        #use uncertainty of a bin in the "theoretically expected event rate"
-        #(i.e. the Spectrum for the input oscillation parameters) for denom
-        print("CHISQ RESULT: " + str(chisquare))
-        return chisquare
-
-def GetChi2dmsFixed(unosc_spectra, oscParams, sst_array):
-    '''
-    Calculates an array of chi-squared results for a spectra with parameters
-    oscParams.  The seed for the fit is fixed delta-m squared, and each sst
-    value in the sst_array.
-    '''
-    EventHist_wstats, EventHist = getExpt_wstats(oscParams, unosc_spectra,NUMBINS)
-    chi2 = ExperimentChi2(unosc_spectra,EventHist_wstats,EventHist)
-    chi2_results = []
-    for sst in sst_array:
-        chi2_results.append(chi2(sst, oscParams[0]))
-    return chi2_results
-
-def GetStatSpread(num_experiments, unosc_spectra,oscParams):
-    '''
-    Function returns three arrays that have the best fit oscillation parameters
-    And chi-squared results for the best fit of a statistically fluctuated
-    SNO+ Antineutrino spectrum against a non-fluctuated spectrum with the
-    input oscillation parameters.
-    '''
-    dms_fits=[]
-    sst_fits=[]
-    chi2_results = []
-    experiment = 0
-    while experiment < num_experiments:
-        EventHist_wstats, EventHist = getExpt_wstats(oscParams,unosc_spectra,NUMBINS)
-        print("CHISQUARE BEING CALCULATED NOW FOR A RANDOM EXPERIMENT...")
-        chi2 = ExperimentChi2(unosc_spectra,EventHist_wstats,EventHist)
-        im.describe(chi2)
-        m = im.Minuit(chi2, limit_dms = (1e-07, 1e-03), limit_sst=(0.0,1.0), sst = (oscParams[1]+0.4), dms = oscParams[0])
-        m.migrad()
-        print("MINIMIZATION OUTPUT: " + str(m.values))
-        print("MINIMUM VALUE: " + str(m.fval))
-        dms_fits.append(m.values['dms'])
-        sst_fits.append(m.values['sst'])
-        chi2_results.append(m.fval)
-        experiment += 1
-    return dms_fits, sst_fits, chi2_results
-
-def chisquared(test,true):
-    return np.sum(((true-test)**2)/true)
 
 if __name__ == '__main__':
 
@@ -263,29 +174,31 @@ if __name__ == '__main__':
     unosc_spectra = build_unoscSpectra(List)
     
     #First, show the dNdE function
-    USCA_dNdE = build_dNdE(unosc_spectra,oscParams)
-    RoughIntegrate(USCA_dNdE.dNdE,ENERGIES_TO_EVALUATE_AT)
-    splt.dNdEPlot_line(ENERGIES_TO_EVALUATE_AT,USCA_dNdE.dNdE, oscParams[1],\
+    USCA_dNdE = ns.build_dNdE(unosc_spectra,ENERGY_ARRAY,oscParams)
+    RoughIntegrate(USCA_dNdE.dNdE,ENERGY_ARRAY)
+    splt.dNdEPlot_line(ENERGY_ARRAY,USCA_dNdE.dNdE, oscParams[1],\
             oscParams[0])
     if DEBUG == True:
-        splt.dNdEPlot_line(ENERGIES_TO_EVALUATE_AT,USCA_dNdE.dNdE, oscParams[1],\
+        splt.dNdEPlot_line(ENERGY_ARRAY,USCA_dNdE.dNdE, oscParams[1],\
                 oscParams[0])
 
     #Calculate the chi-squared test results (fixed dms, vary sst)
     sst_array = np.arange(0.01, 1.00, 0.01)
-    chi2_results = GetChi2dmsFixed(unosc_spectra, oscParams, sst_array)
+    chi2_results = cu.GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, \
+            ENERGY_ARRAY,NUMBINS)
     cplt.chi2vssst(chi2_results, sst_array,oscParams)
     #Now, create your "perfect" event histogram, events binned into 30 bins
-    EventHist_wstats, EventHist = getExpt_wstats(oscParams, unosc_spectra,NUMBINS)
+    EventHist_wstats, EventHist = cu.getExpt_wstats(oscParams, unosc_spectra, \
+            ENERGY_ARRAY,NUMBINS)
 
     #----- TRY THE MINIMIZATION OF THE CHISQUARE FUNCTION FOR -----#
     #----- THE TRUE SPECTRA AT SNO+ AND A FLUX WITH EXPERIMENTAL --#
     #----- UNCERTAINTY                                       ------#
     #TODO: RUN THIS WITH SUPERK VALUES, 5YEARS
     #
-    num_experiments = 100
-    dms_fits, sst_fits, chi2_results = GetStatSpread(num_experiments, \
-            unosc_spectra,oscParams)
+    num_experiments = 10
+    dms_fits, sst_fits, chi2_results = cu.GetStatSpread(num_experiments, \
+            unosc_spectra,oscParams,ENERGY_ARRAY,NUMBINS)
     print(dms_fits)
     print(sst_fits)
     print(chi2_results)

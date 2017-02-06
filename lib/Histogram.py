@@ -86,10 +86,4 @@ class dNdE_Hist(Histogram):
             cbin += 1
         self.binwidth = self.x_axis[self.specvals_perbin] - self.x_axis[0]
     
-#FIXME: Need to make a class that can take in the unoscilated spectrum info.
-#for a reactor, and uses scipy to integrate over that function times
-#The survival probability function times the cross-section.  Right now, how
-#The classes are written, you can't use the individual pieces cleanly, so we
-#May have to restructure a bit.
-
 
