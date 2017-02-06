@@ -49,10 +49,10 @@ class NRCDayList(object):
             reactor_list.append(reactor)
         return reactor_list
 
-    def getDateReacStatuses(self,date):
+    def setDateReacStatuses(self,date):
         """
-        Takes in a date and returns (from the NRC webpage document)
-        a dictionary with all power capacity information 
+        Takes in a date and sets (from the NRC webpage document)
+        self.date_info as a dictionary with all power capacity information 
         available for each reactor on that day.
         Information is pulled from the self.NRCCurrent list.
         """

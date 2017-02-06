@@ -68,6 +68,7 @@ class claws:
 
     def __init__(self, reac_name):
         self.reac_name = reac_name
+        self._match_dailytolist()
         self.MWt = 'unknown'
         self.reac_type = 'unknown'
         self.position = ['unknown','unknown']
@@ -83,6 +84,19 @@ class claws:
         shortname = "".join([i for i in self.reac_name if not i.isdigit()])
         shortname = shortname.rstrip()
         return shortname
+    def _match_dailytolist(self):
+        '''
+        Some extra conditionals are put here.  Shearon Harris 1, La Salle 1
+        and La Salle 2 are listed different on the daily page.  We change
+        inputs from the daily page to look like the ones found on the list.
+        '''
+        if self.reac_name == 'LaSalle 1':
+            self.reac_name = 'La Salle 1'
+        elif self.reac_name == 'LaSalle 2':
+            self.reac_name = 'La Salle 2'
+        elif self.reac_name == 'Harris 1':
+            self.reac_name = 'Shearon Harris 1'
+
 
     def showSpecs(self):
         """
