@@ -60,6 +60,7 @@ def USToRATDBFormat(ReacName):
         ReacName = 'ANO'
     if ReacName == 'Saint Lucie':
         ReacName = ReacName.replace("Saint","st.")
+    ReacName = ReacName.upper()
     return ReacName
 #-----------END UTILITY FUNCTIONS----------------#
 
@@ -78,7 +79,7 @@ class ratdbBuilder(object):
         self.passing = 0
         self.comment = ''
         self.timestamp = ''
-        self.ratdb_dict = {}
+        self.ratdb_entry = {}
 
     def show(self):
         print("type: " + self.rdb_type)
@@ -100,10 +101,10 @@ class ratdbBuilder(object):
         "timestamp": self.timestamp}
         readytobuild = True
         for key in stdratdict:
-            if stdratdict[key] == '':
+            if (stdratdict[key] == '') and (key != 'comment'):
                 print("WARNING: Entry {0} is not filled in ".format(key) + \
                 "for this RATDB entry.")
-        self.reacdb_entry = stdratdict
+        self.ratdb_entry = stdratdict
 
 
 #Class is one REACTOR_STATUS entry that will compose a full StatusFileBuilder
@@ -122,6 +123,13 @@ class reactorStatus(ratdbBuilder):
         self.num_cores = 0
         self.setTimestamp()
 
+    def buildratdbEntry(self):
+        super(reactorStatus,self).buildratdbEntry()
+        status_dictentries = {'num_cores':self.num_cores, 'lic_core_powers': \
+                self.licensed_core_powers, 'capacities':self.core_powercaps}
+        stdratdict = self.ratdb_entry
+        stdratdict.update(status_dictentries)
+        self.ratdb_entry = stdratdict
 
     def setTimestamp(self):
         """
@@ -157,12 +165,12 @@ class reactorStatus(ratdbBuilder):
 #be written.
 class StatusFileBuilder(object):
     def __init__(self,NRCDayList,date):
-        self.filename = "TESTING" #needs timestamp and .ratdb appended
+        self.filename = "USDAILYPOWERS" #needs timestamp and .json appended
         self.NRCDayList= NRCDayList
         self.date = date
         self.timestamp = 'none'
         self.setTimestamp()
-        self.filename += str("_{}.ratdb".format(self.timestamp))
+        self.filename += str("_{}.json".format(self.timestamp))
         self.savepath = os.path.abspath(os.path.join(dbpath, \
                 DAILYSTATUS_LOC,self.filename))
 
@@ -192,31 +200,37 @@ class StatusFileBuilder(object):
         #capacity for a US reactor on the date given
 
         #Now, build each reactor plant's REACTOR_STATUS entry
+        reactorStatus_dict = {}
         for entry in Reacs_onDate:
             #Get the name of the plant this core is associated with
             core_name = entry['reactor_name']
             core_MWt = self.getLicensedMWt(core_name)
             core_powercap = entry['power_capacity']
             core_name_RDB=USToRATDBFormat(core_name)
-            if core_name_RDB not in self.entries:
-                #Make a new addition to our array of RATDB entries
+            print(core_name_RDB)
+            if core_name_RDB not in reactorStatus_dict:
+                #Make a new addition to our array of reactorStatus entries
                 PlantStatus = reactorStatus(core_name_RDB,self.date)
                 PlantStatus.core_powercaps.append(core_powercap)
                 PlantStatus.licensed_core_powers.append(core_MWt)
                 PlantStatus.num_cores += 1
-                self.entries[PlantStatus.index] = PlantStatus
+                reactorStatus_dict[PlantStatus.index] = PlantStatus
             else:
                 #Add information on this core to it's present plant
-                self.entries[core_name_RDB].num_cores += 1
-                self.entries[core_name_RDB].core_powercaps.append(core_powercap)
-                self.entries[core_name_RDB].licensed_core_powers.append(core_MWt)
+                reactorStatus_dict[core_name_RDB].num_cores += 1
+                reactorStatus_dict[core_name_RDB].core_powercaps.append(core_powercap)
+                reactorStatus_dict[core_name_RDB].licensed_core_powers.append(core_MWt)
         
-        #Use filled entries to make the dictionary of each PlantStatus entry
-        for reactor in self.entries:
-            self.entries[reactor].buildratdbEntry()
-
+        #entries is a dictionary with the NRC name as the key and the
+        #reactorStatus class as the value.  Build the ratdb entry for each
+        #reactorStatus class, then 
+        for reactor in reactorStatus_dict:
+            reactorStatus_dict[reactor].buildratdbEntry()
+            #now,put the actual ratdb entry from each into self.entries
+            self.entries[reactor]=reactorStatus_dict[reactor].ratdb_entry
     #FIXME: This is a biiiig bottleneck on time.  Have to connect to get every
     #Licensed MWt.  Could have this be a yearly get?
+
     def getLicensedMWt(self,core_name):
         """
         Get the licensed thermal core outputs from the NRC webpage.
@@ -232,12 +246,14 @@ class StatusFileBuilder(object):
     #the ratdb entry dictionary.
     def save(self):
         '''
-        dumps all RATDB entries stored in reactor_status_entries to a .ratdb
-        file at the specified save location.
+        dumps all RATDB entries stored in reactor_status_entries to a JSON
+        file at the specified save location.  The key for each dict entry is
+        the RATDB's index.
         '''
         data = self.entries
         with open(self.savepath,'w') as outfile:
-            json.dump(data,outfile, sort_keys = True, indent = 0)
+            json.dump(data,outfile, sort_keys = True, indent = 2)
+
 
 if __name__ == '__main__':
     print('Still nothing in main loop yet')

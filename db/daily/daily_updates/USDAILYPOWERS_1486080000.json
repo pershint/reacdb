@@ -1,0 +1,1040 @@
+{
+  "ANO": {
+    "capacities": [
+      100, 
+      80
+    ], 
+    "comment": "", 
+    "index": "ANO", 
+    "lic_core_powers": [
+      2568.0, 
+      3026.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "BEAVER VALLEY": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "BEAVER VALLEY", 
+    "lic_core_powers": [
+      2900.0, 
+      2900.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "BRAIDWOOD": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "BRAIDWOOD", 
+    "lic_core_powers": [
+      3645.0, 
+      3645.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "BROWNS FERRY": {
+    "capacities": [
+      100, 
+      81, 
+      100
+    ], 
+    "comment": "", 
+    "index": "BROWNS FERRY", 
+    "lic_core_powers": [
+      3458.0, 
+      3458.0, 
+      3458.0
+    ], 
+    "num_cores": 3, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "BRUNSWICK": {
+    "capacities": [
+      100, 
+      98
+    ], 
+    "comment": "", 
+    "index": "BRUNSWICK", 
+    "lic_core_powers": [
+      2923.0, 
+      2923.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "BYRON": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "BYRON", 
+    "lic_core_powers": [
+      3645.0, 
+      3645.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "CALLAWAY": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "CALLAWAY", 
+    "lic_core_powers": [
+      3565.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "CALVERT CLIFFS": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "CALVERT CLIFFS", 
+    "lic_core_powers": [
+      2737.0, 
+      2737.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "CATAWBA": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "CATAWBA", 
+    "lic_core_powers": [
+      3411.0, 
+      3411.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "CLINTON": {
+    "capacities": [
+      99
+    ], 
+    "comment": "", 
+    "index": "CLINTON", 
+    "lic_core_powers": [
+      3473.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "COLUMBIA": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "COLUMBIA", 
+    "lic_core_powers": [
+      3486.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "COMANCHE PEAK": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "COMANCHE PEAK", 
+    "lic_core_powers": [
+      3612.0, 
+      3612.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "COOK": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "COOK", 
+    "lic_core_powers": [
+      3304.0, 
+      3468.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "COOPER": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "COOPER", 
+    "lic_core_powers": [
+      2419.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "DAVIS BESSE": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "DAVIS BESSE", 
+    "lic_core_powers": [
+      2817.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "DIABLO CANYON": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "DIABLO CANYON", 
+    "lic_core_powers": [
+      3411.0, 
+      3411.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "DRESDEN": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "DRESDEN", 
+    "lic_core_powers": [
+      2957.0, 
+      2957.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "DUANE ARNOLD": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "DUANE ARNOLD", 
+    "lic_core_powers": [
+      1912.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "FARLEY": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "FARLEY", 
+    "lic_core_powers": [
+      2775.0, 
+      2775.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "FERMI": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "FERMI", 
+    "lic_core_powers": [
+      3486.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "FITZPATRICK": {
+    "capacities": [
+      0
+    ], 
+    "comment": "", 
+    "index": "FITZPATRICK", 
+    "lic_core_powers": [
+      2536.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "GINNA": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "GINNA", 
+    "lic_core_powers": [
+      1775.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "GRAND GULF": {
+    "capacities": [
+      28
+    ], 
+    "comment": "", 
+    "index": "GRAND GULF", 
+    "lic_core_powers": [
+      4408.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "HARRIS": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "HARRIS", 
+    "lic_core_powers": [
+      2948.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "HATCH": {
+    "capacities": [
+      100, 
+      88
+    ], 
+    "comment": "", 
+    "index": "HATCH", 
+    "lic_core_powers": [
+      2804.0, 
+      2804.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "HOPE CREEK": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "HOPE CREEK", 
+    "lic_core_powers": [
+      3840.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "INDIAN POINT": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "INDIAN POINT", 
+    "lic_core_powers": [
+      3216.0, 
+      3216.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "LASALLE": {
+    "capacities": [
+      100, 
+      98
+    ], 
+    "comment": "", 
+    "index": "LASALLE", 
+    "lic_core_powers": [
+      3546.0, 
+      3546.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "LIMERICK": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "LIMERICK", 
+    "lic_core_powers": [
+      3515.0, 
+      3515.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "MCGUIRE": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "MCGUIRE", 
+    "lic_core_powers": [
+      3411.0, 
+      3411.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "MILLSTONE": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "MILLSTONE", 
+    "lic_core_powers": [
+      2700.0, 
+      3650.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "MONTICELLO": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "MONTICELLO", 
+    "lic_core_powers": [
+      2004.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "NINE MILE POINT": {
+    "capacities": [
+      86, 
+      100
+    ], 
+    "comment": "", 
+    "index": "NINE MILE POINT", 
+    "lic_core_powers": [
+      1850.0, 
+      3988.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "NORTH ANNA": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "NORTH ANNA", 
+    "lic_core_powers": [
+      2940.0, 
+      2940.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "OCONEE": {
+    "capacities": [
+      100, 
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "OCONEE", 
+    "lic_core_powers": [
+      2568.0, 
+      2568.0, 
+      2568.0
+    ], 
+    "num_cores": 3, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "OYSTER CREEK": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "OYSTER CREEK", 
+    "lic_core_powers": [
+      1930.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "PALISADES": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "PALISADES", 
+    "lic_core_powers": [
+      2565.4
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "PALO VERDE": {
+    "capacities": [
+      100, 
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "PALO VERDE", 
+    "lic_core_powers": [
+      3990.0, 
+      3990.0, 
+      3990.0
+    ], 
+    "num_cores": 3, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "PEACH BOTTOM": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "PEACH BOTTOM", 
+    "lic_core_powers": [
+      3951.0, 
+      3951.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "PERRY": {
+    "capacities": [
+      93
+    ], 
+    "comment": "", 
+    "index": "PERRY", 
+    "lic_core_powers": [
+      3758.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "PILGRIM": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "PILGRIM", 
+    "lic_core_powers": [
+      2028.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "POINT BEACH": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "POINT BEACH", 
+    "lic_core_powers": [
+      1800.0, 
+      1800.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "PRAIRIE ISLAND": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "PRAIRIE ISLAND", 
+    "lic_core_powers": [
+      1677.0, 
+      1677.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "QUAD CITIES": {
+    "capacities": [
+      94, 
+      100
+    ], 
+    "comment": "", 
+    "index": "QUAD CITIES", 
+    "lic_core_powers": [
+      2957.0, 
+      2957.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "RIVER BEND": {
+    "capacities": [
+      0
+    ], 
+    "comment": "", 
+    "index": "RIVER BEND", 
+    "lic_core_powers": [
+      3091.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "ROBINSON": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "ROBINSON", 
+    "lic_core_powers": [
+      2339.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "SALEM": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "SALEM", 
+    "lic_core_powers": [
+      3459.0, 
+      3459.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "SEABROOK": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "SEABROOK", 
+    "lic_core_powers": [
+      3648.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "SEQUOYAH": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "SEQUOYAH", 
+    "lic_core_powers": [
+      3455.0, 
+      3455.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "SOUTH TEXAS": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "SOUTH TEXAS", 
+    "lic_core_powers": [
+      3853.0, 
+      3853.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "ST. LUCIE": {
+    "capacities": [
+      0, 
+      100
+    ], 
+    "comment": "", 
+    "index": "ST. LUCIE", 
+    "lic_core_powers": [
+      3020.0, 
+      3020.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "SUMMER": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "SUMMER", 
+    "lic_core_powers": [
+      2900.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "SURRY": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "SURRY", 
+    "lic_core_powers": [
+      2587.0, 
+      2587.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "SUSQUEHANNA": {
+    "capacities": [
+      100, 
+      98
+    ], 
+    "comment": "", 
+    "index": "SUSQUEHANNA", 
+    "lic_core_powers": [
+      3952.0, 
+      3952.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "THREE MILE ISLAND": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "THREE MILE ISLAND", 
+    "lic_core_powers": [
+      2568.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "TURKEY POINT": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "TURKEY POINT", 
+    "lic_core_powers": [
+      2644.0, 
+      2644.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "VOGTLE": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "VOGTLE", 
+    "lic_core_powers": [
+      3625.6, 
+      3625.6
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "WATERFORD": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "WATERFORD", 
+    "lic_core_powers": [
+      3716.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "WATTS BAR": {
+    "capacities": [
+      100, 
+      100
+    ], 
+    "comment": "", 
+    "index": "WATTS BAR", 
+    "lic_core_powers": [
+      3459.0, 
+      3411.0
+    ], 
+    "num_cores": 2, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }, 
+  "WOLF CREEK": {
+    "capacities": [
+      100
+    ], 
+    "comment": "", 
+    "index": "WOLF CREEK", 
+    "lic_core_powers": [
+      3565.0
+    ], 
+    "num_cores": 1, 
+    "pass": 0, 
+    "run_range": [], 
+    "timestamp": 1486080000, 
+    "type": "REACTOR_STATUS", 
+    "version": 1
+  }
+}
