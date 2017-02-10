@@ -1,0 +1,4 @@
+This file gives a brief description of the contents in the daily DB directory.
+
+REACTOR_STATUS.ratdb: This is the .ratdb file that .ratdbs in daily_updates
+is modeled after.  the main difference 
