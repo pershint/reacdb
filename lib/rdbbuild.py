@@ -187,7 +187,7 @@ class StatusFileBuilder(object):
         timestamp = int(calendar.timegm(time.strptime(fulldate, pattern)))
         self.timestamp = timestamp
 
-    def buildStatusFileEntries(self):
+    def buildPowerFileEntries(self):
         """
         Takes the date the subclass is initialized with and grabs the daily
         operating capacity from NRC.gov.
