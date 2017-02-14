@@ -55,8 +55,9 @@ def chi2scatter(dms_arr, sst_arr,oscParamsSeed):
     '''
     fig = plt.figure()
     ax = fig.add_subplot(1,1,1)
-    ax.plot(sst_arr, dms_arr, 'ro', alpha=0.7, color='m')
-    ax.plot(oscParamsSeed[1], oscParamsSeed[0], '*', markersize=20, alpha=0.7, color='b')
+    ax.plot(sst_arr, dms_arr, 'ro', alpha=0.7, color='m', label='Best fits')
+    ax.plot(oscParamsSeed[1], oscParamsSeed[0], '*', markersize=20, alpha=0.7, color='b', label = 'Seed values')
+    ax.plot(np.average(sst_arr), np.average(dms_arr), '*', markersize=20, alpha=0.7, color='r', label = 'Fit average')
     ax.set_xlabel(r'$\sin^{2}(\theta_{12})$')
     ax.set_ylabel(r'$\Delta m^{2}_{12} (ev^{2})$')
     ax.set_title('Scatter plot of best-fit oscillation parameters')
