@@ -5,17 +5,20 @@ import SNOdist as sd
 import dailyparse as dp
 import numpy as np
 
-parameters = 'none'
 DEBUG = False
+ADD_SYSTEMATICS = True
 
 RUNTIME = 8760*5   #One year in hours
 EFFICIENCY = 1  #Assume 100% signal detection efficiency
 LF = 0.8    #Assume all power plants operate at 80% of licensed MWt
-MWHTOMEV = 2.247E22 #One MW*h equals this many MeV
-NP = 1E32   #Need to approximate SNO+'s number of proton targets
-CAList = ["BRUCE","DARLINGTON", "PICKERING","POINT LEPREAU"]
+LF_VAR = 10 #Variance in all load factors
 
 hbarc = 1.9733E-16 #in MeV * km
+MWHTOMEV = 2.247E22 #One MW*h equals this many MeV
+NP = 1E32   #Need to approximate SNO+'s number of proton targets
+
+CAList = ["BRUCE","DARLINGTON", "PICKERING","POINT LEPREAU"]
+
 
 SINSQT13 = 0.0219 
 SINSQTWO13 = 0.0851 #calculated from SINSQT13
@@ -39,6 +42,9 @@ A3 = -0.001953
 def build_dNdE(unosc_spectra,energy_array,oscParams):
     Total_Spectra = np.zeros(len(energy_array))
     for ReacSpectra in unosc_spectra:
+        if ADD_SYSTEMATICS:
+            #Adds systematic fluctuations to each core
+            ReacSpectra.AddCoreSystematics()
         ReacOscSpecGen = OscSpecGen(ReacSpectra, oscParams)
         Total_Spectra += ReacOscSpecGen.Summed_Spectra
     return dNdE(energy_array,Total_Spectra)
@@ -151,7 +157,21 @@ class UnoscSpecGen(object):
         for i,iso in enumerate(self.iso_array):
             denominator += isocomp[i] * self.iso_array[i].Eperfission
         return denominator
-        
+       
+    def AddCoreSystematics(self):
+        '''
+        If called, the spectra from each core is scaled according to the
+        average load factor.  Basically, sample from a gaussian of 
+        mu=LF and sigma = 10% for now.  Can make a function of LF later.
+        '''
+        sysSigmas = LF_VAR * np.ones(len(self.AvgLFs))
+        sysFlucs = np.randShoot(self.AvgLFs,sysSigmas,len(self.AvgLFs))
+        Unosc_Spectra_wSys = []
+        for i,coreSpectrum in enumerate(self.Unosc_Spectra):
+            coreSpectrum = coreSpectrum * sysFlucs[i]
+            self.Unosc_Spectra_wSys.append(coreSpectrum)
+        self.Unosc_Spectra = self.Unosc_Spectra_wSys
+
     #Make private copies of the public methods
     __core_check = core_check
     __calcSpectra = calcSpectra
