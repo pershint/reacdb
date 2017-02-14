@@ -25,14 +25,14 @@ import iminuit as im
 
 
 #DATE = '11/20/2016' #Date queried on NRC.gov to get operating US reactor names
-#RUNTIME = 8760   #One year in hours
-#EFFICIENCY = 1  #Assume 100% signal detection efficiency
-#LF = 0.8    #Assume all power plants operate at 80% of licensed MWt
-#MWHTOMEV = 2.247E22 #One MW*h equals this many MeV
-#NP = 1E32   #Need to approximate SNO+'s number of proton targets
 ISOTOPES = ['235U', '238U', '239Pu', '241Pu']
 ENERGY_ARRAY = np.arange(1.82,9,0.01)
+
+#TODO: Make a list of all cores that have been online since start of 2016
 DATE = '11/20/2016' #Date queried on NRC.gov to get operating US reactor names
+
+#TODO: Have hard-coded here only, not in NuSpectrum.py also
+CAList = ["BRUCE","DARLINGTON", "PICKERING","POINT LEPREAU"]
 
 NUMBINS = 30 #Number of bins for the discretized dNdE spectrum
 
@@ -79,14 +79,14 @@ def GetBruceSpectra(List,Isotope_Information):
     print("#----- AN EXERCISE IN CALCULATING AN UNOSC. SPECTRA FOR BRUCE --#")
     BruceDetails = rp.ReactorDetails("BRUCE")
     BruceStatus = rp.ReactorStatus("BRUCE")
-    BruceUnoscSpectra = ns.UnoscSpectra(BruceDetails,BruceStatus,Isotope_Information, \
+    BruceUnoscSpecGen = ns.UnoscSpecGen(BruceDetails,BruceStatus,Isotope_Information, \
             ENERGY_ARRAY)
-    BruceOscSpectra = ns.OscSpectra(BruceUnoscSpectra)
-    for CORENUM in np.arange(1,BruceUnoscSpectra.no_cores+1):
+    BruceOscSpecGen = ns.OscSpecGen(BruceUnoscSpecGen)
+    for CORENUM in np.arange(1,BruceUnoscSpecGen.no_cores+1):
         print("GRAPHING OSC SPECTRA FOR " + str(CORENUM) + " NOW...")
-        splt.plotCoreOscSpectrum((CORENUM-1),BruceOscSpectra)
+        splt.plotCoreOscSpectrum((CORENUM-1),BruceOscSpecGen)
     print("Graphing sum of oscillated spectra for BRUCE:")
-    splt.plotSumOscSpectrum(BruceOscSpectra)
+    splt.plotSumOscSpectrum(BruceOscSpecGen)
     print("#---- END EXERCISES FOR BRUCE -----#")
 
 def RoughIntegrate(y_array,x_array):
@@ -102,11 +102,13 @@ def RoughIntegrate(y_array,x_array):
             print("At end of array.  Result: " + str(integral))
             return int(integral)
         integral += y_array[i] * (x_array[i+1]-x_array[i])
+
 #FIXME: If there's no online connection, need to
 #Default to some hard-coded list
+
 def getUSList():
     NRClist = nrc.NRCDayList()
-    NRClist.getDateReacStatuses(DATE)
+    NRClist.setDateReacStatuses(DATE)
     NRClist.fillDateNames()
     USlist = NRClist.date_reacs
     USlist = rb.USListToRATDBFormat(USlist)
@@ -121,11 +123,9 @@ def setListType():
         USList = getUSList()
         return USList
     if options.reactors == ("CA"):
-        CAList = ["BRUCE","DARLINGTON", "PICKERING","POINT LEPREAU"]
         return CAList
     if options.reactors == ("USCA"):
         USList = getUSList()
-        CAList = ["BRUCE","DARLINGTON", "PICKERING","POINT LEPREAU"]
         USCAList = USList + CAList
         return USCAList
 
@@ -148,9 +148,9 @@ def build_unoscSpectra(List):
     for reactor in List:
         ReacDetails = rp.ReactorDetails(reactor)
         ReacStatus = rp.ReactorStatus(reactor)
-        ReacUnoscSpectra = ns.UnoscSpectra(ReacDetails,ReacStatus, \
+        ReacUnoscSpecGen = ns.UnoscSpecGen(ReacDetails,ReacStatus, \
                 Isotope_Information, ENERGY_ARRAY)
-        unosc_spectra.append(ReacUnoscSpectra)
+        unosc_spectra.append(ReacUnoscSpecGen)
     return unosc_spectra
 
 
@@ -172,7 +172,6 @@ if __name__ == '__main__':
 
     print(" ")
     unosc_spectra = build_unoscSpectra(List)
-    
     #First, show the dNdE function
     USCA_dNdE = ns.build_dNdE(unosc_spectra,ENERGY_ARRAY,oscParams)
     RoughIntegrate(USCA_dNdE.dNdE,ENERGY_ARRAY)

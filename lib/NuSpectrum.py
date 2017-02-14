@@ -2,6 +2,7 @@
 
 import rdbparse as rp
 import SNOdist as sd
+import dailyparse as dp
 import numpy as np
 
 parameters = 'none'
@@ -12,6 +13,7 @@ EFFICIENCY = 1  #Assume 100% signal detection efficiency
 LF = 0.8    #Assume all power plants operate at 80% of licensed MWt
 MWHTOMEV = 2.247E22 #One MW*h equals this many MeV
 NP = 1E32   #Need to approximate SNO+'s number of proton targets
+CAList = ["BRUCE","DARLINGTON", "PICKERING","POINT LEPREAU"]
 
 hbarc = 1.9733E-16 #in MeV * km
 
@@ -37,8 +39,9 @@ A3 = -0.001953
 def build_dNdE(unosc_spectra,energy_array,oscParams):
     Total_Spectra = np.zeros(len(energy_array))
     for ReacSpectra in unosc_spectra:
-        ReacOscSpectra = OscSpectra(ReacSpectra, oscParams)
-        Total_Spectra += ReacOscSpectra.Summed_Spectra
+        ReacSpectra_wP = coreGen(ReacSpectra)
+        ReacOscSpecGen = OscSpecGen(ReacSpectra_wP, oscParams)
+        Total_Spectra += ReacOscSpecGen.Summed_Spectra
     return dNdE(energy_array,Total_Spectra)
 
 #Class takes in four RATDB type Isotope Info entries, one
@@ -87,25 +90,89 @@ class Lambda(object):
     def polyTerm(self, a, e, c):
         return a * (e**c)
 
+
+#Class takes in the unoscillated spectra associated with a reactor plant and
+#incorporates systematics based on the number of days ran in an experiment
+#and the load factor of a reactor for each day.  Builds the final unoscillated
+#flux for each core.
+class coreGen(object):
+    def __init__(self,unoscSpecGen):
+        self.E_arr = unoscSpecGen.E_arr
+        self.Unosc_Spectra = unoscSpecGen.Unosc_Spectra
+        self.ReacDetails = unoscSpecGen.ReacDetails
+        self.ReacStatus = unoscSpecGen.ReacStatus
+        self.Core_Distances = unoscSpecGen.Core_Distances
+
+        #Spectra with power corrections
+        self.Unosc_Flux = []
+        #FIXME: if self.ReacDetails.index is in CAList, use
+        self.__Power_Perfect()
+#        if self.ReacDetails.index in CAList:
+#            self.__Power_Perfect()
+#        else:
+#            self.__Power_AvgAvailable()
+
+    def Power_Perfect(self):
+        '''
+        Assumes all reactors run every day at LF% power, no statistical
+        fluctuations.  Ends up scaling each reactor core's spectra by the
+        approproate thermal power, time, load factor, and MeV conversion factor.
+        '''
+        for i,coreSpectrum in enumerate(self.Unosc_Spectra):
+            coreSpectrum = coreSpectrum * RUNTIME * MWHTOMEV * \
+                    self.ReacStatus.core_powers[i] * LF
+            self.Unosc_Flux.append(coreSpectrum)
+
+    def Power_AvgAvailable(self):
+        '''
+        Grabs all of the load factors and licensed MWts available for this reactors
+        cores from the daily database, averages the licensed MWts and load
+        factors, and uses these with the hard-coded runtime to generate each core
+        power.
+        '''
+        ReacName = self.ReacDetails.index
+        numdays_ofdata, AllReacEntries = dp.getAllEntriesInDailyUpdates(ReacName)
+        allLicensedMWts = []
+        allLoadFactors = []
+        for entry in AllReacEntries:
+            allLicensedMWts.append(np.array(entry["lic_core_powers"]))
+            allLoadFactors.append(np.array(entry["capacities"]))
+        #Now, average over all values for each core
+        TotMWts = np.sum(allLicensedMWts, axis=0)
+        TotLFs = np.sum(allLoadFactors, axis=0)
+        AvgMWts = TotMWts/numdays_ofdata
+        AvgLFs = (TotLFs/numdays_ofdata) / 100.0 #Shown in DB as percentage 
+
+        #now, use the average values to rescale the spectrums
+        
+        for i,coreSpectrum in enumerate(self.Unosc_Spectra):
+            coreSpectrum = coreSpectrum * RUNTIME * MWHTOMEV * \
+                    AvgMWts[i] * AvgLFs[i]
+            self.Unosc_Flux.append(coreSpectrum)
+
+    __Power_Perfect = Power_Perfect
+    __Power_AvgAvailable = Power_AvgAvailable
+
+
 #Class takes in permanent details for a reactor plant (ReacDetails RATDB entry)
 #And the reactor's status (ReacStatus RATDB entry), and the RATDB entries of 
 #isotopes to use, and the energys to calculate the spectrum at
-#returns an array of spectra arrays evaluated at the given energies.
-#There is one array for each core of the plant.
-class UnoscSpectra(object):
+#and builds an array of spectra arrays (self.Unosc_Spectra) evaluated at the
+#given energies.  There is one array for each core of the plant.
+class UnoscSpecGen(object):
     def __init__(self,ReacDetails,ReacStatus,iso_array,energy_array):
         self.E_arr = energy_array
         self.ReacDetails = ReacDetails
         self.ReacStatus = ReacStatus
         self.iso_array = iso_array
 
-        self.core_check()
+        self.__core_check()
         self.no_cores = self.ReacStatus.no_cores
 
         self.Core_Distances = []
-        self.CoreDistancesFromSNO()
+        self.__CoreDistancesFromSNO()
         self.Unosc_Spectra = []
-        self.calcSpectra()
+        self.__calcSpectra()
 
 
     def core_check(self):
@@ -137,26 +204,31 @@ class UnoscSpectra(object):
             for E in self.E_arr:
                 LambdaFunction = Lambda(self.iso_array, isotope_composition,E).value
                 coreLambda = LambdaFunction / self.spectrumDenom(isotope_composition)
-                coreSpectrum.append( coreMWt * LF * coreLambda / \
+                coreSpectrum.append( coreLambda / \
                         (4*np.pi * (coreDistance**2)))
-            self.Unosc_Spectra.append(coreSpectrum)
+            self.Unosc_Spectra.append(np.array(coreSpectrum))
 
     def spectrumDenom(self,isocomp):
         denominator = 0.0
         for i,iso in enumerate(self.iso_array):
             denominator += isocomp[i] * self.iso_array[i].Eperfission
         return denominator
+        
+    #Make private copies of the public methods
+    __core_check = core_check
+    __calcSpectra = calcSpectra
+    __CoreDistancesFromSNO = CoreDistancesFromSNO
 
-#Class takes an UnoscSpectra class (contains spectrums for each core of one reactor)
+#Class takes a coreGen class (contains spectrums for each core of one reactor)
 #and outputs the the oscillated Spectrums.  oscParams should have two entries: 
 #[delta m-squared, sin^2(theta12)]
-class OscSpectra(object):
-    def __init__(self, UnoscSpectra, oscParams):
-        self.Unosc_Spectra = UnoscSpectra.Unosc_Spectra
-        self.ReacDetails = UnoscSpectra.ReacDetails
-        self.ReacStatus = UnoscSpectra.ReacStatus
-        self.E_arr = UnoscSpectra.E_arr
-        self.Core_Distances = UnoscSpectra.Core_Distances 
+class OscSpecGen(object):
+    def __init__(self, coreGen, oscParams):
+        self.Unosc_Flux = coreGen.Unosc_Flux
+        self.ReacDetails = coreGen.ReacDetails
+        self.ReacStatus = coreGen.ReacStatus
+        self.E_arr = coreGen.E_arr
+        self.Core_Distances = coreGen.Core_Distances 
 
         #define your variable oscillation paramaters;
         self.SINSQT12 = oscParams[1]
@@ -167,13 +239,13 @@ class OscSpectra(object):
 
         #Oscillate each core spectra, then sum them
         self.Osc_Spectra = []
-        self.oscillateSpectra()
+        self.__oscillateSpectra()
         self.Summed_Spectra = []
-        self.sumSpectra()
+        self.__sumSpectra()
 
     def oscillateSpectra(self):
         self.Osc_Spectra = [] #Refresh array before adding spectrums
-        for i,spectrum in enumerate(self.Unosc_Spectra):
+        for i,spectrum in enumerate(self.Unosc_Flux):
              self.Osc_Spectra.append(np.product([spectrum,self.Pee(self.E_arr, \
                      self.Core_Distances[i])],axis=0))
 
@@ -208,9 +280,16 @@ class OscSpectra(object):
         summed_spectra = np.sum(self.Osc_Spectra, axis=0)
         self.Summed_Spectra = summed_spectra
 
+
+    #Make private copies of the public methods; important to let
+    #subclasses override methods without breaking intraclass method calls.
+    __sumSpectra = sumSpectra
+    __oscillateSpectra = oscillateSpectra
+
 #Class takes in a reactor spectrum array (oscillated or unoscillated) and the
 #relative x-axis array (Energy_Array in the class) and calculates the
-#dNdE function for the spectrum 
+#dNdE function for the spectrum. Total Runtime and Thermal power associated
+#with the spectrum's core must already be factored into the spectrum.
 class dNdE(object):
     def __init__(self,Energy_Array,Spectrum):
         self.Energy_Array = Energy_Array
@@ -223,7 +302,7 @@ class dNdE(object):
 
     def evaldNdE(self):
         self.dNdE = [] #Remove any previous values in dNdE
-        self.dNdE = EFFICIENCY * NP * RUNTIME * MWHTOMEV * \
+        self.dNdE = EFFICIENCY * NP * \
             self.XC(self.Energy_Array) * self.Spectrum
 
     def Array_Check(self):

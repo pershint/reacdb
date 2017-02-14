@@ -1,2 +1,531 @@
 #Log file for operation of Daily Reactor database update
 2017-02-10 19:43:32,989 INITIALIZING DAILY UPDATE FOR TODAY'S DATE
+2017-02-13 17:32:42,826 INITIALIZING DAILY UPDATE FOR TODAY'S DATE
+2017-02-13 18:16:52,907 For 03/07/2016 update in dailydb, update failed.
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 181, in scrapeTypeAndMWt
+    listpage = urllib2.urlopen(self._homepage + self._listpgext)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno -2] Name or service not known>
+2017-02-13 18:16:52,910 Uncaught exception: <urlopen error [Errno -2] Name or service not known>
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 181, in scrapeTypeAndMWt
+    listpage = urllib2.urlopen(self._homepage + self._listpgext)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno -2] Name or service not known>
+2017-02-13 18:16:52,910 Error type: <class 'urllib2.URLError'>
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 181, in scrapeTypeAndMWt
+    listpage = urllib2.urlopen(self._homepage + self._listpgext)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno -2] Name or service not known>
+2017-02-13 18:16:52,910 Traceback: ['  File "Update_DailyDB.py", line 73, in <module>\n    NewPowerData.buildPowerFileEntries()\n', '  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries\n    core_MWt = self.getLicensedMWt(core_name)\n', '  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt\n    Static_Info.scrapeTypeAndMWt()\n', '  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 181, in scrapeTypeAndMWt\n    listpage = urllib2.urlopen(self._homepage + self._listpgext)\n', '  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen\n    return _opener.open(url, data, timeout)\n', '  File "/usr/lib/python2.7/urllib2.py", line 410, in open\n    response = meth(req, response)\n', '  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response\n    \'http\', request, response, code, msg, hdrs)\n', '  File "/usr/lib/python2.7/urllib2.py", line 442, in error\n    result = self._call_chain(*args)\n', '  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain\n    result = func(*args)\n', '  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302\n    return self.parent.open(new, timeout=req.timeout)\n', '  File "/usr/lib/python2.7/urllib2.py", line 404, in open\n    response = self._open(req, data)\n', '  File "/usr/lib/python2.7/urllib2.py", line 422, in _open\n    \'_open\', req)\n', '  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain\n    result = func(*args)\n', '  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open\n    return self.do_open(httplib.HTTPSConnection, req)\n', '  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open\n    raise URLError(err)\n']
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 181, in scrapeTypeAndMWt
+    listpage = urllib2.urlopen(self._homepage + self._listpgext)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno -2] Name or service not known>
+2017-02-13 18:25:03,387 For 06/03/2016 update in dailydb, update failed.
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 196, in scrapeTypeAndMWt
+    reacpage = urllib2.urlopen(self._homepage + reacloc)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno -2] Name or service not known>
+2017-02-13 18:25:03,387 Uncaught exception: <urlopen error [Errno -2] Name or service not known>
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 196, in scrapeTypeAndMWt
+    reacpage = urllib2.urlopen(self._homepage + reacloc)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno -2] Name or service not known>
+2017-02-13 18:25:03,388 Error type: <class 'urllib2.URLError'>
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 196, in scrapeTypeAndMWt
+    reacpage = urllib2.urlopen(self._homepage + reacloc)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno -2] Name or service not known>
+2017-02-13 18:25:03,388 Traceback: ['  File "Update_DailyDB.py", line 73, in <module>\n    NewPowerData.buildPowerFileEntries()\n', '  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries\n    core_MWt = self.getLicensedMWt(core_name)\n', '  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt\n    Static_Info.scrapeTypeAndMWt()\n', '  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 196, in scrapeTypeAndMWt\n    reacpage = urllib2.urlopen(self._homepage + reacloc)\n', '  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen\n    return _opener.open(url, data, timeout)\n', '  File "/usr/lib/python2.7/urllib2.py", line 410, in open\n    response = meth(req, response)\n', '  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response\n    \'http\', request, response, code, msg, hdrs)\n', '  File "/usr/lib/python2.7/urllib2.py", line 442, in error\n    result = self._call_chain(*args)\n', '  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain\n    result = func(*args)\n', '  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302\n    return self.parent.open(new, timeout=req.timeout)\n', '  File "/usr/lib/python2.7/urllib2.py", line 404, in open\n    response = self._open(req, data)\n', '  File "/usr/lib/python2.7/urllib2.py", line 422, in _open\n    \'_open\', req)\n', '  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain\n    result = func(*args)\n', '  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open\n    return self.do_open(httplib.HTTPSConnection, req)\n', '  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open\n    raise URLError(err)\n']
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 196, in scrapeTypeAndMWt
+    reacpage = urllib2.urlopen(self._homepage + reacloc)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno -2] Name or service not known>
+2017-02-13 20:06:31,424 For 11/03/2016 update in dailydb, update failed.
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 196, in scrapeTypeAndMWt
+    reacpage = urllib2.urlopen(self._homepage + reacloc)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno 8] _ssl.c:510: EOF occurred in violation of protocol>
+2017-02-13 20:06:31,425 Uncaught exception: <urlopen error [Errno 8] _ssl.c:510: EOF occurred in violation of protocol>
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 196, in scrapeTypeAndMWt
+    reacpage = urllib2.urlopen(self._homepage + reacloc)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno 8] _ssl.c:510: EOF occurred in violation of protocol>
+2017-02-13 20:06:31,425 Error type: <class 'urllib2.URLError'>
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 196, in scrapeTypeAndMWt
+    reacpage = urllib2.urlopen(self._homepage + reacloc)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno 8] _ssl.c:510: EOF occurred in violation of protocol>
+2017-02-13 20:06:31,425 Traceback: ['  File "Update_DailyDB.py", line 73, in <module>\n    NewPowerData.buildPowerFileEntries()\n', '  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries\n    core_MWt = self.getLicensedMWt(core_name)\n', '  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt\n    Static_Info.scrapeTypeAndMWt()\n', '  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 196, in scrapeTypeAndMWt\n    reacpage = urllib2.urlopen(self._homepage + reacloc)\n', '  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen\n    return _opener.open(url, data, timeout)\n', '  File "/usr/lib/python2.7/urllib2.py", line 410, in open\n    response = meth(req, response)\n', '  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response\n    \'http\', request, response, code, msg, hdrs)\n', '  File "/usr/lib/python2.7/urllib2.py", line 442, in error\n    result = self._call_chain(*args)\n', '  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain\n    result = func(*args)\n', '  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302\n    return self.parent.open(new, timeout=req.timeout)\n', '  File "/usr/lib/python2.7/urllib2.py", line 404, in open\n    response = self._open(req, data)\n', '  File "/usr/lib/python2.7/urllib2.py", line 422, in _open\n    \'_open\', req)\n', '  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain\n    result = func(*args)\n', '  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open\n    return self.do_open(httplib.HTTPSConnection, req)\n', '  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open\n    raise URLError(err)\n']
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 196, in scrapeTypeAndMWt
+    reacpage = urllib2.urlopen(self._homepage + reacloc)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno 8] _ssl.c:510: EOF occurred in violation of protocol>
+2017-02-13 20:10:31,642 For 03/21/2016 update in dailydb, update failed.
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 196, in scrapeTypeAndMWt
+    reacpage = urllib2.urlopen(self._homepage + reacloc)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno -2] Name or service not known>
+2017-02-13 20:10:31,642 Uncaught exception: <urlopen error [Errno -2] Name or service not known>
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 196, in scrapeTypeAndMWt
+    reacpage = urllib2.urlopen(self._homepage + reacloc)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno -2] Name or service not known>
+2017-02-13 20:10:31,642 Error type: <class 'urllib2.URLError'>
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 196, in scrapeTypeAndMWt
+    reacpage = urllib2.urlopen(self._homepage + reacloc)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno -2] Name or service not known>
+2017-02-13 20:10:31,643 Traceback: ['  File "Update_DailyDB.py", line 73, in <module>\n    NewPowerData.buildPowerFileEntries()\n', '  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries\n    core_MWt = self.getLicensedMWt(core_name)\n', '  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt\n    Static_Info.scrapeTypeAndMWt()\n', '  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 196, in scrapeTypeAndMWt\n    reacpage = urllib2.urlopen(self._homepage + reacloc)\n', '  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen\n    return _opener.open(url, data, timeout)\n', '  File "/usr/lib/python2.7/urllib2.py", line 410, in open\n    response = meth(req, response)\n', '  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response\n    \'http\', request, response, code, msg, hdrs)\n', '  File "/usr/lib/python2.7/urllib2.py", line 442, in error\n    result = self._call_chain(*args)\n', '  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain\n    result = func(*args)\n', '  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302\n    return self.parent.open(new, timeout=req.timeout)\n', '  File "/usr/lib/python2.7/urllib2.py", line 404, in open\n    response = self._open(req, data)\n', '  File "/usr/lib/python2.7/urllib2.py", line 422, in _open\n    \'_open\', req)\n', '  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain\n    result = func(*args)\n', '  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open\n    return self.do_open(httplib.HTTPSConnection, req)\n', '  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open\n    raise URLError(err)\n']
+Traceback (most recent call last):
+  File "Update_DailyDB.py", line 73, in <module>
+    NewPowerData.buildPowerFileEntries()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 207, in buildPowerFileEntries
+    core_MWt = self.getLicensedMWt(core_name)
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/rdbbuild.py", line 240, in getLicensedMWt
+    Static_Info.scrapeTypeAndMWt()
+  File "/home/onetrueteal/Programs/SNO+/ReacDB/lib/RIgrabber.py", line 196, in scrapeTypeAndMWt
+    reacpage = urllib2.urlopen(self._homepage + reacloc)
+  File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 410, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 442, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 629, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "/usr/lib/python2.7/urllib2.py", line 422, in _open
+    '_open', req)
+  File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "/usr/lib/python2.7/urllib2.py", line 1184, in do_open
+    raise URLError(err)
+URLError: <urlopen error [Errno -2] Name or service not known>
