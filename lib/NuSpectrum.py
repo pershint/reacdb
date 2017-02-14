@@ -39,8 +39,7 @@ A3 = -0.001953
 def build_dNdE(unosc_spectra,energy_array,oscParams):
     Total_Spectra = np.zeros(len(energy_array))
     for ReacSpectra in unosc_spectra:
-        ReacSpectra_wP = coreGen(ReacSpectra)
-        ReacOscSpecGen = OscSpecGen(ReacSpectra_wP, oscParams)
+        ReacOscSpecGen = OscSpecGen(ReacSpectra, oscParams)
         Total_Spectra += ReacOscSpecGen.Summed_Spectra
     return dNdE(energy_array,Total_Spectra)
 
@@ -90,70 +89,6 @@ class Lambda(object):
     def polyTerm(self, a, e, c):
         return a * (e**c)
 
-
-#Class takes in the unoscillated spectra associated with a reactor plant and
-#incorporates systematics based on the number of days ran in an experiment
-#and the load factor of a reactor for each day.  Builds the final unoscillated
-#flux for each core.
-class coreGen(object):
-    def __init__(self,unoscSpecGen):
-        self.E_arr = unoscSpecGen.E_arr
-        self.Unosc_Spectra = unoscSpecGen.Unosc_Spectra
-        self.ReacDetails = unoscSpecGen.ReacDetails
-        self.ReacStatus = unoscSpecGen.ReacStatus
-        self.Core_Distances = unoscSpecGen.Core_Distances
-
-        #Spectra with power corrections
-        self.Unosc_Flux = []
-        #FIXME: if self.ReacDetails.index is in CAList, use
-        self.__Power_Perfect()
-#        if self.ReacDetails.index in CAList:
-#            self.__Power_Perfect()
-#        else:
-#            self.__Power_AvgAvailable()
-
-    def Power_Perfect(self):
-        '''
-        Assumes all reactors run every day at LF% power, no statistical
-        fluctuations.  Ends up scaling each reactor core's spectra by the
-        approproate thermal power, time, load factor, and MeV conversion factor.
-        '''
-        for i,coreSpectrum in enumerate(self.Unosc_Spectra):
-            coreSpectrum = coreSpectrum * RUNTIME * MWHTOMEV * \
-                    self.ReacStatus.core_powers[i] * LF
-            self.Unosc_Flux.append(coreSpectrum)
-
-    def Power_AvgAvailable(self):
-        '''
-        Grabs all of the load factors and licensed MWts available for this reactors
-        cores from the daily database, averages the licensed MWts and load
-        factors, and uses these with the hard-coded runtime to generate each core
-        power.
-        '''
-        ReacName = self.ReacDetails.index
-        numdays_ofdata, AllReacEntries = dp.getAllEntriesInDailyUpdates(ReacName)
-        allLicensedMWts = []
-        allLoadFactors = []
-        for entry in AllReacEntries:
-            allLicensedMWts.append(np.array(entry["lic_core_powers"]))
-            allLoadFactors.append(np.array(entry["capacities"]))
-        #Now, average over all values for each core
-        TotMWts = np.sum(allLicensedMWts, axis=0)
-        TotLFs = np.sum(allLoadFactors, axis=0)
-        AvgMWts = TotMWts/numdays_ofdata
-        AvgLFs = (TotLFs/numdays_ofdata) / 100.0 #Shown in DB as percentage 
-
-        #now, use the average values to rescale the spectrums
-        
-        for i,coreSpectrum in enumerate(self.Unosc_Spectra):
-            coreSpectrum = coreSpectrum * RUNTIME * MWHTOMEV * \
-                    AvgMWts[i] * AvgLFs[i]
-            self.Unosc_Flux.append(coreSpectrum)
-
-    __Power_Perfect = Power_Perfect
-    __Power_AvgAvailable = Power_AvgAvailable
-
-
 #Class takes in permanent details for a reactor plant (ReacDetails RATDB entry)
 #And the reactor's status (ReacStatus RATDB entry), and the RATDB entries of 
 #isotopes to use, and the energys to calculate the spectrum at
@@ -174,6 +109,9 @@ class UnoscSpecGen(object):
         self.Unosc_Spectra = []
         self.__calcSpectra()
 
+        #Now, incorporate Power information from daily_update database
+        self.CoreSpecs = coreGen(ReacStatus,self.Unosc_Spectra)
+        self.Unosc_Spectra = self.CoreSpecs.Unosc_Spectra_wP
 
     def core_check(self):
         if self.ReacDetails.no_cores != self.ReacStatus.no_cores:
@@ -219,16 +157,90 @@ class UnoscSpecGen(object):
     __calcSpectra = calcSpectra
     __CoreDistancesFromSNO = CoreDistancesFromSNO
 
+
+#Class takes in the unoscillated spectra associated with a reactor plant.
+#generates each core's operation details based on the number of days ran
+#in an experiment and the load factor of a reactor for each day. Builds the
+#unoscillated spectra with power and load factor values included.
+class coreGen(object):
+    def __init__(self,ReacStatus,Unosc_Spectra):
+
+        self.ReacName = ReacStatus.index
+        self.core_powers = ReacStatus.core_powers #Core powers as in RAT
+        self.Unosc_Spectra = Unosc_Spectra
+
+        #Number of days of data collected from the daily_updates DB
+        self.numdays_ofdata = 0
+
+        #Sum of licensed MWts grabbed for each day and sum of load factors
+        self.TotMWts = []
+        self.TotLFs = []
+
+        #These are calculated as the total divided by the numdays_ofdata
+        self.AvgMWts = []
+        self.AvgMWts = []
+
+        #Spectra with power corrections
+        self.Unosc_Spectra_wP = []
+
+        #if self.ReacDetails.index is in CAList, use RATDB core powers with no
+        #statistical fluctuations
+        if self.ReacName in CAList:
+            self.__Power_Perfect()
+        else:
+            self.__Power_AvgAvailable()
+
+    def Power_Perfect(self):
+        '''
+        Assumes all reactors run every day at LF% power, no statistical
+        fluctuations.  Ends up scaling each reactor core's spectra by the
+        approproate thermal power, time, load factor, and MeV conversion factor.
+        '''
+        for i,coreSpectrum in enumerate(self.Unosc_Spectra):
+            coreSpectrum = coreSpectrum * RUNTIME * MWHTOMEV * \
+                    self.core_powers[i] * LF
+            self.Unosc_Spectra_wP.append(coreSpectrum)
+
+    def Power_AvgAvailable(self):
+        '''
+        Grabs all of the load factors and licensed MWts available for this reactors
+        cores from the daily database, averages the licensed MWts and load
+        factors, and uses these with the hard-coded runtime to generate each core
+        power.
+        '''
+        self.numdays_ofdata, AllReacEntries = dp.getAllEntriesInDailyUpdates(self.ReacName)
+        allLicensedMWts = []
+        allLoadFactors = []
+        for entry in AllReacEntries:
+            allLicensedMWts.append(np.array(entry["lic_core_powers"]))
+            allLoadFactors.append(np.array(entry["capacities"]))
+        #Now, average over all values for each core
+        self.TotMWts = np.sum(allLicensedMWts, axis=0)
+        self.TotLFs = np.sum(allLoadFactors, axis=0)
+        self.AvgMWts = self.TotMWts/self.numdays_ofdata
+        self.AvgLFs = (self.TotLFs/self.numdays_ofdata) / 100.0 #Shown in DB as percentage 
+
+        #now, use the average values to rescale the spectrums
+        
+        for i,coreSpectrum in enumerate(self.Unosc_Spectra):
+            coreSpectrum = coreSpectrum * RUNTIME * MWHTOMEV * \
+                    self.AvgMWts[i] * self.AvgLFs[i]
+            self.Unosc_Spectra_wP.append(coreSpectrum)
+
+    __Power_Perfect = Power_Perfect
+    __Power_AvgAvailable = Power_AvgAvailable
+
+
 #Class takes a coreGen class (contains spectrums for each core of one reactor)
 #and outputs the the oscillated Spectrums.  oscParams should have two entries: 
 #[delta m-squared, sin^2(theta12)]
 class OscSpecGen(object):
-    def __init__(self, coreGen, oscParams):
-        self.Unosc_Flux = coreGen.Unosc_Flux
-        self.ReacDetails = coreGen.ReacDetails
-        self.ReacStatus = coreGen.ReacStatus
-        self.E_arr = coreGen.E_arr
-        self.Core_Distances = coreGen.Core_Distances 
+    def __init__(self, UnoscSpecGen, oscParams):
+        self.Unosc_Spectra = UnoscSpecGen.Unosc_Spectra
+        self.ReacDetails = UnoscSpecGen.ReacDetails
+        self.ReacStatus = UnoscSpecGen.ReacStatus
+        self.E_arr = UnoscSpecGen.E_arr
+        self.Core_Distances = UnoscSpecGen.Core_Distances 
 
         #define your variable oscillation paramaters;
         self.SINSQT12 = oscParams[1]
@@ -245,7 +257,7 @@ class OscSpecGen(object):
 
     def oscillateSpectra(self):
         self.Osc_Spectra = [] #Refresh array before adding spectrums
-        for i,spectrum in enumerate(self.Unosc_Flux):
+        for i,spectrum in enumerate(self.Unosc_Spectra):
              self.Osc_Spectra.append(np.product([spectrum,self.Pee(self.E_arr, \
                      self.Core_Distances[i])],axis=0))
 
