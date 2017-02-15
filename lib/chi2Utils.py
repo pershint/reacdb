@@ -20,7 +20,10 @@ def getExpt_wstats(oscParams, All_unosc_spectra,energy_array, numBins):
     dNdE = ns.build_dNdE(All_unosc_spectra, energy_array,oscParams)
     NoStat_EventHist = h.dNdE_Hist(dNdE, numBins)
     events_per_year = sum(NoStat_EventHist.bin_values)
-    n = pd.RandShoot_p(events_per_year,1)
+    if events_per_year > 15:
+        n = int(pd.RandShoot(events_per_year, np.sqrt(events_per_year),1))
+    else:
+        n = pd.RandShoot_p(events_per_year,1)
     print("NUMBER OF EVENTS FIRED:" + str(n))
     Stat_EventHist = pd.playDarts_h(n,NoStat_EventHist)
     return Stat_EventHist, NoStat_EventHist
