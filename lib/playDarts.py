@@ -35,8 +35,8 @@ def playDarts(n,spectrum,bin_left,bin_right,bin_center):
                 bin_left[0])
         y = np.random.random(1)*(np.max(spectrum))
         for i,thebin in enumerate(bin_left):
-            if x > bin_left[i] and x < bin_right[i]:
-                if y < spectrum[i]:
+            if x >= bin_left[i] and x < bin_right[i]:
+                if y <= spectrum[i]:
                     exp_spectrum[i] += 1
                     events +=1
                     break
