@@ -58,8 +58,8 @@ def playDarts_h(n,EventHist):
                 EventHist.bin_lefts[0])
         y = np.random.random(1)*(np.max(EventHist.bin_values))
         for i,thebin in enumerate(EventHist.bin_lefts):
-            if x > EventHist.bin_lefts[i] and x < EventHist.bin_rights[i]:
-                if y < EventHist.bin_values[i]:
+            if x >= EventHist.bin_lefts[i] and x < EventHist.bin_rights[i]:
+                if y <= EventHist.bin_values[i]:
                     exp_spectrum[i] += 1
                     events +=1
                     break
