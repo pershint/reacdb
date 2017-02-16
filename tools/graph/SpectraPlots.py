@@ -36,6 +36,27 @@ def plot_EventHist(Histogram,sst12,m12):
     plt.title(r'SNO+ Neutrino Spectrum for all US and Canadian Reactors')
     plt.show()
 
+#Takes in a Histogram object as defined in /lib/histogram and plots it
+def plot_TwoEventHist(Hist1,Hist2,sst12,m12):
+    num_points = len(Hist1.bin_centers)
+    opacity = 0.9
+    fix, ax = plt.subplots()
+    plt.plot(Hist1.bin_centers,Hist1.bin_values,'ro', \
+            alpha=opacity, color='r')
+    plt.hlines(Hist1.bin_values,Hist1.bin_lefts, \
+            Hist1.bin_rights, color = 'b')
+    plt.plot(Hist2.bin_centers,Hist2.bin_values,'ro', \
+            alpha=opacity, color='b')
+    plt.hlines(Hist2.bin_values,Hist2.bin_lefts, \
+            Hist2.bin_rights, color = 'b')
+    ax.annotate(r'$\sin^{2}(\theta _{12})$ =' + str(sst12) + '\n' + \
+            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,200), fontsize = '16', 
+            xytext=(6.5,200))
+    plt.xlabel('Energy (MeV)')
+    plt.ylabel(r'events/$10^{32}proton-years/MeV$')
+    plt.title(r'SNO+ Neutrino Spectrum for all US and Canadian Reactors')
+    plt.show()
+
 def dNdEPlot_line(energies,numSpec,sst12,m12):
     num_points = len(energies)
     opacity = 0.9

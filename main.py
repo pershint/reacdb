@@ -182,13 +182,13 @@ if __name__ == '__main__':
                 oscParams[0])
 
     #Calculate the chi-squared test results (fixed dms, vary sst)
-    sst_array = np.arange(0.01, 1.00, 0.01)
-    chi2_results = cu.GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, \
-            ENERGY_ARRAY,NUMBINS)
-    cplt.chi2vssst(chi2_results, sst_array,oscParams)
+    #sst_array = np.arange(0.01, 1.00, 0.01)
+    #chi2_results = cu.GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, \
+    #        ENERGY_ARRAY,NUMBINS)
+    #cplt.chi2vssst(chi2_results, sst_array,oscParams)
     #Now, create your "perfect" event histogram, events binned into 30 bins
-    EventHist_wstats, EventHist = cu.getExpt_wstats(oscParams, unosc_spectra, \
-            ENERGY_ARRAY,NUMBINS)
+    #EventHist_wstats, EventHist = cu.getExpt_wstats(oscParams, unosc_spectra, \
+    #        ENERGY_ARRAY,NUMBINS)
 
     #----- TRY THE MINIMIZATION OF THE CHISQUARE FUNCTION FOR -----#
     #----- THE TRUE SPECTRA AT SNO+ AND A FLUX WITH EXPERIMENTAL --#
