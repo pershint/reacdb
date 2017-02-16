@@ -43,6 +43,8 @@ class dNdE_Hist(Histogram):
 
         self.reBin_spectrum()
         self.fill_binvalues()
+        self.bin_values = np.array(self.bin_values)
+
         super(dNdE_Hist, self).__init__(self.bin_values, self.bin_centers, \
                 self.bin_lefts, self.bin_rights)
 
@@ -62,7 +64,7 @@ class dNdE_Hist(Histogram):
         while cbin < self.numbins:
             #First, average over spectrum values in the cbin region
             binavg = np.mean(self.spectrum[(self.specvals_perbin * \
-                    cbin):(self.specvals_perbin * (cbin+1))])
+                    cbin):((self.specvals_perbin * (cbin+1)) - 1)])
             #Now, calculate the number of values in the bin
             binvalue = binavg * self.binwidth
             self.bin_values.append(binvalue)
@@ -79,7 +81,7 @@ class dNdE_Hist(Histogram):
         cbin = 0
         while cbin < self.numbins:
             self.bin_lefts.append(self.x_axis[self.specvals_perbin * cbin])
-            self.bin_rights.append(self.x_axis[(self.specvals_perbin * (cbin+1)) - 1])
+            self.bin_rights.append(self.x_axis[(self.specvals_perbin * (cbin+1))])
             axisvalue = np.mean(self.x_axis[(self.specvals_perbin * \
                     cbin):(self.specvals_perbin * (cbin+1))])
             self.bin_centers.append(axisvalue)
