@@ -1,0 +1,6 @@
+#Some changes were made to REACTORS and REACTORS_STATUS.ratdb along the way.  So far,
+
+In REACTORS.ratdb:
+  REACTOR_SPECTRUMs "PHWR_Satoko" and "PWRBWR_Satoko" did not have their 
+  param_isotopes and param_compositions filled in (were in comments, just not put
+  into the RATDB entry fields).  Filled those in.

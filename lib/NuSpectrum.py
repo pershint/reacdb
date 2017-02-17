@@ -1,6 +1,7 @@
 #g!
 
 import rdbparse as rp
+import GetNRCDailyInfo as nrc
 import SNOdist as sd
 import dailyparse as dp
 import numpy as np
@@ -8,12 +9,14 @@ import numpy as np
 parameters = 'none'
 DEBUG = False
 
+#FIXME: Is hardcoded here and in main.py; would like to isolate to main
+DATE = '11/20/2016'
+
 RUNTIME = 8760*5   #One year in hours
 EFFICIENCY = 1  #Assume 100% signal detection efficiency
-LF = 0.8    #Assume all power plants operate at 80% of licensed MWt
 MWHTOMEV = 2.247E22 #One MW*h equals this many MeV
 NP = 1E32   #Need to approximate SNO+'s number of proton targets
-CAList = ["BRUCE","DARLINGTON", "PICKERING","POINT LEPREAU"]
+
 
 hbarc = 1.9733E-16 #in MeV * km
 
@@ -26,6 +29,8 @@ DELTAMSQ32 = 2.5E-3
 
 def setDebug(debug):
     globals()["DEBUG"] = debug
+
+USList = nrc.getUSList(DATE)
 
 #-----CROSS-SECTION CONSTANTS------#
 DELTA = 1.293   #in MeV; neutron mass - proton mass
@@ -185,20 +190,20 @@ class coreGen(object):
 
         #if self.ReacDetails.index is in CAList, use RATDB core powers with no
         #statistical fluctuations
-        if self.ReacName in CAList:
+        if self.ReacName not in USList:
             self.__Power_Perfect()
         else:
             self.__Power_AvgAvailable()
 
     def Power_Perfect(self):
         '''
-        Assumes all reactors run every day at LF% power, no statistical
+        Assumes all reactors run at 2015 averaged thermal power, no statistical
         fluctuations.  Ends up scaling each reactor core's spectra by the
-        approproate thermal power, time, load factor, and MeV conversion factor.
+        approproate thermal power, time, and MeV conversion factor.
         '''
         for i,coreSpectrum in enumerate(self.Unosc_Spectra):
             coreSpectrum = coreSpectrum * RUNTIME * MWHTOMEV * \
-                    self.core_powers[i] * LF
+                    self.core_powers[i] 
             self.Unosc_Spectra_wP.append(coreSpectrum)
 
     def Power_AvgAvailable(self):

@@ -2,11 +2,21 @@
 from __future__ import print_function
 import sys
 import urllib2
-import json, couchdb
+import json
+import couch_utils.DButils as dbu
+import rdbbuild as rb
 import string, time, re
 
-#---------- UTILITIES FOR USE WITH COUCHDB ---------------#
-couch = couchdb.Server()
+#Returns a list of reactor names on the input date. Just using the
+#NRCDayList class, all functions to run collapsed to one function.
+def getUSList(date):
+    NRClist = NRCDayList()
+    NRClist.setDateReacStatuses(date)
+    NRClist.fillDateNames()
+    USlist = NRClist.date_reacs
+    USlist = rb.USListToRATDBFormat(USlist)
+    return USlist
+
 
 class NRCDayList(object):
     def __init__(self):
@@ -88,7 +98,7 @@ class NRCDailyClaws(object):
         """
         Polls the reactor database and grabs all entries from the "daily" view.
         """
-        dbStatus, db = connectToDB("reacdb")
+        dbStatus, db = dbu.connectToDB("reacdb")
         alldocs = []
         alldates = []
         if dbStatus is "ok":
@@ -107,7 +117,7 @@ class NRCDailyClaws(object):
         Polls the reactor database and grabs the most recent database entry
         from reacdb.
         """
-        dbStatus, db = connectToDB("reacdb")
+        dbStatus, db = dbu.connectToDB("reacdb")
         if dbStatus is "ok":
             try:
                 queryresult = db.view("reacdb/daily",descending=False,limit=1)
@@ -138,7 +148,7 @@ class NRCDailyClaws(object):
         two specified dates.  The earlier date must be supplied as
         the startdate variable.  Dates must be of format "MM/DD/YYYY".
         """
-        dbStatus, db = connectToDB("reacdb")
+        dbStatus, db = dbu.connectToDB("reacdb")
         if dbStatus is "ok":
             try:
                 queryresults = db.view("reacdb/daily",startkey=startdate,endkey=enddate,descending=False,limit=4)

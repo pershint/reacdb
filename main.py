@@ -29,9 +29,9 @@ ISOTOPES = ['235U', '238U', '239Pu', '241Pu']
 ENERGY_ARRAY = np.arange(1.82,9,0.01)
 
 #TODO: Make a list of all cores that have been online since start of 2016
-DATE = '11/20/2016' #Date queried on NRC.gov to get operating US reactor names
+#FIXME: is hardcoded in NuSpectrum.py also.  Would be good to not.
+DATE = '11/20/2016' #Tells GetUSList from which day to grab US operating reactors
 
-#TODO: Have hard-coded here only, not in NuSpectrum.py also
 CAList = ["BRUCE","DARLINGTON", "PICKERING","POINT LEPREAU"]
 
 NUMBINS = 30 #Number of bins for the discretized dNdE spectrum
@@ -67,7 +67,7 @@ parser.add_option("-p", "--parameters",action="store",dest="parameters",
                   help="Specify which experiment's oscillation parameters to use")
 parser.add_option("-r", "--reactors",action="store",dest="reactors",
                   type="string",default="USCA",
-                  help="Specify what set of reactors to use (US, CA, or USCA)")
+                  help="Specify what set of reactors to use (US, WORLD, CA, or USCA)")
 (options,args) = parser.parse_args()
 
 DEBUG = options.debug
@@ -103,31 +103,18 @@ def RoughIntegrate(y_array,x_array):
             return int(integral)
         integral += y_array[i] * (x_array[i+1]-x_array[i])
 
-#FIXME: If there's no online connection, need to
-#Default to some hard-coded list
-
-def getUSList():
-    NRClist = nrc.NRCDayList()
-    NRClist.setDateReacStatuses(DATE)
-    NRClist.fillDateNames()
-    USlist = NRClist.date_reacs
-    USlist = rb.USListToRATDBFormat(USlist)
-    return USlist
-
 #Uses whatever type is set in the arguments for -r to pick a reactor name list
-def setListType():
-    if options.reactors == "WORLD":
-        WorldList = rp.getRLIndices()
-        return WorldList
-    if options.reactors == "US":
-        USList = getUSList()
-        return USList
-    if options.reactors == ("CA"):
-        return CAList
+def setListType(List_Dictionary):
     if options.reactors == ("USCA"):
-        USList = getUSList()
-        USCAList = USList + CAList
+        USCAList = List_Dictionary['US'] + List_Dictionary['CA']
         return USCAList
+    else:
+        try:
+            return List_Dictionary[options.reactors]
+        except KeyError:
+            print("Choose a valid reactor list option.  see python main.py --help" + \
+                    "for choices")
+            raise
 
 def showReactors():
     if options.reactors == "CA":
@@ -155,9 +142,12 @@ def build_unoscSpectra(List):
 
 
 if __name__ == '__main__':
-
+    WorldList = rp.getRLIndices()
+    print(WorldList)
+    USList = nrc.getUSList(DATE)
+    List_Dictionary = {'US':USList, 'WORLD':WorldList, 'CA':CAList}
     showReactors()
-    List = setListType()
+    List = setListType(List_Dictionary)
     #Build array containing details for each isotope found in reactors
     Isotope_Information = []
     lambda_values = []

@@ -5,7 +5,7 @@
 #    RATDB entry's information specific to the RATDB type
 # 3. Write a buildreacdbEntry() function that adds the values
 #    Specific to your RATDB type to the reacdb_entry dictionary
-#*** See the CoreComp subclass for an example of how this is done.
+#*** See the ReactorStatus subclass for an example of how this is done.
 
 import numpy as np
 import os.path
@@ -14,9 +14,8 @@ import sys
 basepath = os.path.dirname(__file__)
 dbpath = os.path.abspath(os.path.join(basepath, "..", "db"))
 
-REACTORC_RATDB = 'static/REACTORS_corr.ratdb'
 REACTOR_RATDB = 'static/REACTORS.ratdb'
-REACTORSTAT_RATDB = 'daily/REACTORS_STATUS.ratdb'
+REACTORSTATUS_RATDB = 'static/REACTORS_STATUS.ratdb'
 CORECOMP_RATDB = 'static/CoreComps.ratdb'
 NUSPEC_RATDB = 'static/NuSpectraConsts.ratdb'
 
@@ -306,8 +305,9 @@ class Reactor_Spectrum(ratdbEntry):
         paramcomp_vals = paramcomp_vals.split(",")
         paramcomp_vals_arr = []
         for entry in paramcomp_vals:
-            value = float(entry)
-            paramcomp_vals_arr.append(value)
+            if entry != '':
+                value = float(entry)
+                paramcomp_vals_arr.append(value)
         self.param_composition = paramcomp_vals_arr
 
     def buildreacdbEntry(self):
@@ -448,7 +448,7 @@ class ReactorDetails(ratdbEntry):
 class ReactorStatus(ratdbEntry):
     def __init__(self,index):
         self.rdb_type = "REACTOR_STATUS"
-        self.filename = REACTORSTAT_RATDB
+        self.filename = REACTORSTATUS_RATDB
         self.no_cores = 'unknown'
         self.core_powers = []
         self.core_types = []

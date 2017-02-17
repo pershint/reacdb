@@ -126,7 +126,7 @@ class reactorDailyStatus(ratdbBuilder):
     def buildratdbEntry(self):
         super(reactorDailyStatus,self).buildratdbEntry()
         status_dictentries = {'num_cores':self.num_cores, 'core_types': \
-                self.core_types, 'lic_core_powers': \ 
+                self.core_types, 'lic_core_powers': \
                 self.licensed_core_powers, 'capacities':self.core_powercaps}
         stdratdict = self.ratdb_entry
         stdratdict.update(status_dictentries)

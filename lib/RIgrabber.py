@@ -12,23 +12,11 @@ import sys
 import urllib2
 import SNOdist as sd
 import getCAreacs as gca
+import couch_utils.DButils as dbu
 import rdbparse as rp
-import json, couchdb
+import json
 import string, time, re
 from bs4 import BeautifulSoup as bs
-
-
-couch = couchdb.Server()
-
-def connectToDB(dbName):
-    status = "ok"
-    db = {}
-    try:
-        db = couch[dbName]
-    except:
-        print("Failed to connect to " + dbName, file = sys.stderr)
-        status = "bad"
-    return status, db
 
 def getReacNames():
     """
@@ -36,7 +24,7 @@ def getReacNames():
     most recent database entry.  Returns the names in a list.
     """
     AllReactors = []
-    dbStatus, db = connectToDB('reacdb')
+    dbStatus, db = dbu.connectToDB('reacdb')
     if dbStatus is "ok":
         queryresult = db.view("reacdb/daily",descending=True,limit=1)
         status_list = queryresult.rows[0].value["reactor_statuses"]
@@ -58,7 +46,7 @@ def saveToreacdb(newentry):
     daily reactor operating info, the output format of the getDayReactorInfo
     function should be pushed to reacdb.
     """
-    dbStatus, db = connectToDB('reacdb')
+    dbStatus, db = dbu.connectToDB('reacdb')
     if dbStatus is 'ok':
         db.save(newentry)
 
@@ -150,10 +138,7 @@ class claws:
             print("reacdb format dictionary built.  Call pushToDB to push document.")
 
     def pushToDB(self):
-        dbStatus, db = connectToDB('reacdb')
-        if dbStatus is "ok":
-            db.save(self.reacdb_entry)
-
+        dbu.saveToReacdb(self.reacdb_entry)
 
 class RDBclaws(claws):
     def getRATDBReacInfo(self):
