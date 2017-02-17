@@ -3,6 +3,7 @@
 
 import calendar, time
 import RIgrabber as rig
+import rdbparse as rp
 import GetNRCDailyInfo as gus
 import numpy as np
 import json
@@ -14,8 +15,7 @@ dbpath = os.path.abspath(os.path.join(basepath, "..", "db"))
 
 DAILYSTATUS_LOC = 'daily/daily_updates'
 
-REACTOR_STATUS_VERSION = 1
-MAX_CORES_IN_US_REACTORS = 4
+REACTOR_DAILYSTATUS_VERSION = 1
 
 #-----------UTILITY FUNCTIONS FOR BUILDING A RATDB CLASS------------------#
 def USListToRATDBFormat(AllReactors):
@@ -111,21 +111,22 @@ class ratdbBuilder(object):
 #result.
 #FIXME: Need the NRC format core name to get the licensed_core_powers from the
 #NRC webpage
-class reactorStatus(ratdbBuilder):
+class reactorDailyStatus(ratdbBuilder):
     def __init__(self,core_name_RDB,date):
         self.RATDBIndex = core_name_RDB
-        self.rdb_type = "REACTOR_STATUS"
+        self.rdb_type = "REACTOR_DAILYSTATUS"
         self.date = date
-        super(reactorStatus, self).__init__(self.rdb_type, self.RATDBIndex)
-        self.version = REACTOR_STATUS_VERSION
+        super(reactorDailyStatus, self).__init__(self.rdb_type, self.RATDBIndex)
+        self.version = REACTOR_DAILYSTATUS_VERSION
         self.licensed_core_powers = []
         self.core_powercaps = []   #Capacity cores were running at for the day
         self.num_cores = 0
         self.setTimestamp()
 
     def buildratdbEntry(self):
-        super(reactorStatus,self).buildratdbEntry()
-        status_dictentries = {'num_cores':self.num_cores, 'lic_core_powers': \
+        super(reactorDailyStatus,self).buildratdbEntry()
+        status_dictentries = {'num_cores':self.num_cores, 'core_types': \
+                self.core_types, 'lic_core_powers': \ 
                 self.licensed_core_powers, 'capacities':self.core_powercaps}
         stdratdict = self.ratdb_entry
         stdratdict.update(status_dictentries)
@@ -152,7 +153,7 @@ class reactorStatus(ratdbBuilder):
    
     def show(self):
         print("{")
-        super(reactorStatus,self).show() #performs the parent method show()
+        super(reactorDailyStatus,self).show() #performs the parent method show()
         print("no_cores: " + str(self.num_cores))
         print("licensed_core_powers: " + str(self.licensed_core_powers))
         print("day_poweroutput:" + str(self.core_powercaps))
@@ -200,7 +201,7 @@ class StatusFileBuilder(object):
         #capacity for a US reactor on the date given
 
         #Now, build each reactor plant's REACTOR_STATUS entry
-        reactorStatus_dict = {}
+        reactorDailyStatus_dict = {}
         for entry in Reacs_onDate:
             #Get the name of the plant this core is associated with
             core_name = entry['reactor_name']
@@ -208,26 +209,26 @@ class StatusFileBuilder(object):
             core_powercap = entry['power_capacity']
             core_name_RDB=USToRATDBFormat(core_name)
             print(core_name_RDB)
-            if core_name_RDB not in reactorStatus_dict:
-                #Make a new addition to our array of reactorStatus entries
-                PlantStatus = reactorStatus(core_name_RDB,self.date)
+            if core_name_RDB not in reactorDailyStatus_dict:
+                #Make a new addition to our array of reactorDailyStatus entries
+                PlantStatus = reactorDailyStatus(core_name_RDB,self.date)
                 PlantStatus.core_powercaps.append(core_powercap)
                 PlantStatus.licensed_core_powers.append(core_MWt)
                 PlantStatus.num_cores += 1
-                reactorStatus_dict[PlantStatus.index] = PlantStatus
+                reactorDailyStatus_dict[PlantStatus.index] = PlantStatus
             else:
                 #Add information on this core to it's present plant
-                reactorStatus_dict[core_name_RDB].num_cores += 1
-                reactorStatus_dict[core_name_RDB].core_powercaps.append(core_powercap)
-                reactorStatus_dict[core_name_RDB].licensed_core_powers.append(core_MWt)
+                reactorDailyStatus_dict[core_name_RDB].num_cores += 1
+                reactorDailyStatus_dict[core_name_RDB].core_powercaps.append(core_powercap)
+                reactorDailyStatus_dict[core_name_RDB].licensed_core_powers.append(core_MWt)
         
         #entries is a dictionary with the NRC name as the key and the
-        #reactorStatus class as the value.  Build the ratdb entry for each
-        #reactorStatus class, then 
-        for reactor in reactorStatus_dict:
-            reactorStatus_dict[reactor].buildratdbEntry()
+        #reactorDailyStatus class as the value.  Build the ratdb entry for each
+        #reactorDailyStatus class, then 
+        for reactor in reactorDailyStatus_dict:
+            reactorDailyStatus_dict[reactor].buildratdbEntry()
             #now,put the actual ratdb entry from each into self.entries
-            self.entries[reactor]=reactorStatus_dict[reactor].ratdb_entry
+            self.entries[reactor]=reactorDailyStatus_dict[reactor].ratdb_entry
     #FIXME: This is a biiiig bottleneck on time.  Have to connect to get every
     #Licensed MWt.  Could have this be a yearly get?
 
