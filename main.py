@@ -185,8 +185,8 @@ if __name__ == '__main__':
     #----- UNCERTAINTY                                       ------#
     #TODO: RUN THIS WITH SUPERK VALUES, 5YEARS
     #
-    num_experiments = 1000
-    dms_fits, sst_fits, chi2_results = cu.GetStatSpread(num_experiments, \
+    num_experiments = 10
+    dms_fits, sst_fits, chi2_results = cu.GetNegMLStatSpread(num_experiments, \
             unosc_spectra,oscParams,ENERGY_ARRAY,NUMBINS)
     print(dms_fits)
     print(sst_fits)

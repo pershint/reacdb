@@ -1,6 +1,7 @@
 
 import numpy as np
 import scipy.optimize as spo
+import scipy.misc as sm
 
 import iminuit as im
 import NuSpectrum as ns
@@ -27,6 +28,10 @@ def getExpt_wstats(oscParams, All_unosc_spectra,energy_array, numBins):
     print("NUMBER OF EVENTS FIRED:" + str(n))
     Stat_EventHist = pd.playDarts_h(n,NoStat_EventHist)
     return Stat_EventHist, NoStat_EventHist
+
+
+## ------------ BEGIN FUNCTIONS/CLASSES FOR CHI-SQUARED TESTS ---------- ##
+## --------------------------------------------------------------------- ##
 
 #INPUTS: oscillation parameter array [Delta m-squared, sst12], Unoscilated
 #spectra used to generate the event histograms, Event histogram with statistical
@@ -64,7 +69,7 @@ def GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, energy_array,NUMBINS):
         chi2_results.append(chi2(sst, oscParams[0]))
     return chi2_results
 
-def GetStatSpread(num_experiments, unosc_spectra,oscParams,energy_array, NUMBINS):
+def Getchi2StatSpread(num_experiments, unosc_spectra,oscParams,energy_array, NUMBINS):
     '''
     Function returns three arrays that have the best fit oscillation parameters
     And chi-squared results for the best fit of a statistically fluctuated
@@ -91,6 +96,61 @@ def GetStatSpread(num_experiments, unosc_spectra,oscParams,energy_array, NUMBINS
         experiment += 1
     return dms_fits, sst_fits, chi2_results
 
-def chisquared(test,true):
-    return np.sum(((true-test)**2)/true)
+## ----------- END OF FUNCTIONS/CLASSES FOR CHI-SQUARED TESTS ---------- ##
+## --------------------------------------------------------------------- ##
+
+
+## ----- BEGIN FUNCTIONS/CLASSES FOR NEGATIVE MAX LIKELIHOOD TESTS ----- ##
+## --------------------------------------------------------------------- ##
+
+class ExperimentNegML(object):
+    def __init__(self, unosc_spectra, energy_array,Stat_EventHist,NoStat_EventHist):
+        self.unosc_spectra = unosc_spectra
+        self.Stat_EventHist = Stat_EventHist
+        self.NoStat_EventHist = NoStat_EventHist
+        self.energy_array = energy_array
+    def __call__(self, sst, dms):
+        print("OSC PARAMS FED IN: " + str([dms,sst]))
+        dNdE = ns.build_dNdE(self.unosc_spectra,self.energy_array, [dms,sst])
+        #Build your histogram for the input oscillation parameters
+        FitHist = h.dNdE_Hist(dNdE, 30)
+        x = self.Stat_EventHist.bin_values
+        if np.max(x) > 170:
+            print("WARNING: BIN VALUE GREATER THAN FACTORIAL FUNCTION" + \
+                    "CAN DO IN SCIPY.  PERHAPS DO A CHI SQUARED FIT?")
+        mu = FitHist.bin_values
+        negML = -np.sum((x*np.log(mu) - mu) - np.log(sm.factorial(x)))
+        #self.NoStat_EventHist.bin_values)
+        #use uncertainty of a bin in the "theoretically expected event rate"
+        #(i.e. the Spectrum for the input oscillation parameters) for denom
+        print("NEGATIVE MAXIMUM LIKELIHOOD RESULT: " + str(negML))
+        return negML
+
+def GetNegMLStatSpread(num_experiments, unosc_spectra,oscParams,energy_array, NUMBINS):
+    '''
+    Function returns three arrays that have the best fit oscillation parameters
+    And minimized neg. ML results for best fitting a statistically fluctuated
+    SNO+ Antineutrino spectrum against a non-fluctuated spectrum with the
+    input oscillation parameters.
+    '''
+    dms_fits=[]
+    sst_fits=[]
+    negML_results = []
+    experiment = 0
+    while experiment < num_experiments:
+        EventHist_wstats, EventHist = getExpt_wstats(oscParams,unosc_spectra, \
+                energy_array,NUMBINS)
+        print("CHISQUARE BEING CALCULATED NOW FOR A RANDOM EXPERIMENT...")
+        negML = ExperimentNegML(unosc_spectra,energy_array, EventHist_wstats,EventHist)
+        im.describe(negML)
+        m = im.Minuit(negML, limit_dms = (1e-07, 1e-03), limit_sst=(0.0,1.0), sst = (oscParams[1]), dms = oscParams[0])
+        m.migrad()
+        print("MINIMIZATION OUTPUT: " + str(m.values))
+        print("MINIMUM VALUE: " + str(m.fval))
+        dms_fits.append(m.values['dms'])
+        sst_fits.append(m.values['sst'])
+        negML_results.append(m.fval)
+        experiment += 1
+    return dms_fits, sst_fits, negML_results
+
 
