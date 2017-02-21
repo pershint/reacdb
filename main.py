@@ -8,7 +8,7 @@ import lib.rdbbuild as rb
 import lib.rdbparse as rp
 import lib.SNOdist as sd
 import lib.NuSpectrum as ns
-import lib.chi2Utils as cu
+import lib.chi2ML_Utils as cmu
 
 import tools.graph.SpectraPlots as splt
 import tools.graph.OscPlot as oplt
@@ -173,7 +173,7 @@ if __name__ == '__main__':
 
     #Calculate the chi-squared test results (fixed dms, vary sst)
     #sst_array = np.arange(0.01, 1.00, 0.01)
-    #chi2_results = cu.GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, \
+    #chi2_results = cmu.GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, \
     #        ENERGY_ARRAY,NUMBINS)
     #cplt.chi2vssst(chi2_results, sst_array,oscParams)
     #Now, create your "perfect" event histogram, events binned into 30 bins
@@ -186,9 +186,9 @@ if __name__ == '__main__':
     #TODO: RUN THIS WITH SUPERK VALUES, 5YEARS
     #
     num_experiments = 1000
-    dms_fits, sst_fits, chi2_results = cu.GetStatSpread(num_experiments, \
+    dms_fits, sst_fits, negML_results = cmu.GetNegMLStatSpread(num_experiments, \
             unosc_spectra,oscParams,ENERGY_ARRAY,NUMBINS)
     print(dms_fits)
     print(sst_fits)
-    print(chi2_results)
+    print(negML_results)
     cplt.chi2scatter(dms_fits,sst_fits,oscParams)
