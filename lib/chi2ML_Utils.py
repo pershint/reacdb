@@ -20,9 +20,6 @@ import playDarts as pd
 def getExpt_wstats(oscParams, All_unosc_spectra,energy_array, numBins,SpecVars):
     VarieddNdE = ns.build_Theory_dNdE_wVar(All_unosc_spectra, energy_array, \
             oscParams,SpecVars)
-    PerfectdNdE = ns.build_Theory_dNdE(All_unosc_spectra, energy_array, \
-            oscParams)
-    NoStat_EventHist = h.dNdE_Hist(PerfectdNdE, numBins)
     Stat_EventHist = h.dNdE_Hist(VarieddNdE, numBins)
     events_per_year = sum(Stat_EventHist.bin_values)
     print("EVTS PER YEAR: " + str(events_per_year))
@@ -32,8 +29,7 @@ def getExpt_wstats(oscParams, All_unosc_spectra,energy_array, numBins,SpecVars):
         n = pd.RandShoot_p(events_per_year,1)
     print("NUMBER OF EVENTS FIRED:" + str(n))
     Stat_EventHist = pd.playDarts_h(n,Stat_EventHist)
-    return Stat_EventHist, NoStat_EventHist
-
+    return Stat_EventHist
 
 ## ------------ BEGIN FUNCTIONS/CLASSES FOR CHI-SQUARED TESTS ---------- ##
 ## --------------------------------------------------------------------- ##
@@ -69,7 +65,7 @@ def GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, energy_array,NUMBINS, \
     oscParams.  The seed for the fit is fixed delta-m squared, and each sst
     value in the sst_array.
     '''
-    EventHist_wstats, EventHist = getExpt_wstats(oscParams, unosc_spectra, \
+    EventHist_wstats = getExpt_wstats(oscParams, unosc_spectra, \
             energy_array,NUMBINS)
     chi2 = ExperimentChi2(unosc_spectra,energy_array,EventHist_wstats)
     chi2_results = []
@@ -90,7 +86,7 @@ def Getchi2StatSpread(num_experiments, unosc_spectra,oscParams,energy_array, \
     chi2_results = []
     experiment = 0
     while experiment < num_experiments:
-        EventHist_wstats, EventHist = getExpt_wstats(oscParams,unosc_spectra, \
+        EventHist_wstats = getExpt_wstats(oscParams,unosc_spectra, \
                 energy_array,NUMBINS,SpecVars)
         print("CHISQUARE BEING CALCULATED NOW FOR A RANDOM EXPERIMENT...")
         chi2 = ExperimentChi2(unosc_spectra,energy_array, EventHist_wstats,SpecVars)
@@ -145,7 +141,7 @@ def GetNegMLStatSpread(num_experiments, unosc_spectra,oscParams,energy_array, \
     negML_results = []
     experiment = 0
     while experiment < num_experiments:
-        EventHist_wstats, EventHist = getExpt_wstats(oscParams,unosc_spectra, \
+        EventHist_wstats = getExpt_wstats(oscParams,unosc_spectra, \
                 energy_array,NUMBINS,SpecVars)
         print("CHISQUARE BEING CALCULATED NOW FOR A RANDOM EXPERIMENT...")
         negML = ExperimentNegML(unosc_spectra,energy_array, EventHist_wstats,SpecVars)

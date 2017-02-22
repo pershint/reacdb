@@ -69,7 +69,7 @@ parser.add_option("-p", "--parameters",action="store",dest="parameters",
 parser.add_option("-r", "--reactors",action="store",dest="reactors",
                   type="string",default="USCA",
                   help="Specify what set of reactors to use (US, WORLD, CA, or USCA)")
-parser.add_option("-c", "--corestats",action="store_true",default="True",
+parser.add_option("-c", "--corestats",action="store",default="True",
                   help="Boolean for adding fluctuations in each US core spectrum")
 (options,args) = parser.parse_args()
 
@@ -78,10 +78,10 @@ DEBUG = options.debug
 setOscParams(options.parameters)
 ns.setDebug(options.debug)
 
-if options.corestats:
+if options.corestats == True:
     SPECTRUM_VARIATIONS.append("USSYS")
 
-
+print("SPECTRUM VARIATIONS: " + str(SPECTRUM_VARIATIONS))
 
 def GetBruceSpectra(List,Isotope_Information):
     print("#----- AN EXERCISE IN CALCULATING AN UNOSC. SPECTRA FOR BRUCE --#")
