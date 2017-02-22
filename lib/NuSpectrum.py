@@ -1,30 +1,31 @@
 #g!
 
 import rdbparse as rp
+import playDarts as pd
 import GetNRCDailyInfo as nrc
 import SNOdist as sd
 import dailyparse as dp
 import numpy as np
 
 DEBUG = False
-ADD_SYSTEMATICS = False
-
 #FIXME: Is hardcoded here and in main.py; would like to isolate to main
 DATE = '11/20/2016'
 
-RUNTIME = 8760*5   #One year in hours
+# --------------- THINGS TO VARY ------------------ #
+RUNTIME = 8760*5   #Five run years in hours
 EFFICIENCY = 1  #Assume 100% signal detection efficiency
-
-MWHTOMEV = 2.247E22 #One MW*h equals this many MeV
 NP = 1E32   #Need to approximate SNO+'s number of proton targets
+LF_VAR = 25 #Variance in all load factors as a percentage
 
-LF_VAR = 10 #Variance in all load factors
 
+# ------------ CONSTANTS ------------------------- #
 hbarc = 1.9733E-16 #in MeV * km
 MWHTOMEV = 2.247E22 #One MW*h equals this many MeV
 NP = 1E32   #Need to approximate SNO+'s number of proton targets
 
 
+# ----------- OSCILLATION PARAMETERS HELD CONSTANT ------------ #
+#FIXME: WHAT'S THE SOURCE FOR THESE VALUES
 SINSQT13 = 0.0219 
 SINSQTWO13 = 0.0851 #calculated from SINSQT13
 COS4THT13 = 0.9570  #calculated from SINSQT13
@@ -46,15 +47,20 @@ A3 = -0.001953
 
 #Takes in an array of unoscillated spectra (and the spectra's energy values for each entry)
 #And returns the dNdE function that results from them
-def build_dNdE(unosc_spectra,energy_array,oscParams):
-    Total_Spectra = np.zeros(len(energy_array))
+def build_Theory_dNdE(unosc_spectra,energy_array,oscParams):
+    Total_PerfectSpectra = np.zeros(len(energy_array))
     for ReacSpectra in unosc_spectra:
-        if ADD_SYSTEMATICS:
-            #Adds systematic fluctuations to each core
-            ReacSpectra.AddCoreSystematics()
-        ReacOscSpecGen = OscSpecGen(ReacSpectra, oscParams)
-        Total_Spectra += ReacOscSpecGen.Summed_Spectra
-    return dNdE(energy_array,Total_Spectra)
+        PerfectOscSpec = OscSysGen(ReacSpectra, oscParams,[None])
+        Total_PerfectSpectra += PerfectOscSpec.Summed_Spectra
+    return dNdE(energy_array,Total_PerfectSpectra)
+
+def build_Theory_dNdE_wVar(unosc_spectra,energy_array,oscParams,SpectrumVariations):
+    Total_VariedSpectra = np.zeros(len(energy_array))
+    for ReacSpectra in unosc_spectra:
+        VariedOscSpec = OscSysGen(ReacSpectra,oscParams,SpectrumVariations)
+        Total_VariedSpectra += VariedOscSpec.Summed_Spectra
+    return dNdE(energy_array, Total_VariedSpectra)
+
 
 #Class takes in four RATDB type Isotope Info entries, one
 #Spectrum entry (has the isotope compositions), and an energy to evaulate at.
@@ -126,6 +132,7 @@ class UnoscSpecGen(object):
         self.CoreSpecs = coreGen(ReacStatus,self.Unosc_Spectra)
         self.Unosc_Spectra = self.CoreSpecs.Unosc_Spectra_wP
 
+
     def core_check(self):
         if self.ReacDetails.no_cores != self.ReacStatus.no_cores:
             raise UserWarning("WARNING: Number of cores in REACTOR" + \
@@ -164,21 +171,6 @@ class UnoscSpecGen(object):
         for i,iso in enumerate(self.iso_array):
             denominator += isocomp[i] * self.iso_array[i].Eperfission
         return denominator
-       
-    def AddCoreSystematics(self):
-        '''
-        If called, the spectra from each core is scaled according to the
-        average load factor.  Basically, sample from a gaussian of 
-        mu=LF and sigma = 10% for now.  Can make a function of LF later.
-        '''
-        sysSigmas = LF_VAR * np.ones(len(self.AvgLFs))
-        sysFlucs = np.randShoot(self.AvgLFs,sysSigmas,len(self.AvgLFs))
-        Unosc_Spectra_wSys = []
-        for i,coreSpectrum in enumerate(self.Unosc_Spectra):
-            coreSpectrum = coreSpectrum * sysFlucs[i]
-            self.Unosc_Spectra_wSys.append(coreSpectrum)
-        self.Unosc_Spectra = self.Unosc_Spectra_wSys
-
     #Make private copies of the public methods
     __core_check = core_check
     __calcSpectra = calcSpectra
@@ -204,7 +196,7 @@ class coreGen(object):
         self.TotLFs = []
 
         #These are calculated as the total divided by the numdays_ofdata
-        self.AvgMWts = []
+        self.AvgLFs = []
         self.AvgMWts = []
 
         #Spectra with power corrections
@@ -245,13 +237,13 @@ class coreGen(object):
         self.TotMWts = np.sum(allLicensedMWts, axis=0)
         self.TotLFs = np.sum(allLoadFactors, axis=0)
         self.AvgMWts = self.TotMWts/self.numdays_ofdata
-        self.AvgLFs = (self.TotLFs/self.numdays_ofdata) / 100.0 #Shown in DB as percentage 
+        self.AvgLFs = (self.TotLFs/self.numdays_ofdata) #Shown in DB as percentage 
 
         #now, use the average values to rescale the spectrums
         
         for i,coreSpectrum in enumerate(self.Unosc_Spectra):
             coreSpectrum = coreSpectrum * RUNTIME * MWHTOMEV * \
-                    self.AvgMWts[i] * self.AvgLFs[i]
+                    self.AvgMWts[i] * (self.AvgLFs[i] / 100.0)
             self.Unosc_Spectra_wP.append(coreSpectrum)
 
     __Power_Perfect = Power_Perfect
@@ -261,8 +253,9 @@ class coreGen(object):
 #Class takes a coreGen class (contains spectrums for each core of one reactor)
 #and outputs the the oscillated Spectrums.  oscParams should have two entries: 
 #[delta m-squared, sin^2(theta12)]
-class OscSpecGen(object):
-    def __init__(self, UnoscSpecGen, oscParams):
+class OscSysGen(object):
+    def __init__(self, UnoscSpecGen, oscParams,SpecVars):
+        self.SpectrumVariations = SpecVars
         self.Unosc_Spectra = UnoscSpecGen.Unosc_Spectra
         self.ReacDetails = UnoscSpecGen.ReacDetails
         self.ReacStatus = UnoscSpecGen.ReacStatus
@@ -276,11 +269,35 @@ class OscSpecGen(object):
         self.SINSQTWO12 = self.calcSINSQTWO(self.SINSQT12)
         self.COSSQT12 = self.calcCOSSQ(self.SINSQT12)
 
+        self.AvgLFs = UnoscSpecGen.CoreSpecs.AvgLFs
+        if ("USSYS" in self.SpectrumVariations) and \
+                (self.ReacDetails.index in USList):
+            #Adds systematic fluctuations to each core
+            self.__addCoreSystematics()
+
         #Oscillate each core spectra, then sum them
         self.Osc_Spectra = []
         self.__oscillateSpectra()
         self.Summed_Spectra = []
         self.__sumSpectra()
+
+
+    def addCoreSystematics(self):
+        '''
+        If called, the spectra from each core is scaled according to the
+        average load factor.  Basically, sample from a gaussian of 
+        mu=LF and sigma = 25% for now.  Can make a function of LF later.
+        '''
+        sysSigmas = LF_VAR * np.ones(len(self.AvgLFs))
+        #Get the fluctuation from each core's avg LF, in percentage
+        sysFlucs = pd.RandShoot(self.AvgLFs,sysSigmas, \
+                len(self.AvgLFs)) - self.AvgLFs
+        Unosc_Spectra_wSys = []
+        #For each spectrum, vary by the fluctuation calculated in sysFlucs
+        for i,coreSpectrum in enumerate(self.Unosc_Spectra):
+            coreSpectrum = coreSpectrum * (1 + (sysFlucs[i]/100.0))
+            Unosc_Spectra_wSys.append(coreSpectrum)
+        self.Unosc_Spectra = Unosc_Spectra_wSys
 
     def oscillateSpectra(self):
         self.Osc_Spectra = [] #Refresh array before adding spectrums
@@ -324,7 +341,7 @@ class OscSpecGen(object):
     #subclasses override methods without breaking intraclass method calls.
     __sumSpectra = sumSpectra
     __oscillateSpectra = oscillateSpectra
-
+    __addCoreSystematics = addCoreSystematics
 #Class takes in a reactor spectrum array (oscillated or unoscillated) and the
 #relative x-axis array (Energy_Array in the class) and calculates the
 #dNdE function for the spectrum. Total Runtime and Thermal power associated

@@ -33,7 +33,8 @@ ENERGY_ARRAY = np.arange(1.82,9,0.01)
 DATE = '11/20/2016' #Tells GetUSList from which day to grab US operating reactors
 
 CAList = ["BRUCE","DARLINGTON", "PICKERING","POINT LEPREAU"]
-
+SPECTRUM_VARIATIONS = []  #Contains flags that tell the program how to vary the
+                          #Spectrum at SNO+
 NUMBINS = 30 #Number of bins for the discretized dNdE spectrum
 
 #Oscillation variables that will be measured by SNO+/vary
@@ -68,12 +69,19 @@ parser.add_option("-p", "--parameters",action="store",dest="parameters",
 parser.add_option("-r", "--reactors",action="store",dest="reactors",
                   type="string",default="USCA",
                   help="Specify what set of reactors to use (US, WORLD, CA, or USCA)")
+parser.add_option("-c", "--corestats",action="store_true",default="True",
+                  help="Boolean for adding fluctuations in each US core spectrum")
 (options,args) = parser.parse_args()
 
 DEBUG = options.debug
 #Set which parameters to call when building neutrino spectrums
 setOscParams(options.parameters)
 ns.setDebug(options.debug)
+
+if options.corestats:
+    SPECTRUM_VARIATIONS.append("USSYS")
+
+
 
 def GetBruceSpectra(List,Isotope_Information):
     print("#----- AN EXERCISE IN CALCULATING AN UNOSC. SPECTRA FOR BRUCE --#")
@@ -163,12 +171,15 @@ if __name__ == '__main__':
     print(" ")
     unosc_spectra = build_unoscSpectra(List)
     #First, show the dNdE function
-    USCA_dNdE = ns.build_dNdE(unosc_spectra,ENERGY_ARRAY,oscParams)
-    RoughIntegrate(USCA_dNdE.dNdE,ENERGY_ARRAY)
-    splt.dNdEPlot_line(ENERGY_ARRAY,USCA_dNdE.dNdE, oscParams[1],\
+    Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,ENERGY_ARRAY,oscParams)
+    Varied_dNdE = ns.build_Theory_dNdE_wVar(unosc_spectra,ENERGY_ARRAY, \
+            oscParams, SPECTRUM_VARIATIONS)
+
+    RoughIntegrate(Varied_dNdE.dNdE,ENERGY_ARRAY)
+    splt.dNdEPlot_line(ENERGY_ARRAY,Varied_dNdE.dNdE, oscParams[1],\
             oscParams[0])
     if DEBUG == True:
-        splt.dNdEPlot_line(ENERGY_ARRAY,USCA_dNdE.dNdE, oscParams[1],\
+        splt.dNdEPlot_line(ENERGY_ARRAY,Varied_dNdE.dNdE, oscParams[1],\
                 oscParams[0])
 
     #Calculate the chi-squared test results (fixed dms, vary sst)
@@ -185,9 +196,9 @@ if __name__ == '__main__':
     #----- UNCERTAINTY                                       ------#
     #TODO: RUN THIS WITH SUPERK VALUES, 5YEARS
     #
-    num_experiments = 1000
+    num_experiments = 10
     dms_fits, sst_fits, negML_results = cmu.GetNegMLStatSpread(num_experiments, \
-            unosc_spectra,oscParams,ENERGY_ARRAY,NUMBINS)
+            unosc_spectra,oscParams,ENERGY_ARRAY,NUMBINS,SPECTRUM_VARIATIONS)
     print(dms_fits)
     print(sst_fits)
     print(negML_results)
