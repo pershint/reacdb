@@ -89,6 +89,7 @@ def chi2scatter_2sets(data1, data2,oscParamsSeed1,oscParamsSeed2):
     ax.plot(oscParamsSeed2[1], oscParamsSeed2[0], '*', markersize=20, alpha=0.7, color='w', markeredgecolor='g', label = '(2): SK parameters')
     ax.plot(np.average(data1['sst_fits']), np.average(data1['dms_fits']), '*', markersize=20, alpha=0.7, color='r', label = 'Fit avg. seed (1)')
     ax.plot(np.average(data2['sst_fits']), np.average(data2['dms_fits']), '*', markersize=20, alpha=0.7, color='m', label = 'Fit avg. seed (2)')
+    #ax.set_xlim(0.20,0.50)
     ax.set_xlabel(r'$\sin^{2}(\theta_{12})$')
     ax.set_ylabel(r'$\Delta m^{2}_{12} (ev^{2})$')
     ax.set_title('Scatter plot of best-fit oscillation parameters')

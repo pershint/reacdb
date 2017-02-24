@@ -15,8 +15,8 @@ DATE = '11/20/2016'
 RUNTIME = 8760*5   #Five run years in hours
 EFFICIENCY = 1  #Assume 100% signal detection efficiency
 NP = 1E32   #Need to approximate SNO+'s number of proton targets
-LF_VAR = 25 #Variance in all load factors as a percentage
-
+US_LF_VAR = 25 #Variance in all US load factors as a percentage
+CA_LF_VAR = 25 #Variance in all CA core thermal powers as a percentage
 
 # ------------ CONSTANTS ------------------------- #
 hbarc = 1.9733E-16 #in MeV * km
@@ -37,6 +37,7 @@ def setDebug(debug):
     globals()["DEBUG"] = debug
 
 USList = nrc.getUSList(DATE)
+CAList = ["BRUCE","DARLINGTON", "PICKERING","POINT LEPREAU"]
 
 #-----CROSS-SECTION CONSTANTS------#
 DELTA = 1.293   #in MeV; neutron mass - proton mass
@@ -270,10 +271,8 @@ class OscSysGen(object):
         self.COSSQT12 = self.calcCOSSQ(self.SINSQT12)
 
         self.AvgLFs = UnoscSpecGen.CoreSpecs.AvgLFs
-        if ("USSYS" in self.SpectrumVariations) and \
-                (self.ReacDetails.index in USList):
-            #Adds systematic fluctuations to each core
-            self.__addCoreSystematics()
+        #Adds systematic fluctuations to each core
+        self.__addCoreSystematics()
 
         #Oscillate each core spectra, then sum them
         self.Osc_Spectra = []
@@ -288,16 +287,34 @@ class OscSysGen(object):
         average load factor.  Basically, sample from a gaussian of 
         mu=LF and sigma = 25% for now.  Can make a function of LF later.
         '''
-        sysSigmas = LF_VAR * np.ones(len(self.AvgLFs))
-        #Get the fluctuation from each core's avg LF, in percentage
-        sysFlucs = pd.RandShoot(self.AvgLFs,sysSigmas, \
-                len(self.AvgLFs)) - self.AvgLFs
-        Unosc_Spectra_wSys = []
-        #For each spectrum, vary by the fluctuation calculated in sysFlucs
-        for i,coreSpectrum in enumerate(self.Unosc_Spectra):
-            coreSpectrum = coreSpectrum * (1 + (sysFlucs[i]/100.0))
-            Unosc_Spectra_wSys.append(coreSpectrum)
-        self.Unosc_Spectra = Unosc_Spectra_wSys
+        if ("USSYS" in self.SpectrumVariations) and \
+                (self.ReacDetails.index in USList):
+            sysSigmas = US_LF_VAR * np.ones(len(self.AvgLFs))
+            #Get the fluctuation from each core's avg LF, in percentage
+            sysFlucs = pd.RandShoot(self.AvgLFs,sysSigmas, \
+                    len(self.AvgLFs)) - self.AvgLFs
+            Unosc_Spectra_wSys = []
+            #For each spectrum, vary by the fluctuation calculated in sysFlucs
+            for i,coreSpectrum in enumerate(self.Unosc_Spectra):
+                coreSpectrum = coreSpectrum * (1 + (sysFlucs[i]/100.0))
+                Unosc_Spectra_wSys.append(coreSpectrum)
+            self.Unosc_Spectra = Unosc_Spectra_wSys
+        #Vary each Canadian reactor core's flux around it's thermal power
+        elif ("CASYS" in self.SpectrumVariations) and \
+                (self.ReacDetails.index in CAList):
+            numcores = len(self.ReacStatus.core_powers)
+            #Thermal MWts for CA reactors already have LFs factored in
+            #ReacStatus entries
+            coreAvgs = 100.0 * np.ones(numcores)
+            coreSigmas = (CA_LF_VAR) * np.ones(numcores)
+            core_SysVar = pd.RandShoot(coreAvgs,coreSigmas, numcores)
+            print(core_SysVar)
+            Unosc_Spectra_wSys = []
+            #For each spectrum, vary by the fluctuation calculated in sysFlucs
+            for i,coreSpectrum in enumerate(self.Unosc_Spectra):
+                coreSpectrum = coreSpectrum * (core_SysVar[i] / 100.0)
+                Unosc_Spectra_wSys.append(coreSpectrum)
+            self.Unosc_Spectra = Unosc_Spectra_wSys
 
     def oscillateSpectra(self):
         self.Osc_Spectra = [] #Refresh array before adding spectrums

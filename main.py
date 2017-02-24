@@ -69,8 +69,12 @@ parser.add_option("-p", "--parameters",action="store",dest="parameters",
 parser.add_option("-r", "--reactors",action="store",dest="reactors",
                   type="string",default="USCA",
                   help="Specify what set of reactors to use (US, WORLD, CA, or USCA)")
-parser.add_option("-c", "--corestats",action="store",default="True",
+parser.add_option("-u", "--usstats",action="store_true",dest="usstats",
+                  default="False",
                   help="Boolean for adding fluctuations in each US core spectrum")
+parser.add_option("-c", "--castats",action="store_true",dest="castats",
+                  default="False",
+                  help="Boolean for adding fluctuations in each CA core spectrum")
 (options,args) = parser.parse_args()
 
 DEBUG = options.debug
@@ -78,8 +82,10 @@ DEBUG = options.debug
 setOscParams(options.parameters)
 ns.setDebug(options.debug)
 
-if options.corestats == True:
+if options.usstats == True:
     SPECTRUM_VARIATIONS.append("USSYS")
+if options.castats == True:
+    SPECTRUM_VARIATIONS.append("CASYS")
 
 print("SPECTRUM VARIATIONS: " + str(SPECTRUM_VARIATIONS))
 
@@ -196,7 +202,7 @@ if __name__ == '__main__':
     #----- UNCERTAINTY                                       ------#
     #TODO: RUN THIS WITH SUPERK VALUES, 5YEARS
     #
-    num_experiments = 10
+    num_experiments = 1000
     dms_fits, sst_fits, negML_results = cmu.GetNegMLStatSpread(num_experiments, \
             unosc_spectra,oscParams,ENERGY_ARRAY,NUMBINS,SPECTRUM_VARIATIONS)
     print(dms_fits)
