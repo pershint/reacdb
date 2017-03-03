@@ -42,14 +42,13 @@ class ExperimentChi2(object):
         self.SpecVars = SpecVars
         self.unosc_spectra = unosc_spectra
         self.Stat_EventHist = Stat_EventHist
-        self.NoStat_EventHist = NoStat_EventHist
         self.energy_array = energy_array
     def __call__(self, sst, dms):
         print("OSC PARAMS FED IN: " + str([dms,sst]))
         PerfectdNdE = ns.build_Theory_dNdE(self.unosc_spectra, self.energy_array, \
                 [dms,sst])
         #Build your histogram for the input oscillation parameters
-        FitHist = h.dNdE_Hist(PerfectdNdE, 30)
+        FitHist = h.dNdE_Hist(PerfectdNdE, len(self.Stat_EventHist.bin_values))
         chisquare = np.sum(((FitHist.bin_values - 
             self.Stat_EventHist.bin_values)**2)/ FitHist.bin_values)
         #self.NoStat_EventHist.bin_values)
@@ -116,7 +115,7 @@ class ExperimentNegML(object):
         PerfectdNdE = ns.build_Theory_dNdE(self.unosc_spectra, self.energy_array, \
                 [dms,sst])
         #Build your histogram for the input oscillation parameters
-        FitHist = h.dNdE_Hist(PerfectdNdE, 30)
+        FitHist = h.dNdE_Hist(PerfectdNdE, len(self.Stat_EventHist.bin_values))
         x = self.Stat_EventHist.bin_values
         if np.max(x) > 170:
             print("WARNING: BIN VALUE GREATER THAN FACTORIAL FUNCTION" + \

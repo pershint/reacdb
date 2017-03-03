@@ -14,7 +14,6 @@ import tools.graph.SpectraPlots as splt
 import tools.graph.OscPlot as oplt
 import tools.graph.ChiSquaredPlots as cplt
 
-import tools.hist.binning as hb
 import lib.Histogram as h
 import lib.playDarts as pd
 
