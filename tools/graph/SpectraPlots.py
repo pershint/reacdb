@@ -14,6 +14,7 @@ def dNdEPlot_pts(energies,numSpec,bin_left,bin_right,sst12,m12):
     ax.annotate(r'$\sin^{2}(\theta _{12})$ =' + str(sst12) + '\n' + \
             r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,200), fontsize = '16', 
             xytext=(6.5,200))
+    plt.ylim(0,np.max(numSpec) + 1)
     plt.xlabel('Energy (MeV)')
     plt.ylabel(r'events/$10^{32}proton-years/MeV$')
     plt.title(r'SNO+ Neutrino Spectrum for all US and Canadian Reactors')
@@ -64,8 +65,8 @@ def dNdEPlot_line(energies,numSpec,sst12,m12):
     plt.plot(energies,numSpec, alpha=opacity, color='g')
     plt.fill_between(energies, 1e-10, numSpec, facecolor ='g',alpha = 0.4)
     ax.annotate(r'$\sin^{2}(\theta _{12})$ =' + str(sst12) + '\n' + \
-            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,200), fontsize = '16', 
-            xytext=(6.5,200))
+            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,50), fontsize = '16', 
+            xytext=(6.5,50))
     plt.xlabel('Energy (MeV)')
     plt.ylabel(r'events/$10^{32}proton-years/MeV$')
     plt.title(r'SNO+ Neutrino Spectrum for all US and Canadian Reactors')

@@ -88,18 +88,19 @@ if options.castats == True:
 
 print("SPECTRUM VARIATIONS: " + str(SPECTRUM_VARIATIONS))
 
-def GetBruceSpectra(List,Isotope_Information):
+def getBruceSpectra(List,Isotope_Information):
     print("#----- AN EXERCISE IN CALCULATING AN UNOSC. SPECTRA FOR BRUCE --#")
     BruceDetails = rp.ReactorDetails("BRUCE")
     BruceStatus = rp.ReactorStatus("BRUCE")
     BruceUnoscSpecGen = ns.UnoscSpecGen(BruceDetails,BruceStatus,Isotope_Information, \
             ENERGY_ARRAY)
-    BruceOscSpecGen = ns.OscSpecGen(BruceUnoscSpecGen)
+    BruceOscSpecGen = ns.OscSysGen(BruceUnoscSpecGen,oscParams,SPECTRUM_VARIATIONS)
     for CORENUM in np.arange(1,BruceUnoscSpecGen.no_cores+1):
         print("GRAPHING OSC SPECTRA FOR " + str(CORENUM) + " NOW...")
         splt.plotCoreOscSpectrum((CORENUM-1),BruceOscSpecGen)
     print("Graphing sum of oscillated spectra for BRUCE:")
     splt.plotSumOscSpectrum(BruceOscSpecGen)
+    oplt.plotCoreSurvivalProb(1,BruceOscSpecGen)
     print("#---- END EXERCISES FOR BRUCE -----#")
 
 def RoughIntegrate(y_array,x_array):
@@ -175,6 +176,8 @@ if __name__ == '__main__':
 
     print(" ")
     unosc_spectra = build_unoscSpectra(List)
+    if DEBUG == True:
+        print("AAAH")
     #First, show the dNdE function
     Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,ENERGY_ARRAY,oscParams)
     Varied_dNdE = ns.build_Theory_dNdE_wVar(unosc_spectra,ENERGY_ARRAY, \
@@ -183,15 +186,20 @@ if __name__ == '__main__':
     RoughIntegrate(Varied_dNdE.dNdE,ENERGY_ARRAY)
     splt.dNdEPlot_line(ENERGY_ARRAY,Varied_dNdE.dNdE, oscParams[1],\
             oscParams[0])
-    if DEBUG == True:
-        splt.dNdEPlot_line(ENERGY_ARRAY,Varied_dNdE.dNdE, oscParams[1],\
-                oscParams[0])
-
+    dNdEHistperf = h.dNdE_Hist(Perfect_dNdE,NUMBINS)
+    dNdEHistvar = h.dNdE_Hist(Varied_dNdE,NUMBINS)
+    dNdEHistvar = pd.playDarts_h(188,dNdEHistvar)
+    splt.dNdEPlot_pts(dNdEHistperf.bin_centers,dNdEHistperf.bin_values, \
+            dNdEHistperf.bin_lefts,dNdEHistperf.bin_rights, \
+            oscParams[1], oscParams[0])
+    splt.dNdEPlot_pts(dNdEHistvar.bin_centers,dNdEHistvar.bin_values, \
+            dNdEHistvar.bin_lefts,dNdEHistvar.bin_rights, \
+            oscParams[1], oscParams[0])
     #Calculate the chi-squared test results (fixed dms, vary sst)
-    #sst_array = np.arange(0.01, 1.00, 0.01)
-    #chi2_results = cmu.GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, \
-    #        ENERGY_ARRAY,NUMBINS)
-    #cplt.chi2vssst(chi2_results, sst_array,oscParams)
+    sst_array = np.arange(0.01, 1.00, 0.01)
+    chi2_results = cmu.GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, \
+            ENERGY_ARRAY,NUMBINS, SPECTRUM_VARIATIONS)
+    cplt.chi2vssst(chi2_results, sst_array,oscParams)
     #Now, create your "perfect" event histogram, events binned into 30 bins
     #EventHist_wstats, EventHist = cu.getExpt_wstats(oscParams, unosc_spectra, \
     #        ENERGY_ARRAY,NUMBINS)

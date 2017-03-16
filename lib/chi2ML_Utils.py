@@ -20,15 +20,15 @@ import playDarts as pd
 def getExpt_wstats(oscParams, All_unosc_spectra,energy_array, numBins,SpecVars):
     VarieddNdE = ns.build_Theory_dNdE_wVar(All_unosc_spectra, energy_array, \
             oscParams,SpecVars)
-    Stat_EventHist = h.dNdE_Hist(VarieddNdE, numBins)
-    events_per_year = sum(Stat_EventHist.bin_values)
+    Varied_EventHist = h.dNdE_Hist(VarieddNdE, numBins)
+    events_per_year = sum(Varied_EventHist.bin_values)
     print("EVTS PER YEAR: " + str(events_per_year))
     if events_per_year > 15:
         n = int(pd.RandShoot(events_per_year, np.sqrt(events_per_year),1))
     else:
         n = pd.RandShoot_p(events_per_year,1)
     print("NUMBER OF EVENTS FIRED:" + str(n))
-    Stat_EventHist = pd.playDarts_h(n,Stat_EventHist)
+    Stat_EventHist = pd.playDarts_h(n,Varied_EventHist)
     return Stat_EventHist
 
 ## ------------ BEGIN FUNCTIONS/CLASSES FOR CHI-SQUARED TESTS ---------- ##
@@ -65,8 +65,8 @@ def GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, energy_array,NUMBINS, \
     value in the sst_array.
     '''
     EventHist_wstats = getExpt_wstats(oscParams, unosc_spectra, \
-            energy_array,NUMBINS)
-    chi2 = ExperimentChi2(unosc_spectra,energy_array,EventHist_wstats)
+            energy_array,NUMBINS, SpecVars)
+    chi2 = ExperimentChi2(unosc_spectra,energy_array,EventHist_wstats,SpecVars)
     chi2_results = []
     for sst in sst_array:
         chi2_results.append(chi2(sst, oscParams[0]))

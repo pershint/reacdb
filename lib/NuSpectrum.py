@@ -12,7 +12,7 @@ DEBUG = False
 DATE = '11/20/2016'
 
 # --------------- THINGS TO VARY ------------------ #
-RUNTIME = 8760*5   #Five run years in hours
+RUNTIME = 8760*1   #Five run years in hours
 EFFICIENCY = 1  #Assume 100% signal detection efficiency
 NP = 1E32   #Need to approximate SNO+'s number of proton targets
 US_LF_VAR = 25 #Variance in all US load factors as a percentage
@@ -25,10 +25,10 @@ NP = 1E32   #Need to approximate SNO+'s number of proton targets
 
 
 # ----------- OSCILLATION PARAMETERS HELD CONSTANT ------------ #
-#FIXME: WHAT'S THE SOURCE FOR THESE VALUES
+#SINSQT13 FROM PDG LIVE AS OF 2016
 SINSQT13 = 0.0219 
 SINSQTWO13 = 0.0851 #calculated from SINSQT13
-COS4THT13 = 0.9570  #calculated from SINSQT13
+COS4THT13 = 0.9570  #PDG 2016
 #Approximate DELTAMSQ31 = DELTAMSQ32 for now
 DELTAMSQ31 = 2.5E-3
 DELTAMSQ32 = 2.5E-3
