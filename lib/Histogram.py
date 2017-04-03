@@ -79,11 +79,11 @@ class dNdE_Hist(Histogram):
         10 with the average of 10 bins in each.
         """
         cbin = 0
-        while cbin < self.numbins:
+        while cbin < self.numbins: 
             self.bin_lefts.append(self.x_axis[self.specvals_perbin * cbin])
-            self.bin_rights.append(self.x_axis[(self.specvals_perbin * (cbin+1))])
+            self.bin_rights.append(self.x_axis[(self.specvals_perbin * (cbin+1)) - 1])
             axisvalue = np.mean(self.x_axis[(self.specvals_perbin * \
-                    cbin):(self.specvals_perbin * (cbin+1))])
+                    cbin):((self.specvals_perbin * (cbin+1))-1)])
             self.bin_centers.append(axisvalue)
             cbin += 1
         self.binwidth = self.x_axis[self.specvals_perbin] - self.x_axis[0]
