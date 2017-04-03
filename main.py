@@ -181,7 +181,7 @@ if __name__ == '__main__':
     unosc_spectra = build_unoscSpectra(List)
 
     if DEBUG == 'True':
-       print("SHOWING SOME PLOTS OF dNdE's REBINNING")
+        print("SHOWING SOME PLOTS OF dNdE's REBINNING")
         #First, build the untouched dNdE function
         Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,ENERGY_ARRAY,oscParams)
 
@@ -213,7 +213,7 @@ if __name__ == '__main__':
     #statistically varied experiments.  Use the NegML minimization to find
     #the best fit oscillation parameters assuming no systematics or statistic
     #variation.
-    num_experiments = 1000
+    num_experiments = 10
     dms_fits, sst_fits, negML_results = cmu.GetNegMLStatSpread(num_experiments, \
             unosc_spectra,oscParams,ENERGY_ARRAY,NUMBINS,SPECTRUM_VARIATIONS)
     print(dms_fits)
