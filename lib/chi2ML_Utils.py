@@ -15,8 +15,7 @@ import playDarts as pd
 #Check your bin sizes; don't want to feed in an un-scaled true spectrum
 
 #Function returns an oscillated SNO+ antineutrino spectrum with statistical
-#Fluctuation generated using the PlayDarts library.  Also returns the
-#Spectrum without statistical fluctuation
+#Fluctuation generated using the PlayDarts library.
 def getExpt_wstats(oscParams, All_unosc_spectra,energy_array, numBins,SpecVars):
     VarieddNdE = ns.build_Theory_dNdE_wVar(All_unosc_spectra, energy_array, \
             oscParams,SpecVars)
