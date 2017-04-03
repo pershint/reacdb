@@ -88,7 +88,7 @@ if options.castats == True:
 
 print("SPECTRUM VARIATIONS: " + str(SPECTRUM_VARIATIONS))
 
-def getBruceSpectra(List,Isotope_Information):
+def getBruceSpectra(Isotope_Information):
     print("#----- AN EXERCISE IN CALCULATING AN UNOSC. SPECTRA FOR BRUCE --#")
     BruceDetails = rp.ReactorDetails("BRUCE")
     BruceStatus = rp.ReactorStatus("BRUCE")
@@ -145,6 +145,12 @@ def showReactors():
 #cores
 
 def build_unoscSpectra(List):
+    #Build array containing details for each isotope found in reactors
+    Isotope_Information = []
+    lambda_values = []
+    for isotope in ISOTOPES:
+        Isotope_Information.append(rp.Reactor_Isotope_Info(isotope))
+    #Use List and isotope information to build spectra
     unosc_spectra = []
     for reactor in List:
         ReacDetails = rp.ReactorDetails(reactor)
@@ -156,59 +162,57 @@ def build_unoscSpectra(List):
 
 
 if __name__ == '__main__':
+    if DEBUG == "True":
+        print("IN DEBUG MODE")
+
+    #Get the list of reactors to use in simulation
     WorldList = rp.getRLIndices()
     print(WorldList)
     USList = nrc.getUSList(DATE)
     List_Dictionary = {'US':USList, 'WORLD':WorldList, 'CA':CAList}
-    showReactors()
+    if DEBUG == True:
+        showReactors()
     List = setListType(List_Dictionary)
-    #Build array containing details for each isotope found in reactors
-    Isotope_Information = []
-    lambda_values = []
-    for isotope in ISOTOPES:
-        Isotope_Information.append(rp.Reactor_Isotope_Info(isotope))
-
 
     if DEBUG == True:
-        print("IN DEBUG MODE")
-        time.sleep(1)
-        getBruceSpectra(List, Isotope_Information)
+        getBruceSpectra(Isotope_Information)
 
-    print(" ")
+    #construct unoscillated spectra of all cores in List
     unosc_spectra = build_unoscSpectra(List)
-    if DEBUG == True:
-        print("AAAH")
-    #First, show the dNdE function
-    Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,ENERGY_ARRAY,oscParams)
-    Varied_dNdE = ns.build_Theory_dNdE_wVar(unosc_spectra,ENERGY_ARRAY, \
-            oscParams, SPECTRUM_VARIATIONS)
 
-    RoughIntegrate(Varied_dNdE.dNdE,ENERGY_ARRAY)
-    splt.dNdEPlot_line(ENERGY_ARRAY,Varied_dNdE.dNdE, oscParams[1],\
-            oscParams[0])
-    dNdEHistperf = h.dNdE_Hist(Perfect_dNdE,NUMBINS)
-    dNdEHistvar = h.dNdE_Hist(Varied_dNdE,NUMBINS)
-    dNdEHistvar = pd.playDarts_h(188,dNdEHistvar)
-    splt.dNdEPlot_pts(dNdEHistperf.bin_centers,dNdEHistperf.bin_values, \
-            dNdEHistperf.bin_lefts,dNdEHistperf.bin_rights, \
-            oscParams[1], oscParams[0])
-    splt.dNdEPlot_pts(dNdEHistvar.bin_centers,dNdEHistvar.bin_values, \
-            dNdEHistvar.bin_lefts,dNdEHistvar.bin_rights, \
-            oscParams[1], oscParams[0])
-    #Calculate the chi-squared test results (fixed dms, vary sst)
-    sst_array = np.arange(0.01, 1.00, 0.01)
-    chi2_results = cmu.GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, \
-            ENERGY_ARRAY,NUMBINS, SPECTRUM_VARIATIONS)
-    cplt.chi2vssst(chi2_results, sst_array,oscParams)
-    #Now, create your "perfect" event histogram, events binned into 30 bins
-    #EventHist_wstats, EventHist = cu.getExpt_wstats(oscParams, unosc_spectra, \
-    #        ENERGY_ARRAY,NUMBINS)
+    if DEBUG == 'True':
+       print("SHOWING SOME PLOTS OF dNdE's REBINNING")
+        #First, build the untouched dNdE function
+        Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,ENERGY_ARRAY,oscParams)
 
-    #----- TRY THE MINIMIZATION OF THE CHISQUARE FUNCTION FOR -----#
-    #----- THE TRUE SPECTRA AT SNO+ AND A FLUX WITH EXPERIMENTAL --#
-    #----- UNCERTAINTY                                       ------#
-    #TODO: RUN THIS WITH SUPERK VALUES, 5YEARS
-    #
+        #Build the dNdE with US and/or CA core systematics included
+        Varied_dNdE = ns.build_Theory_dNdE_wVar(unosc_spectra,ENERGY_ARRAY, \
+                oscParams, SPECTRUM_VARIATIONS)
+
+        RoughIntegrate(Varied_dNdE.dNdE,ENERGY_ARRAY)
+        splt.dNdEPlot_line(ENERGY_ARRAY,Varied_dNdE.dNdE, oscParams[1],\
+                oscParams[0])
+        dNdEHistperf = h.dNdE_Hist(Perfect_dNdE,NUMBINS)
+        dNdEHistvar = h.dNdE_Hist(Varied_dNdE,NUMBINS)
+        dNdEHistvar = pd.playDarts_h(188,dNdEHistvar)
+        splt.dNdEPlot_pts(dNdEHistperf.bin_centers,dNdEHistperf.bin_values, \
+                dNdEHistperf.bin_lefts,dNdEHistperf.bin_rights, \
+                oscParams[1], oscParams[0])
+        splt.dNdEPlot_pts(dNdEHistvar.bin_centers,dNdEHistvar.bin_values, \
+                dNdEHistvar.bin_lefts,dNdEHistvar.bin_rights, \
+                oscParams[1], oscParams[0])
+
+        #Calculate the chi-squared test results (fixed dms, vary sst)
+        sst_array = np.arange(0.01, 1.00, 0.01)
+        chi2_results = cmu.GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, \
+                ENERGY_ARRAY,NUMBINS, SPECTRUM_VARIATIONS)
+        cplt.chi2vssst(chi2_results, sst_array,oscParams)
+
+
+    #Use the unosc_spectra and applied SPECTRUM_VARIATIONS to create
+    #statistically varied experiments.  Use the NegML minimization to find
+    #the best fit oscillation parameters assuming no systematics or statistic
+    #variation.
     num_experiments = 1000
     dms_fits, sst_fits, negML_results = cmu.GetNegMLStatSpread(num_experiments, \
             unosc_spectra,oscParams,ENERGY_ARRAY,NUMBINS,SPECTRUM_VARIATIONS)
