@@ -21,28 +21,19 @@ def RandShoot_p(lamb, n):
     '''
     return np.random.poisson(lamb, n)
 
-def playDarts(n,spectrum,bin_left,bin_right,bin_center):
+#CHECK OUT numpy.random.choice!  Could be super helpful here.
+def playDarts(n,spectrumvalue,energy):
     '''
-    Takes in a spectrum and the dimensions of the bins for each
-    spectrum entry.  Returns a new spectrum with n entries as
-    picked with random x and y value shots; if y>spectrum for the
-    considered bin, the event is added to the new spectrum.
+    Takes in a spectrum as a function of energy and the energy values.
+    Plays darts and picks energies using the spectrum as a PDF.  Returns
+    n entries in an array
     '''
     events = 0
-    exp_spectrum = np.zeros(len(spectrum))
-    while events < n:
-        x = bin_left[0] + np.random.random(1)*(bin_right[len(bin_right)-1] - \
-                bin_left[0])
-        y = np.random.random(1)*(np.max(spectrum))
-        for i,thebin in enumerate(bin_left):
-            if x >= bin_left[i] and x < bin_right[i]:
-                if y <= spectrum[i]:
-                    exp_spectrum[i] += 1
-                    events +=1
-                    break
-                else:
-                    break
-    return np.array(exp_spectrum)
+    specvals = np.array(spectrumvalue)
+    earr = np.array(energy)
+    specscaler = np.sum(specvals)
+    MCnuenergies = np.random.choice(earr, n, (specvals/specscaler))
+    return MCnuenergies
 
 def playDarts_h(n,EventHist):
     '''
