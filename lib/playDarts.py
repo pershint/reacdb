@@ -22,17 +22,17 @@ def RandShoot_p(lamb, n):
     return np.random.poisson(lamb, n)
 
 #CHECK OUT numpy.random.choice!  Could be super helpful here.
-def playDarts(n,spectrumvalue,energy):
+def playDarts(n,spectrumvalues,energies):
     '''
     Takes in a spectrum as a function of energy and the energy values.
     Plays darts and picks energies using the spectrum as a PDF.  Returns
     n entries in an array
     '''
     events = 0
-    specvals = np.array(spectrumvalue)
-    earr = np.array(energy)
+    specvals = np.array(spectrumvalues)
+    earr = np.array(energies)
     specscaler = np.sum(specvals)
-    MCnuenergies = np.random.choice(earr, n, (specvals/specscaler))
+    MCnuenergies = np.random.choice(earr, n, p=(specvals/specscaler))
     return MCnuenergies
 
 def playDarts_h(n,EventHist):

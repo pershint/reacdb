@@ -88,8 +88,14 @@ if options.castats == True:
 
 print("SPECTRUM VARIATIONS: " + str(SPECTRUM_VARIATIONS))
 
-def getBruceSpectra(Isotope_Information):
+def getBruceSpectra():
     print("#----- AN EXERCISE IN CALCULATING AN UNOSC. SPECTRA FOR BRUCE --#")
+    #Build array containing details for each isotope found in reactors
+    Isotope_Information = []
+    lambda_values = []
+    for isotope in ISOTOPES:
+        Isotope_Information.append(rp.Reactor_Isotope_Info(isotope))
+
     BruceDetails = rp.ReactorDetails("BRUCE")
     BruceStatus = rp.ReactorStatus("BRUCE")
     BruceUnoscSpecGen = ns.UnoscSpecGen(BruceDetails,BruceStatus,Isotope_Information, \
@@ -174,13 +180,21 @@ if __name__ == '__main__':
         showReactors()
     List = setListType(List_Dictionary)
 
-    if DEBUG == True:
-        getBruceSpectra(Isotope_Information)
+    #if DEBUG == True:
+    #    getBruceSpectra()
 
     #construct unoscillated spectra of all cores in List
     unosc_spectra = build_unoscSpectra(List)
 
-    if DEBUG == 'True':
+    #Debugging the new Event builder function
+    if DEBUG == True:
+        Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,ENERGY_ARRAY,oscParams)
+        nu_energies = pd.playDarts(10000,Perfect_dNdE.dNdE,ENERGY_ARRAY)
+        print("NU ENERGIES: " + str(nu_energies))
+        htest = h.Event_Hist(nu_energies,NUMBINS,ENERGY_ARRAY[0],ENERGY_ARRAY[len(ENERGY_ARRAY) -1])
+        splt.plot_EventHist(htest,oscParams[1],oscParams[0])
+
+    if DEBUG == True:
         print("SHOWING SOME PLOTS OF dNdE's REBINNING")
         #First, build the untouched dNdE function
         Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,ENERGY_ARRAY,oscParams)

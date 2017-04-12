@@ -23,6 +23,7 @@ class Histogram(object):
         #initialize value that tells you the bin width in x-axis units
         self.bin_width = self.bin_rights[0] - self.bin_lefts[0]
 
+#Turns a dNdE function into a binned distribution
 class dNdE_Hist(Histogram):
     def __init__(self, dNdE, numbins):
         self.spectrum = dNdE.dNdE
@@ -87,5 +88,48 @@ class dNdE_Hist(Histogram):
             self.bin_centers.append(axisvalue)
             cbin += 1
         self.binwidth = self.x_axis[self.specvals_perbin] - self.x_axis[0]
-    
+
+class Event_Hist(Histogram):
+    def __init__(self, events, numbins, hmin, hmax):
+        self._padding = 0.01
+        self.events = events
+        if (hmin is not None) or (hmin is not None):
+            self.hmin = float(hmin)
+            self.hmax = float(hmax)
+        else:
+            self.hmin = np.min(events)
+            self.hmax = np.max(events) + self._padding
+        self.numbins = numbins
+        self.bin_width = (self.hmax - self.hmin) / float(self.numbins)
+
+        #Initialize arrays that hold bin end locations
+        self.bin_lefts = np.arange(self.hmin, \
+                self.hmax,self.bin_width)
+        self.bin_rights = np.arange((self.hmin + self.bin_width), \
+                (self.hmax + self.bin_width), self.bin_width)
+        print(self.bin_lefts)
+        print(self.bin_rights)
+        self.bin_centers = (self.bin_lefts + ((self.bin_rights - self.bin_lefts) / 2.0))
+        #initialize array to hold the bin's value
+        self.bin_values = []
+        #initialize value that tells you the bin width in x-axis units
+        self.fill_binvalues()
+        self.bin_values = np.array(self.bin_values)
+
+        super(Event_Hist, self).__init__(self.bin_values, self.bin_centers, \
+                self.bin_lefts, self.bin_rights)
+
+      
+    def fill_binvalues(self):
+        bin_vals = []
+        nbin = 0
+        while nbin < self.numbins:
+            bin_vals.append(len(np.where((self.events >= self.bin_lefts[nbin]) & 
+                (self.events < self.bin_rights[nbin]))[0])) #[0]? np.where is dumb
+            print(bin_vals[nbin])
+            print(nbin)
+            nbin+=1
+        self.bin_values = bin_vals
+
+   
 

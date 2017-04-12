@@ -92,18 +92,11 @@ class Lambda(object):
         return sl
 
     def defineBigLambda(self):
-        if DEBUG == True:
-            print("SMALL LAMBDAS AND ISOTOPE FRACTIONS FED TO THIS BIGLAMBDA:" )
-            print(self.sl_array)
-            print(self.isofracs)
         bl_terms = []
         for i,sl in enumerate(self.sl_array):
             bl_term = self.isofracs[i] * sl
             bl_terms.append(bl_term)
-        bl = np.sum(bl_terms) #Not a functional: just a function now
-        if DEBUG == True:
-            print("Big Lambda built. Output value for energy " + str(self.E) + "MeV" + \
-                    " is " + str(bl))     
+        bl = np.sum(bl_terms)
         self.value = bl
 
     def polyTerm(self, a, e, c):
@@ -149,6 +142,7 @@ class UnoscSpecGen(object):
             coreDistance = sd.getDistFromSNOLAB([longitude,latitude,altitude])
             self.Core_Distances.append(coreDistance)
         if DEBUG == True:
+            print("For core " + self.ReacStatus.index + "...")
             print("Core distances calculated! In km... " + str(self.Core_Distances))
 
     def calcSpectra(self):
