@@ -1,0 +1,14 @@
+{
+type: "MATERIAL",
+version: 1,
+index: "te_0p3_PRS_labppo_scintillator_bisMSB_Feb2015",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+density: 0.867d,
+nelements: 0,
+nmaterials: 3,
+materials: ["lab", "ppo", "G4_Te",],
+matprop: [0.994705d, 0.002295d, 0.003d],
+}

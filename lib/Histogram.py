@@ -89,6 +89,9 @@ class dNdE_Hist(Histogram):
             cbin += 1
         self.binwidth = self.x_axis[self.specvals_perbin] - self.x_axis[0]
 
+#This needs work.  The issue is when you try to make your bin lefts and rights,
+#The decimal number gets offset and you'll get one too many bins.  Quick fix: strip
+#off the extra bin that doesn't match up with the requested number of bins.
 class Event_Hist(Histogram):
     def __init__(self, events, numbins, hmin, hmax):
         self._padding = 0.01
@@ -107,9 +110,11 @@ class Event_Hist(Histogram):
                 self.hmax,self.bin_width)
         self.bin_rights = np.arange((self.hmin + self.bin_width), \
                 (self.hmax + self.bin_width), self.bin_width)
-        print(self.bin_lefts)
-        print(self.bin_rights)
+        #Issues with representing hmin and hmax related to representing the float
+        #In binary.  Strip off extra bins that were made in error.
+        self.binstrip()
         self.bin_centers = (self.bin_lefts + ((self.bin_rights - self.bin_lefts) / 2.0))
+
         #initialize array to hold the bin's value
         self.bin_values = []
         #initialize value that tells you the bin width in x-axis units
@@ -119,7 +124,13 @@ class Event_Hist(Histogram):
         super(Event_Hist, self).__init__(self.bin_values, self.bin_centers, \
                 self.bin_lefts, self.bin_rights)
 
-      
+    def binstrip(self):
+        if len(self.bin_rights) > len(self.bin_lefts):
+            self.bin_rights = np.delete(self.bin_rights,(len(self.bin_rights)-1))
+        elif len(self.bin_rights) < len(self.bin_lefts):
+            self.bin_lefts = np.delete(self.bin_lefts,(len(self.bin_lefts)-1))
+
+
     def fill_binvalues(self):
         bin_vals = []
         nbin = 0

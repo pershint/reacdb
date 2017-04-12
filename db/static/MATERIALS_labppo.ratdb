@@ -1,0 +1,28 @@
+{
+type: "MATERIAL",
+version: 1,
+index: "labppo_scintillator",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+density: 0.867,
+nelements: 0,
+nmaterials: 2,
+materials: ["lab", "ppo",],
+matprop: [0.99770, 0.00230],
+}
+{
+type: "MATERIAL",
+version: 1,
+index: "labppo_bismsb_scintillator",
+run_range: [0, 0],
+pass: 0,
+comment: "",
+timestamp: "",
+density: 0.867,
+nelements: 0,
+nmaterials: 2,
+materials: ["lab", "ppo",],
+matprop: [0.99770, 0.00230],
+}
