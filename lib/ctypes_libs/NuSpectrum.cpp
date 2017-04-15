@@ -1,6 +1,7 @@
 #include "math.h"
 #include "stdlib.h"
 #include "stdio.h"
+
 extern "C"
 {
   double normalDist(double mu, double sigma, double x)
@@ -28,31 +29,19 @@ extern "C"
     //This Function takes each bin in the spectrum, builds a gaussian centered
     //on the value and with an integral that equals the value, and sums all of
     //The gaussians resulting from this operation on each spec bin.
-    printf("Spectrum fed in: \n");
-    for(int k=0; k<nentries; k++)
-        printf("%f ",spec[k]);
-    double sum = 0.0;
     double* smearedspec = (double*)malloc(nentries*sizeof(double));
     for(int i=0; i<nentries; i++)
     {
-        sum += spec[i];
         double* cg = buildConvolvedGauss(e_arr[i], resolution, spec[i], e_arr,
                 nentries);
-        printf("\n");
-        printf("values in the cg\n");
         for(int j = 0; j<nentries;j++)
         {
             if(i == 0)
-            {
                 smearedspec[j] = cg[j];
-                printf("%f ", cg[j]);
-           }
             else
                 smearedspec[j] += cg[j];
         }
     }
-    printf("\n");
-    printf("sum of spec: %f \n",sum);    
     return smearedspec;
   }
 }

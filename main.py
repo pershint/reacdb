@@ -74,6 +74,9 @@ parser.add_option("-u", "--usstats",action="store_true",dest="usstats",
 parser.add_option("-c", "--castats",action="store_true",dest="castats",
                   default="False",
                   help="Boolean for adding fluctuations in each CA core spectrum")
+parser.add_option("-d", "--detectresp",action="store_true",dest="detectresp",
+                  default="False",
+                  help="Incorporate the effects of detector response to dNdE")
 (options,args) = parser.parse_args()
 
 DEBUG = options.debug
@@ -85,6 +88,8 @@ if options.usstats == True:
     SPECTRUM_VARIATIONS.append("USSYS")
 if options.castats == True:
     SPECTRUM_VARIATIONS.append("CASYS")
+if options.detectresp == True:
+    SPECTRUM_VARIATIONS.append("DETECTOR_RESP")
 
 print("SPECTRUM VARIATIONS: " + str(SPECTRUM_VARIATIONS))
 
@@ -189,6 +194,10 @@ if __name__ == '__main__':
     #Debugging the new Event builder function
     if DEBUG == True:
         Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,ENERGY_ARRAY,oscParams)
+        if "DETECTOR_RESP" in SPECTRUM_VARIATIONS:
+            #FIXME: Don't want resolution hard-coded... 
+            Perfect_dNdE.setResolution(0.075)
+            Perfect_dNdE.smear()
         nu_energies = pd.playDarts(10000,Perfect_dNdE.dNdE,ENERGY_ARRAY)
         print("NU ENERGIES: " + str(nu_energies))
         htest = h.Event_Hist(nu_energies,NUMBINS,ENERGY_ARRAY[0],ENERGY_ARRAY[len(ENERGY_ARRAY) -1])
@@ -198,11 +207,13 @@ if __name__ == '__main__':
         print("SHOWING SOME PLOTS OF dNdE's REBINNING")
         #First, build the untouched dNdE function
         Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,ENERGY_ARRAY,oscParams)
-
         #Build the dNdE with US and/or CA core systematics included
         Varied_dNdE = ns.build_Theory_dNdE_wVar(unosc_spectra,ENERGY_ARRAY, \
                 oscParams, SPECTRUM_VARIATIONS)
-
+        if "DETECTOR_RESP" in SPECTRUM_VARIATIONS:
+            #FIXME: Don't want resolution hard-coded... 
+            Varied_dNdE.setResolution(0.075)
+            Varied_dNdE.smear()
         RoughIntegrate(Varied_dNdE.dNdE,ENERGY_ARRAY)
         splt.dNdEPlot_line(ENERGY_ARRAY,Varied_dNdE.dNdE, oscParams[1],\
                 oscParams[0])

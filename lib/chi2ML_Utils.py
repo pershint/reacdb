@@ -7,6 +7,10 @@ import iminuit as im
 import NuSpectrum as ns
 import Histogram as h
 import playDarts as pd
+
+#FIXME: DON"T WANT HARDCODED
+RESOLUTION = 0.075
+
 #builds the chi-squared between the expected SNO+ spectrum with
 #systematics included and an oscillated spectrum with no systematics
 #that is oscillated with a (sine-squared theta12) and b
@@ -19,6 +23,9 @@ import playDarts as pd
 def getExpt_wstats(oscParams, All_unosc_spectra,energy_array, numBins,SpecVars):
     VarieddNdE = ns.build_Theory_dNdE_wVar(All_unosc_spectra, energy_array, \
             oscParams,SpecVars)
+    if "DETECTOR_RESP" in SpecVars:
+        VarieddNdE.setResolution(RESOLUTION)
+        VarieddNdE.smear()
     Varied_EventHist = h.dNdE_Hist(VarieddNdE, numBins)
     events_per_year = sum(Varied_EventHist.bin_values)
     print("EVTS PER YEAR: " + str(events_per_year))
@@ -46,7 +53,10 @@ class ExperimentChi2(object):
         print("OSC PARAMS FED IN: " + str([dms,sst]))
         PerfectdNdE = ns.build_Theory_dNdE(self.unosc_spectra, self.energy_array, \
                 [dms,sst])
-        #Build your histogram for the input oscillation parameters
+        if "DETECTOR_RESP" in self.SpecVars:
+            PerfectdNdE.setResolution(RESOLUTION)
+            PerfectdNdE.smear()
+       #Build your histogram for the input oscillation parameters
         FitHist = h.dNdE_Hist(PerfectdNdE, len(self.Stat_EventHist.bin_values))
         chisquare = np.sum(((FitHist.bin_values - 
             self.Stat_EventHist.bin_values)**2)/ FitHist.bin_values)
@@ -113,7 +123,10 @@ class ExperimentNegML(object):
     def __call__(self, sst, dms):
         PerfectdNdE = ns.build_Theory_dNdE(self.unosc_spectra, self.energy_array, \
                 [dms,sst])
-        #Build your histogram for the input oscillation parameters
+        if "DETECTOR_RESP" in self.SpecVars:
+            PerfectdNdE.setResolution(RESOLUTION)
+            PerfectdNdE.smear()
+       #Build your histogram for the input oscillation parameters
         FitHist = h.dNdE_Hist(PerfectdNdE, len(self.Stat_EventHist.bin_values))
         x = self.Stat_EventHist.bin_values
         if np.max(x) > 170:

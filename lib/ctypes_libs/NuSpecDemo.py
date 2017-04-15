@@ -35,15 +35,16 @@ def dNdESmearer(spectrum, energy_array, resolution, binwidth):
 
     #go back to a python-usable numpy array
     smearedspec = np.array(np.fromiter(indata, dtype=np.float64, count=numpoints))
-    print("SUM OF SMEAR: " + str( np.sum(smearedspec)))
     return smearedspec
 
 if __name__ == "__main__":
-    earr = np.arange(1.0,11.0,0.01)
+    binwidth= 0.01
+    earr = np.arange(1.0,11.0,binwidth)
     spec = np.zeros(len(earr))
     spec[len(spec)/2] = 1.0
     res = 0.31
-    outsmear = demo(spec, earr, res)
+    outsmear = dNdESmearer(spec, earr, res, binwidth)
     outsmear = outsmear * binwidth
+    print("SUM OF SMEAR: " + str( np.sum(outsmear)))
     plt.plot(outsmear)
     plt.show()

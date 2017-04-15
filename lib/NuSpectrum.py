@@ -403,43 +403,42 @@ class dNdE(object):
         '''
         self.resolution = res
 
-    def Smear(self):
+    def smear(self):
         '''
         Smears the current dNdE by the defined detector resolution.
         '''
         if self.resolution is None:
             print("Define your resolution first!  Exiting...")
             sys.exit(0)
-         numpoints = len(self.dNdE)
-         #call library you're going to use, and get the function from it
-         libns = ct.CDLL(clibpath + '/libNuSpectrum.so')
-         specsmearer= libns.convolveWER
-     
-         #Define the ctypes you will be feeding into the function
-         pdub = ct.POINTER(ct.c_double)
-         cint = ct.c_int
-         cdub = ct.c_double
-         specsmearer.argtypes = [pdub, pdub, cint, cdub]
-         specsmearer.restype = pdub
-     
-         #cast inputs as numpy arrays (just in case they were a list)
-         spec = np.array(self.dNdE)
-         e_arr = np.array(self.Energy_Array)
-     
-         #use the np.array.ctypes function call to cast data as needed for ctypes
-         spec_in = spec.ctypes.data_as(pdub)
-         e_arr_in = e_arr.ctypes.data_as(pdub)
-     
-         #Allocate space for the function's output to be stored in
-         indata = (ct.c_double * numpoints)()
-     
-         #actually run the function
-         indata = specsmearer(spec_in,e_arr_in,numpoints,resolution)
-     
-         #go back to a python-usable numpy array
-         smearedspec = np.array(np.fromiter(indata, dtype=np.float64, count=numpoints))
-         #normalize to binwidth
-         smearedspec = smearedspec * (self.Energy_Array[1]-self.Energy_Array[0])
-         self.dNdE = smearedspec
- 
+        numpoints = len(self.dNdE)
+        #call library you're going to use, and get the function from it
+        libns = ct.CDLL(os.path.join(clibpath,'libNuSpectrum.so'))
+        specsmearer= libns.convolveWER
+    
+        #Define the ctypes you will be feeding into the function
+        pdub = ct.POINTER(ct.c_double)
+        cint = ct.c_int
+        cdub = ct.c_double
+        specsmearer.argtypes = [pdub, pdub, cint, cdub]
+        specsmearer.restype = pdub
+    
+        #cast inputs as numpy arrays (just in case they were a list)
+        spec = np.array(self.dNdE)
+        e_arr = np.array(self.Energy_Array)
+    
+        #use the np.array.ctypes function call to cast data as needed for ctypes
+        spec_in = spec.ctypes.data_as(pdub)
+        e_arr_in = e_arr.ctypes.data_as(pdub)
+    
+        #Allocate space for the function's output to be stored in
+        indata = (ct.c_double * numpoints)()
+    
+        #actually run the function
+        indata = specsmearer(spec_in,e_arr_in,numpoints,self.resolution)
+    
+        #go back to a python-usable numpy array
+        smearedspec = np.array(np.fromiter(indata, dtype=np.float64, count=numpoints))
+        #normalize to binwidth
+        smearedspec = smearedspec * (self.Energy_Array[1]-self.Energy_Array[0])
+        self.dNdE = smearedspec
 
