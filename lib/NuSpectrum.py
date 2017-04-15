@@ -1,11 +1,18 @@
 #g!
 
+import sys
+import ctypes as ct
+import os.path
+
 import rdbparse as rp
 import playDarts as pd
 import GetNRCDailyInfo as nrc
 import SNOdist as sd
 import dailyparse as dp
 import numpy as np
+
+basepath = os.path.dirname(__file__)
+clibpath = os.path.abspath(os.path.join(basepath,"ctypes_libs"))
 
 DEBUG = False
 #FIXME: Is hardcoded here and in main.py; would like to isolate to main
@@ -353,6 +360,8 @@ class OscSysGen(object):
     __sumSpectra = sumSpectra
     __oscillateSpectra = oscillateSpectra
     __addCoreSystematics = addCoreSystematics
+
+
 #Class takes in a reactor spectrum array (oscillated or unoscillated) and the
 #relative x-axis array (Energy_Array in the class) and calculates the
 #dNdE function for the spectrum. Total Runtime and Thermal power associated
@@ -363,6 +372,8 @@ class dNdE(object):
         self.Spectrum = Spectrum
 
         self.Array_Check()
+
+        self.resolution = None
 
         self.dNdE = []
         self.evaldNdE()
@@ -384,4 +395,51 @@ class dNdE(object):
         pe = np.sqrt((Ee**2) - (Me**2))
         poly = E**(A1 + (A2 * np.log(E)) + (A3 * ((np.log(E))**3)))
         return (1E-53) * pe * Ee * poly #1E-53, instead of -43, for km^2 units
+
+    def setResolution(self, res):
+        '''
+        Takes in a detector resolution percentage.  For example, KamLAND is
+        7.5%/sqrt(E).  Input would be res = 0.075
+        '''
+        self.resolution = res
+
+    def Smear(self):
+        '''
+        Smears the current dNdE by the defined detector resolution.
+        '''
+        if self.resolution is None:
+            print("Define your resolution first!  Exiting...")
+            sys.exit(0)
+         numpoints = len(self.dNdE)
+         #call library you're going to use, and get the function from it
+         libns = ct.CDLL(clibpath + '/libNuSpectrum.so')
+         specsmearer= libns.convolveWER
+     
+         #Define the ctypes you will be feeding into the function
+         pdub = ct.POINTER(ct.c_double)
+         cint = ct.c_int
+         cdub = ct.c_double
+         specsmearer.argtypes = [pdub, pdub, cint, cdub]
+         specsmearer.restype = pdub
+     
+         #cast inputs as numpy arrays (just in case they were a list)
+         spec = np.array(self.dNdE)
+         e_arr = np.array(self.Energy_Array)
+     
+         #use the np.array.ctypes function call to cast data as needed for ctypes
+         spec_in = spec.ctypes.data_as(pdub)
+         e_arr_in = e_arr.ctypes.data_as(pdub)
+     
+         #Allocate space for the function's output to be stored in
+         indata = (ct.c_double * numpoints)()
+     
+         #actually run the function
+         indata = specsmearer(spec_in,e_arr_in,numpoints,resolution)
+     
+         #go back to a python-usable numpy array
+         smearedspec = np.array(np.fromiter(indata, dtype=np.float64, count=numpoints))
+         #normalize to binwidth
+         smearedspec = smearedspec * (self.Energy_Array[1]-self.Energy_Array[0])
+         self.dNdE = smearedspec
+ 
 

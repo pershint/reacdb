@@ -7,11 +7,18 @@ import numpy as np
 
 
 class NuToPosConverter(object):
-    def __init__(self, E_nus):
+    def __init__(self, E_nus, resolution_key):
         self.E_nus = np.array(E_nus)
         self._delta = 1.293 #m_neutron - m_proton in MeV
         self._m_e = 0.511 #m_electron in MeV
         self._m_n = 939.57 #in MeV
+        if resolution_key == "KAMLAND":
+            #KamLAND's relative energy resolution: 7.5%/sqrt(E)
+            self.res_percent = 0.075
+        if resolution_key == "SNOPLUS":
+            #FIXME: need sno+ values
+            print("NO SNO+ RESOLUTION INPUT YET.  DEFAULTING TO KAMLAND")
+            self.res_percent = 0.075
 
     def _convert_0ord(self):
         #zeroth order conversion to positron momentum
@@ -30,7 +37,7 @@ class NuToPosConverter(object):
         pe1 = np.sqrt(Ee1**2 - self._m_e**2)
         return pe1
 
-    def convert(self):
+    def getPosMomentums(self):
         p_p0 = self._convert_0ord()
         p_p1 = self._convert_1ord(p_p0)
         return p_p1
@@ -43,4 +50,12 @@ class NuToPosConverter(object):
         E_ann = self._m_e * 2
         return pe1 + E_ann
 
-
+    def Smear(self, E_arr):
+        '''
+        Takes the energy deposited into the detector and smears it by the
+        defined resolution percentage
+        '''
+        smeared_Es = pd.RandShoot(E_arr, (np.sqrt(E_arr) * \
+                self.res_percent), len(E_arr))
+        return smeared_Es
+        
