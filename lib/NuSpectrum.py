@@ -56,7 +56,7 @@ A3 = -0.001953
 def build_Theory_dNdE(unosc_spectra,energy_array,oscParams):
     Total_PerfectSpectra = np.zeros(len(energy_array))
     for ReacSpectra in unosc_spectra:
-        PerfectOscSpec = OscSysGen(ReacSpectra, oscParams,[None])
+        PerfectOscSpec = OscSysGen(ReacSpectra, oscParams)
         Total_PerfectSpectra += PerfectOscSpec.Summed_Spectra
     return dNdE(energy_array,Total_PerfectSpectra)
 

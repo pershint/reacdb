@@ -79,7 +79,7 @@ def getBruceSpectra():
     BruceStatus = rp.ReactorStatus("BRUCE")
     BruceUnoscSpecGen = ns.UnoscSpecGen(BruceDetails,BruceStatus,Isotope_Information, \
             c.ENERGY_ARRAY)
-    BruceOscSpecGen = ns.OscSysGen(BruceUnoscSpecGen,oscParams,c.SYSTEMATICS)
+    BruceOscSpecGen = ns.OscSysGen(BruceUnoscSpecGen,oscParams)
     for CORENUM in np.arange(1,BruceUnoscSpecGen.no_cores+1):
         print("GRAPHING OSC SPECTRA FOR " + str(CORENUM) + " NOW...")
         splt.plotCoreOscSpectrum((CORENUM-1),BruceOscSpecGen)
@@ -184,7 +184,7 @@ if __name__ == '__main__':
         Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,c.ENERGY_ARRAY,oscParams)
         #Build the dNdE with US and/or CA core systematics included
         Varied_dNdE = ns.build_Theory_dNdE_wVar(unosc_spectra,c.ENERGY_ARRAY, \
-                oscParams, c.SYSTEMATICS)
+                oscParams)
         if "DETECTOR_RESP" in c.SYSTEMATICS:
             #FIXME: Don't want resolution hard-coded... 
             Varied_dNdE.setResolution(0.075)
@@ -205,7 +205,7 @@ if __name__ == '__main__':
         #Calculate the chi-squared test results (fixed dms, vary sst)
         sst_array = np.arange(0.01, 1.00, 0.01)
         chi2_results = cmu.GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, \
-                c.ENERGY_ARRAY,c.NUMBINS, c.SYSTEMATICS)
+                c.ENERGY_ARRAY)
         cplt.chi2vssst(chi2_results, sst_array,oscParams)
 
 
@@ -215,7 +215,7 @@ if __name__ == '__main__':
     #variation.
     num_experiments = 10
     dms_fits, sst_fits, negML_results = cmu.GetNegMLStatSpread(num_experiments, \
-            unosc_spectra,oscParams,c.ENERGY_ARRAY,c.NUMBINS,c.SYSTEMATICS)
+            unosc_spectra,oscParams,c.ENERGY_ARRAY)
     print(dms_fits)
     print(sst_fits)
     print(negML_results)
