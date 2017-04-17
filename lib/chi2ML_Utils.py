@@ -3,13 +3,12 @@ import numpy as np
 import scipy.optimize as spo
 import scipy.misc as sm
 
+import config.config as c
+
 import iminuit as im
 import NuSpectrum as ns
 import Histogram as h
 import playDarts as pd
-
-#FIXME: DON"T WANT HARDCODED
-RESOLUTION = 0.075
 
 #builds the chi-squared between the expected SNO+ spectrum with
 #systematics included and an oscillated spectrum with no systematics
@@ -20,13 +19,13 @@ RESOLUTION = 0.075
 
 #Function returns an oscillated SNO+ antineutrino spectrum with statistical
 #Fluctuation generated using the PlayDarts library.
-def getExpt_wstats(oscParams, All_unosc_spectra,energy_array, numBins,SpecVars):
+def getExpt_wstats(oscParams, All_unosc_spectra,energy_array):
     VarieddNdE = ns.build_Theory_dNdE_wVar(All_unosc_spectra, energy_array, \
-            oscParams,SpecVars)
-    if "DETECTOR_RESP" in SpecVars:
-        VarieddNdE.setResolution(RESOLUTION)
+            oscParams)
+    if "DETECTOR_RESP" in c.SYSTEMATICS:
+        VarieddNdE.setResolution(c.RESOLUTION)
         VarieddNdE.smear()
-    Varied_EventHist = h.dNdE_Hist(VarieddNdE, numBins)
+    Varied_EventHist = h.dNdE_Hist(VarieddNdE, c.NUMBINS)
     events_per_year = sum(Varied_EventHist.bin_values)
     print("EVTS PER YEAR: " + str(events_per_year))
     if events_per_year > 15:
@@ -44,8 +43,8 @@ def getExpt_wstats(oscParams, All_unosc_spectra,energy_array, numBins,SpecVars):
 #spectra used to generate the event histograms, Event histogram with statistical
 #fluctuation, Event histogram without statistical fluctuation
 class ExperimentChi2(object):
-    def __init__(self, unosc_spectra, energy_array,Stat_EventHist, SpecVars):
-        self.SpecVars = SpecVars
+    def __init__(self, unosc_spectra, energy_array,Stat_EventHist):
+        self.SpecVars = c.SYSTEMATICS
         self.unosc_spectra = unosc_spectra
         self.Stat_EventHist = Stat_EventHist
         self.energy_array = energy_array
@@ -54,7 +53,7 @@ class ExperimentChi2(object):
         PerfectdNdE = ns.build_Theory_dNdE(self.unosc_spectra, self.energy_array, \
                 [dms,sst])
         if "DETECTOR_RESP" in self.SpecVars:
-            PerfectdNdE.setResolution(RESOLUTION)
+            PerfectdNdE.setResolution(c.RESOLUTION)
             PerfectdNdE.smear()
        #Build your histogram for the input oscillation parameters
         FitHist = h.dNdE_Hist(PerfectdNdE, len(self.Stat_EventHist.bin_values))
@@ -66,23 +65,21 @@ class ExperimentChi2(object):
         print("CHISQ RESULT: " + str(chisquare))
         return chisquare
 
-def GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, energy_array,NUMBINS, \
-        SpecVars):
+def GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, energy_array):
     '''
     Calculates an array of chi-squared results for a spectra with parameters
     oscParams.  The seed for the fit is fixed delta-m squared, and each sst
     value in the sst_array.
     '''
     EventHist_wstats = getExpt_wstats(oscParams, unosc_spectra, \
-            energy_array,NUMBINS, SpecVars)
-    chi2 = ExperimentChi2(unosc_spectra,energy_array,EventHist_wstats,SpecVars)
+            energy_array)
+    chi2 = ExperimentChi2(unosc_spectra,energy_array,EventHist_wstats)
     chi2_results = []
     for sst in sst_array:
         chi2_results.append(chi2(sst, oscParams[0]))
     return chi2_results
 
-def Getchi2StatSpread(num_experiments, unosc_spectra,oscParams,energy_array, \
-        NUMBINS, SpecVars):
+def Getchi2StatSpread(num_experiments, unosc_spectra,oscParams,energy_array):
     '''
     Function returns three arrays that have the best fit oscillation parameters
     And chi-squared results for the best fit of a statistically fluctuated
@@ -95,9 +92,9 @@ def Getchi2StatSpread(num_experiments, unosc_spectra,oscParams,energy_array, \
     experiment = 0
     while experiment < num_experiments:
         EventHist_wstats = getExpt_wstats(oscParams,unosc_spectra, \
-                energy_array,NUMBINS,SpecVars)
+                energy_array)
         print("CHISQUARE BEING CALCULATED NOW FOR A RANDOM EXPERIMENT...")
-        chi2 = ExperimentChi2(unosc_spectra,energy_array, EventHist_wstats,SpecVars)
+        chi2 = ExperimentChi2(unosc_spectra,energy_array, EventHist_wstats)
         im.describe(chi2)
         m = im.Minuit(chi2, limit_dms = (1e-07, 1e-03), limit_sst=(0.0,1.0), sst = (oscParams[1]), dms = oscParams[0])
         m.migrad()
@@ -115,8 +112,8 @@ def Getchi2StatSpread(num_experiments, unosc_spectra,oscParams,energy_array, \
 ## --------------------------------------------------------------------- ##
 
 class ExperimentNegML(object):
-    def __init__(self, unosc_spectra, energy_array,Stat_EventHist,SpecVars):
-        self.SpecVars = SpecVars
+    def __init__(self, unosc_spectra, energy_array,Stat_EventHist):
+        self.SpecVars = c.SYSTEMATICS
         self.unosc_spectra = unosc_spectra
         self.Stat_EventHist = Stat_EventHist
         self.energy_array = energy_array
@@ -124,7 +121,7 @@ class ExperimentNegML(object):
         PerfectdNdE = ns.build_Theory_dNdE(self.unosc_spectra, self.energy_array, \
                 [dms,sst])
         if "DETECTOR_RESP" in self.SpecVars:
-            PerfectdNdE.setResolution(RESOLUTION)
+            PerfectdNdE.setResolution(c.RESOLUTION)
             PerfectdNdE.smear()
        #Build your histogram for the input oscillation parameters
         FitHist = h.dNdE_Hist(PerfectdNdE, len(self.Stat_EventHist.bin_values))
@@ -139,8 +136,7 @@ class ExperimentNegML(object):
         #(i.e. the Spectrum for the input oscillation parameters) for denom
         return negML
 
-def GetNegMLStatSpread(num_experiments, unosc_spectra,oscParams,energy_array, \
-        NUMBINS,SpecVars):
+def GetNegMLStatSpread(num_experiments, unosc_spectra,oscParams,energy_array):
     '''
     Function returns three arrays that have the best fit oscillation parameters
     And minimized neg. ML results for best fitting a statistically fluctuated
@@ -153,9 +149,9 @@ def GetNegMLStatSpread(num_experiments, unosc_spectra,oscParams,energy_array, \
     experiment = 0
     while experiment < num_experiments:
         EventHist_wstats = getExpt_wstats(oscParams,unosc_spectra, \
-                energy_array,NUMBINS,SpecVars)
+                energy_array)
         print("CHISQUARE BEING CALCULATED NOW FOR A RANDOM EXPERIMENT...")
-        negML = ExperimentNegML(unosc_spectra,energy_array, EventHist_wstats,SpecVars)
+        negML = ExperimentNegML(unosc_spectra,energy_array, EventHist_wstats)
         im.describe(negML)
         m = im.Minuit(negML, limit_dms = (1e-07, 1e-03), limit_sst=(0.0,1.0), sst = (oscParams[1]), dms = oscParams[0])
         m.migrad()

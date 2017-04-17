@@ -3,6 +3,7 @@
 import sys
 import ctypes as ct
 import os.path
+import config.config as c
 
 import rdbparse as rp
 import playDarts as pd
@@ -15,8 +16,6 @@ basepath = os.path.dirname(__file__)
 clibpath = os.path.abspath(os.path.join(basepath,"ctypes_libs"))
 
 DEBUG = False
-#FIXME: Is hardcoded here and in main.py; would like to isolate to main
-DATE = '11/20/2016'
 
 # --------------- THINGS TO VARY ------------------ #
 RUNTIME = 8760*5   #Five run years in hours
@@ -43,8 +42,7 @@ DELTAMSQ32 = 2.5E-3
 def setDebug(debug):
     globals()["DEBUG"] = debug
 
-USList = nrc.getUSList(DATE)
-CAList = ["BRUCE","DARLINGTON", "PICKERING","POINT LEPREAU"]
+USList = nrc.getUSList(c.DATE)
 
 #-----CROSS-SECTION CONSTANTS------#
 DELTA = 1.293   #in MeV; neutron mass - proton mass
@@ -62,10 +60,10 @@ def build_Theory_dNdE(unosc_spectra,energy_array,oscParams):
         Total_PerfectSpectra += PerfectOscSpec.Summed_Spectra
     return dNdE(energy_array,Total_PerfectSpectra)
 
-def build_Theory_dNdE_wVar(unosc_spectra,energy_array,oscParams,SpectrumVariations):
+def build_Theory_dNdE_wVar(unosc_spectra,energy_array,oscParams):
     Total_VariedSpectra = np.zeros(len(energy_array))
     for ReacSpectra in unosc_spectra:
-        VariedOscSpec = OscSysGen(ReacSpectra,oscParams,SpectrumVariations)
+        VariedOscSpec = OscSysGen(ReacSpectra,oscParams)
         Total_VariedSpectra += VariedOscSpec.Summed_Spectra
     return dNdE(energy_array, Total_VariedSpectra)
 
@@ -204,7 +202,7 @@ class coreGen(object):
         #Spectra with power corrections
         self.Unosc_Spectra_wP = []
 
-        #if self.ReacDetails.index is in CAList, use RATDB core powers with no
+        #if self.ReacDetails.index is in c.CAList, use RATDB core powers with no
         #statistical fluctuations
         if self.ReacName not in USList:
             self.__Power_Perfect()
@@ -256,8 +254,8 @@ class coreGen(object):
 #and outputs the the oscillated Spectrums.  oscParams should have two entries: 
 #[delta m-squared, sin^2(theta12)]
 class OscSysGen(object):
-    def __init__(self, UnoscSpecGen, oscParams,SpecVars):
-        self.SpectrumVariations = SpecVars
+    def __init__(self, UnoscSpecGen, oscParams):
+        self._Systematics = c.SYSTEMATICS
         self.Unosc_Spectra = UnoscSpecGen.Unosc_Spectra
         self.ReacDetails = UnoscSpecGen.ReacDetails
         self.ReacStatus = UnoscSpecGen.ReacStatus
@@ -288,7 +286,7 @@ class OscSysGen(object):
         average load factor.  Basically, sample from a gaussian of 
         mu=LF and sigma = 25% for now.  Can make a function of LF later.
         '''
-        if ("USSYS" in self.SpectrumVariations) and \
+        if ("USSYS" in self._Systematics) and \
                 (self.ReacDetails.index in USList):
             sysSigmas = US_LF_VAR * np.ones(len(self.AvgLFs))
             #Get the fluctuation from each core's avg LF, in percentage
@@ -301,8 +299,8 @@ class OscSysGen(object):
                 Unosc_Spectra_wSys.append(coreSpectrum)
             self.Unosc_Spectra = Unosc_Spectra_wSys
         #Vary each Canadian reactor core's flux around it's thermal power
-        elif ("CASYS" in self.SpectrumVariations) and \
-                (self.ReacDetails.index in CAList):
+        elif ("CASYS" in self._Systematics) and \
+                (self.ReacDetails.index in c.CAList):
             numcores = len(self.ReacStatus.core_powers)
             #Thermal MWts for CA reactors already have LFs factored in
             #ReacStatus entries
