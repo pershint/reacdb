@@ -78,7 +78,7 @@ def getBruceSpectra():
     BruceDetails = rp.ReactorDetails("BRUCE")
     BruceStatus = rp.ReactorStatus("BRUCE")
     BruceUnoscSpecGen = ns.UnoscSpecGen(BruceDetails,BruceStatus,Isotope_Information, \
-            c.ENERGY_ARRAY)
+            c.ENERGY_ARRAY,c.RUNTIME)
     BruceOscSpecGen = ns.OscSysGen(BruceUnoscSpecGen,oscParams)
     for CORENUM in np.arange(1,BruceUnoscSpecGen.no_cores+1):
         print("GRAPHING OSC SPECTRA FOR " + str(CORENUM) + " NOW...")
@@ -141,7 +141,7 @@ def build_unoscSpectra(List):
         ReacDetails = rp.ReactorDetails(reactor)
         ReacStatus = rp.ReactorStatus(reactor)
         ReacUnoscSpecGen = ns.UnoscSpecGen(ReacDetails,ReacStatus, \
-                Isotope_Information, c.ENERGY_ARRAY)
+                Isotope_Information, c.ENERGY_ARRAY,c.RUNTIME)
         unosc_spectra.append(ReacUnoscSpecGen)
     return unosc_spectra
 
@@ -168,7 +168,7 @@ if __name__ == '__main__':
 
     #Debugging the new Event builder function
     if DEBUG == True:
-        Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,c.ENERGY_ARRAY,oscParams)
+        Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,oscParams)
         if "DETECTOR_RESP" in c.SYSTEMATICS:
             #FIXME: Don't want resolution hard-coded... 
             Perfect_dNdE.setResolution(0.075)
@@ -181,10 +181,9 @@ if __name__ == '__main__':
     if DEBUG == True:
         print("SHOWING SOME PLOTS OF dNdE's REBINNING")
         #First, build the untouched dNdE function
-        Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,c.ENERGY_ARRAY,oscParams)
+        Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,oscParams)
         #Build the dNdE with US and/or CA core systematics included
-        Varied_dNdE = ns.build_Theory_dNdE_wVar(unosc_spectra,c.ENERGY_ARRAY, \
-                oscParams)
+        Varied_dNdE = ns.build_Theory_dNdE_wCoreSys(unosc_spectra, oscParams)
         if "DETECTOR_RESP" in c.SYSTEMATICS:
             #FIXME: Don't want resolution hard-coded... 
             Varied_dNdE.setResolution(0.075)
@@ -204,8 +203,7 @@ if __name__ == '__main__':
 
         #Calculate the chi-squared test results (fixed dms, vary sst)
         sst_array = np.arange(0.01, 1.00, 0.01)
-        chi2_results = cmu.GetChi2dmsFixed(unosc_spectra, oscParams, sst_array, \
-                c.ENERGY_ARRAY)
+        chi2_results = cmu.GetChi2dmsFixed(unosc_spectra, oscParams, sst_array)
         cplt.chi2vssst(chi2_results, sst_array,oscParams)
 
 
@@ -215,7 +213,7 @@ if __name__ == '__main__':
     #variation.
     num_experiments = 10
     dms_fits, sst_fits, negML_results = cmu.GetNegMLStatSpread(num_experiments, \
-            unosc_spectra,oscParams,c.ENERGY_ARRAY)
+            unosc_spectra,oscParams)
     print(dms_fits)
     print(sst_fits)
     print(negML_results)

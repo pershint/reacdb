@@ -17,12 +17,6 @@ clibpath = os.path.abspath(os.path.join(basepath,"ctypes_libs"))
 
 DEBUG = False
 
-# --------------- THINGS TO VARY ------------------ #
-RUNTIME = 8760*5   #Five run years in hours
-EFFICIENCY = 1  #Assume 100% signal detection efficiency
-NP = 1E32   #Need to approximate SNO+'s number of proton targets
-US_LF_VAR = 25 #Variance in all US load factors as a percentage
-CA_LF_VAR = 25 #Variance in all CA core thermal powers as a percentage
 
 # ------------ CONSTANTS ------------------------- #
 hbarc = 1.9733E-16 #in MeV * km
@@ -42,7 +36,6 @@ DELTAMSQ32 = 2.5E-3
 def setDebug(debug):
     globals()["DEBUG"] = debug
 
-USList = nrc.getUSList(c.DATE)
 
 #-----CROSS-SECTION CONSTANTS------#
 DELTA = 1.293   #in MeV; neutron mass - proton mass
@@ -51,19 +44,21 @@ A1 = -0.07056
 A2 = 0.02018
 A3 = -0.001953
 
-#Takes in an array of unoscillated spectra (and the spectra's energy values for each entry)
+#Takes in an array of UnoscSpecGen classes (assume all have same energy points on y-axis)
 #And returns the dNdE function that results from them
-def build_Theory_dNdE(unosc_spectra,energy_array,oscParams):
+def build_Theory_dNdE(unosc_spectra,oscParams):
+    energy_array = unosc_spectra[0].energy_array
     Total_PerfectSpectra = np.zeros(len(energy_array))
     for ReacSpectra in unosc_spectra:
-        PerfectOscSpec = OscSysGen(ReacSpectra, oscParams)
+        PerfectOscSpec = Osc_CoreSysGen(ReacSpectra, oscParams,[None])
         Total_PerfectSpectra += PerfectOscSpec.Summed_Spectra
     return dNdE(energy_array,Total_PerfectSpectra)
 
-def build_Theory_dNdE_wVar(unosc_spectra,energy_array,oscParams):
+def build_Theory_dNdE_wCoreSys(unosc_spectra,oscParams):
+    energy_array = unosc_spectra[0].energy_array
     Total_VariedSpectra = np.zeros(len(energy_array))
     for ReacSpectra in unosc_spectra:
-        VariedOscSpec = OscSysGen(ReacSpectra,oscParams)
+        VariedOscSpec = Osc_CoreSysGen(ReacSpectra,oscParams,c.SYSTEMATICS)
         Total_VariedSpectra += VariedOscSpec.Summed_Spectra
     return dNdE(energy_array, Total_VariedSpectra)
 
@@ -113,11 +108,12 @@ class Lambda(object):
 #and builds an array of spectra arrays (self.Unosc_Spectra) evaluated at the
 #given energies.  There is one array for each core of the plant.
 class UnoscSpecGen(object):
-    def __init__(self,ReacDetails,ReacStatus,iso_array,energy_array):
-        self.E_arr = energy_array
+    def __init__(self,ReacDetails,ReacStatus,iso_array,energy_array,Uptime):
+        self.energy_array = energy_array
         self.ReacDetails = ReacDetails
         self.ReacStatus = ReacStatus
         self.iso_array = iso_array
+        self.Uptime = Uptime
 
         self.__core_check()
         self.no_cores = self.ReacStatus.no_cores
@@ -128,7 +124,7 @@ class UnoscSpecGen(object):
         self.__calcSpectra()
 
         #Now, incorporate Power information from daily_update database
-        self.CoreSpecs = coreGen(ReacStatus,self.Unosc_Spectra)
+        self.CoreSpecs = coreGen(ReacStatus,self.Unosc_Spectra,self.Uptime)
         self.Unosc_Spectra = self.CoreSpecs.Unosc_Spectra_wP
 
 
@@ -159,7 +155,7 @@ class UnoscSpecGen(object):
             isotope_composition = rp.Reactor_Spectrum(coreType).param_composition
             #loop over energies, calculate spectra's values
             coreSpectrum = []
-            for E in self.E_arr:
+            for E in self.energy_array:
                 LambdaFunction = Lambda(self.iso_array, isotope_composition,E).value
                 coreLambda = LambdaFunction / self.spectrumDenom(isotope_composition)
                 coreSpectrum.append( coreLambda / \
@@ -182,8 +178,8 @@ class UnoscSpecGen(object):
 #in an experiment and the load factor of a reactor for each day. Builds the
 #unoscillated spectra with power and load factor values included.
 class coreGen(object):
-    def __init__(self,ReacStatus,Unosc_Spectra):
-
+    def __init__(self,ReacStatus,Unosc_Spectra,Uptime):
+        self.Uptime = Uptime
         self.ReacName = ReacStatus.index
         self.core_powers = ReacStatus.core_powers #Core powers as in RAT
         self.Unosc_Spectra = Unosc_Spectra
@@ -204,7 +200,7 @@ class coreGen(object):
 
         #if self.ReacDetails.index is in c.CAList, use RATDB core powers with no
         #statistical fluctuations
-        if self.ReacName not in USList:
+        if self.ReacName not in c.USList:
             self.__Power_Perfect()
         else:
             self.__Power_AvgAvailable()
@@ -216,7 +212,7 @@ class coreGen(object):
         approproate thermal power, time, and MeV conversion factor.
         '''
         for i,coreSpectrum in enumerate(self.Unosc_Spectra):
-            coreSpectrum = coreSpectrum * RUNTIME * MWHTOMEV * \
+            coreSpectrum = coreSpectrum * self.Uptime * MWHTOMEV * \
                     self.core_powers[i] 
             self.Unosc_Spectra_wP.append(coreSpectrum)
 
@@ -242,7 +238,7 @@ class coreGen(object):
         #now, use the average values to rescale the spectrums
         
         for i,coreSpectrum in enumerate(self.Unosc_Spectra):
-            coreSpectrum = coreSpectrum * RUNTIME * MWHTOMEV * \
+            coreSpectrum = coreSpectrum * self.Uptime * MWHTOMEV * \
                     self.AvgMWts[i] * (self.AvgLFs[i] / 100.0)
             self.Unosc_Spectra_wP.append(coreSpectrum)
 
@@ -250,16 +246,16 @@ class coreGen(object):
     __Power_AvgAvailable = Power_AvgAvailable
 
 
-#Class takes a coreGen class (contains spectrums for each core of one reactor)
+#Class takes an UnoscSpecGen class (contains spectrums for each core of one reactor)
 #and outputs the the oscillated Spectrums.  oscParams should have two entries: 
 #[delta m-squared, sin^2(theta12)]
-class OscSysGen(object):
-    def __init__(self, UnoscSpecGen, oscParams):
-        self._Systematics = c.SYSTEMATICS
+class Osc_CoreSysGen(object):
+    def __init__(self, UnoscSpecGen, oscParams,Systematics):
+        self.Systematics = Systematics
         self.Unosc_Spectra = UnoscSpecGen.Unosc_Spectra
         self.ReacDetails = UnoscSpecGen.ReacDetails
         self.ReacStatus = UnoscSpecGen.ReacStatus
-        self.E_arr = UnoscSpecGen.E_arr
+        self.energy_array = UnoscSpecGen.energy_array
         self.Core_Distances = UnoscSpecGen.Core_Distances 
 
         #define your variable oscillation paramaters;
@@ -286,9 +282,9 @@ class OscSysGen(object):
         average load factor.  Basically, sample from a gaussian of 
         mu=LF and sigma = 25% for now.  Can make a function of LF later.
         '''
-        if ("USSYS" in self._Systematics) and \
-                (self.ReacDetails.index in USList):
-            sysSigmas = US_LF_VAR * np.ones(len(self.AvgLFs))
+        if ("USSYS" in self.Systematics) and \
+                (self.ReacDetails.index in c.USList):
+            sysSigmas = c.US_LF_VAR * np.ones(len(self.AvgLFs))
             #Get the fluctuation from each core's avg LF, in percentage
             sysFlucs = pd.RandShoot(self.AvgLFs,sysSigmas, \
                     len(self.AvgLFs)) - self.AvgLFs
@@ -299,13 +295,13 @@ class OscSysGen(object):
                 Unosc_Spectra_wSys.append(coreSpectrum)
             self.Unosc_Spectra = Unosc_Spectra_wSys
         #Vary each Canadian reactor core's flux around it's thermal power
-        elif ("CASYS" in self._Systematics) and \
+        elif ("CASYS" in self.Systematics) and \
                 (self.ReacDetails.index in c.CAList):
             numcores = len(self.ReacStatus.core_powers)
             #Thermal MWts for CA reactors already have LFs factored in
             #ReacStatus entries
             coreAvgs = 100.0 * np.ones(numcores)
-            coreSigmas = (CA_LF_VAR) * np.ones(numcores)
+            coreSigmas = (c.CA_LF_VAR) * np.ones(numcores)
             core_SysVar = pd.RandShoot(coreAvgs,coreSigmas, numcores)
             print(core_SysVar)
             Unosc_Spectra_wSys = []
@@ -318,7 +314,7 @@ class OscSysGen(object):
     def oscillateSpectra(self):
         self.Osc_Spectra = [] #Refresh array before adding spectrums
         for i,spectrum in enumerate(self.Unosc_Spectra):
-             self.Osc_Spectra.append(np.product([spectrum,self.Pee(self.E_arr, \
+             self.Osc_Spectra.append(np.product([spectrum,self.Pee(self.energy_array, \
                      self.Core_Distances[i])],axis=0))
 
     def calcSINSQTWO(self, sst12):
@@ -378,7 +374,7 @@ class dNdE(object):
 
     def evaldNdE(self):
         self.dNdE = [] #Remove any previous values in dNdE
-        self.dNdE = EFFICIENCY * NP * \
+        self.dNdE = c.EFFICIENCY * c.NP * \
             self.XC(self.Energy_Array) * self.Spectrum
 
     def Array_Check(self):
