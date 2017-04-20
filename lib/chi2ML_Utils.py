@@ -25,14 +25,29 @@ def getExpt_wstats(oscParams, All_unosc_spectra):
         VarieddNdE.setResolution(c.RESOLUTION)
         VarieddNdE.smear()
     Varied_EventHist = h.dNdE_Hist(VarieddNdE, c.NUMBINS)
-    events_per_year = sum(Varied_EventHist.bin_values)
+    events_in_experiment = sum(Varied_EventHist.bin_values)
     print("EVTS PER YEAR: " + str(events_per_year))
     if events_per_year > 15:
-        n = int(pd.RandShoot(events_per_year, np.sqrt(events_per_year),1))
+        n = int(pd.RandShoot(events_in_experiment, np.sqrt(events_in_experiment),1))
     else:
-        n = pd.RandShoot_p(events_per_year,1)
+        n = pd.RandShoot_p(events_in_experiment,1)
     print("NUMBER OF EVENTS FIRED:" + str(n))
     Stat_EventHist = pd.playDarts_h(n,Varied_EventHist)
+    return Stat_EventHist
+
+def getExpt_wstats_PosE(oscParams, All_unosc_spectra):
+    VarieddNdE = ns.build_Theory_dNdE_wCoreSys(All_unosc_spectra, oscParams)
+    #DO A ROUGH INTEGRATE TO GET EVENTS IN EXPERIMENT TIME
+    #events_in_experiment
+    nu_energies = pd.playDarts(events_in_experiment,Perfect_dNdE.dNdE,c.ENERGY_ARRAY)
+    print("NU ENERGIES: " + str(nu_energies))
+    NuPosConverter = ntp.NuToPosConverter()
+    pos_energies = NuPosConverter.ConvertToPositron(nu_energies)
+    if "DETECTOR_RESP" in c.SYSTEMATICS:
+        pos_energies = NuPosConverter.Smear(pos_energies,c.RESOLUTION)
+    #FIXME: THE ENERGY_ARRAY IS STILL FOR NEUTRINOS.  WE NEED TO RE-CALCULATE FOR
+    #POSITRON WINDOW NOW!!!!
+    Stat_EventHist = h.Event_Hist(pos_energies,c.NUMBINS,c.ENERGY_ARRAY[0],c.ENERGY_ARRAY[len(c.ENERGY_ARRAY) -1])
     return Stat_EventHist
 
 ## ------------ BEGIN FUNCTIONS/CLASSES FOR CHI-SQUARED TESTS ---------- ##

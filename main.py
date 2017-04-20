@@ -176,6 +176,9 @@ if __name__ == '__main__':
         nu_energies = pd.playDarts(10000,Perfect_dNdE.dNdE,c.ENERGY_ARRAY)
         print("NU ENERGIES: " + str(nu_energies))
         htest = h.Event_Hist(nu_energies,c.NUMBINS,c.ENERGY_ARRAY[0],c.ENERGY_ARRAY[len(c.ENERGY_ARRAY) -1])
+        print("HIST BINNING FROM h.Event_Hist")
+        print(htest.bin_lefts[0])
+        print(htest.bin_rights[len(htest.bin_rights)-1])
         splt.plot_EventHist(htest,oscParams[1],oscParams[0])
 
     if DEBUG == True:
@@ -193,6 +196,9 @@ if __name__ == '__main__':
                 oscParams[0])
         dNdEHistperf = h.dNdE_Hist(Perfect_dNdE,c.NUMBINS)
         dNdEHistvar = h.dNdE_Hist(Varied_dNdE,c.NUMBINS)
+        print("HIST BINNING FROM n.dNdE_Hist")
+        print(dNdEHistvar.bin_lefts[0])
+        print(dNdEHistvar.bin_rights[len(dNdEHistvar.bin_rights)-1])
         dNdEHistvar = pd.playDarts_h(188,dNdEHistvar)
         splt.dNdEPlot_pts(dNdEHistperf.bin_centers,dNdEHistperf.bin_values, \
                 dNdEHistperf.bin_lefts,dNdEHistperf.bin_rights, \

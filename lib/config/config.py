@@ -16,13 +16,14 @@ ISOTOPES = ['235U', '238U', '239Pu', '241Pu']
 
 #Defines our energy range for our spectra/dNdE and the resoultion
 #unites are in MeV.
-ENERGY_ARRAY = np.arange(1.82,9,0.01)
+ENERGY_ARRAY = np.arange(1.82,9.02,0.01)
+
+#Set the number of bins that your histograms will be binned into
+#Want len(ENERGY_ARRAY) to be divisible by NUMBINS.
+NUMBINS = 30
 
 
 RUNTIME = 8760*5   #Run years in hours
-
-#Set the number of bins that your histograms will be binned into
-NUMBINS = 30
 
 EFFICIENCY = 1  #Assume 100% signal detection efficiency
 NP = 1E32   #Number of protons on target (1E32 = 1 TeV)
