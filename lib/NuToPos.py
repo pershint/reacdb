@@ -40,10 +40,15 @@ class NuToPosConverter(object):
         released in a positron-electron annihilation.
         '''
         E_ann = self._m_e * 2
-        return pe1 + E_ann
+        return pos_mom + E_ann
+
+    def ConvertToPositron_0ord(self,nu_Es):
+        pos_p = self._convert_0ord(nu_Es)
+        E_tot = self.addAnnihilE(pos_p)
+        return E_tot
 
     def ConvertToPositron(self,nu_Es):
-        pos_p = getPosMomentums(nu_Es)
+        pos_p = self.getPosMomentums(nu_Es)
         E_tot = self.addAnnihilE(pos_p)
         return E_tot
 

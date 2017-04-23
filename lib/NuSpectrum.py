@@ -1,10 +1,9 @@
-#g!
-
 import sys
 import ctypes as ct
 import os.path
 import config.config as c
 
+import NuToPos as ntp
 import rdbparse as rp
 import playDarts as pd
 import GetNRCDailyInfo as nrc
@@ -45,7 +44,7 @@ A2 = 0.02018
 A3 = -0.001953
 
 #Takes in an array of UnoscSpecGen classes (assume all have same energy points on y-axis)
-#And returns the dNdE function that results from them
+#And returns the dNdE function that results from them (neutrino energy)
 def build_Theory_dNdE(unosc_spectra,oscParams):
     energy_array = unosc_spectra[0].energy_array
     Total_PerfectSpectra = np.zeros(len(energy_array))
@@ -362,7 +361,7 @@ class Osc_CoreSysGen(object):
 #with the spectrum's core must already be factored into the spectrum.
 class dNdE(object):
     def __init__(self,Energy_Array,Spectrum):
-        self.Energy_Array = Energy_Array
+        self.Nu_Energy_Array = Energy_Array
         self.Spectrum = Spectrum
 
         self.Array_Check()
@@ -372,13 +371,20 @@ class dNdE(object):
         self.dNdE = []
         self.evaldNdE()
 
+        self.Pos_Energy_Array = self.getPositronEnergyArr()
+
+    def getPositronEnergyArr(self):
+        Converter = ntp.NuToPosConverter()
+        pos_energies = Converter.ConvertToPositron(self.Nu_Energy_Array)
+        return pos_energies
+
     def evaldNdE(self):
         self.dNdE = [] #Remove any previous values in dNdE
         self.dNdE = c.EFFICIENCY * c.NP * \
-            self.XC(self.Energy_Array) * self.Spectrum
+            self.XC(self.Nu_Energy_Array) * self.Spectrum
 
     def Array_Check(self):
-        if len(self.Energy_Array) != len(self.Spectrum):
+        if len(self.Nu_Energy_Array) != len(self.Spectrum):
             raise UserWarning("WARNING: Energy array length does not equal" + \
                     "length of spectrum given.  Check your entries.")
 
@@ -400,6 +406,8 @@ class dNdE(object):
     def smear(self):
         '''
         Smears the current dNdE by the defined detector resolution.
+        NOTE: Smearing only valid when dNdE is now as a function of
+        Positron energy.
         '''
         if self.resolution is None:
             print("Define your resolution first!  Exiting...")
@@ -418,8 +426,8 @@ class dNdE(object):
     
         #cast inputs as numpy arrays (just in case they were a list)
         spec = np.array(self.dNdE)
-        e_arr = np.array(self.Energy_Array)
-    
+        e_arr = np.array(self.Pos_Energy_Array)
+
         #use the np.array.ctypes function call to cast data as needed for ctypes
         spec_in = spec.ctypes.data_as(pdub)
         e_arr_in = e_arr.ctypes.data_as(pdub)
@@ -432,7 +440,5 @@ class dNdE(object):
     
         #go back to a python-usable numpy array
         smearedspec = np.array(np.fromiter(indata, dtype=np.float64, count=numpoints))
-        #normalize to binwidth
-        smearedspec = smearedspec * (self.Energy_Array[1]-self.Energy_Array[0])
         self.dNdE = smearedspec
 

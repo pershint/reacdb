@@ -16,12 +16,13 @@ ISOTOPES = ['235U', '238U', '239Pu', '241Pu']
 
 #Defines our energy range for our spectra/dNdE and the resoultion
 #unites are in MeV.
-ENERGY_ARRAY = np.arange(1.82,9.02,0.01)
+NU_ENERGY_ARRAY = np.arange(1.82,9.02,0.011)
 
 #Set the number of bins that your histograms will be binned into
 #Want len(ENERGY_ARRAY) to be divisible by NUMBINS.
 NUMBINS = 30
-
+HMIN = 1.02
+HMAX = 8.82
 
 RUNTIME = 8760*5   #Run years in hours
 

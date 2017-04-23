@@ -78,7 +78,7 @@ def getBruceSpectra():
     BruceDetails = rp.ReactorDetails("BRUCE")
     BruceStatus = rp.ReactorStatus("BRUCE")
     BruceUnoscSpecGen = ns.UnoscSpecGen(BruceDetails,BruceStatus,Isotope_Information, \
-            c.ENERGY_ARRAY,c.RUNTIME)
+            c.NU_ENERGY_ARRAY,c.RUNTIME)
     BruceOscSpecGen = ns.OscSysGen(BruceUnoscSpecGen,oscParams)
     for CORENUM in np.arange(1,BruceUnoscSpecGen.no_cores+1):
         print("GRAPHING OSC SPECTRA FOR " + str(CORENUM) + " NOW...")
@@ -141,7 +141,7 @@ def build_unoscSpectra(List):
         ReacDetails = rp.ReactorDetails(reactor)
         ReacStatus = rp.ReactorStatus(reactor)
         ReacUnoscSpecGen = ns.UnoscSpecGen(ReacDetails,ReacStatus, \
-                Isotope_Information, c.ENERGY_ARRAY,c.RUNTIME)
+                Isotope_Information, c.NU_ENERGY_ARRAY,c.RUNTIME)
         unosc_spectra.append(ReacUnoscSpecGen)
     return unosc_spectra
 
@@ -168,38 +168,34 @@ if __name__ == '__main__':
 
     #Debugging the new Event builder function
     if DEBUG == True:
-        Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,oscParams)
+        NoCoreSys_dNdE = ns.build_Theory_dNdE(unosc_spectra,oscParams)
         if "DETECTOR_RESP" in c.SYSTEMATICS:
             #FIXME: Don't want resolution hard-coded... 
-            Perfect_dNdE.setResolution(0.075)
-            Perfect_dNdE.smear()
-        nu_energies = pd.playDarts(10000,Perfect_dNdE.dNdE,c.ENERGY_ARRAY)
-        print("NU ENERGIES: " + str(nu_energies))
-        htest = h.Event_Hist(nu_energies,c.NUMBINS,c.ENERGY_ARRAY[0],c.ENERGY_ARRAY[len(c.ENERGY_ARRAY) -1])
-        print("HIST BINNING FROM h.Event_Hist")
-        print(htest.bin_lefts[0])
-        print(htest.bin_rights[len(htest.bin_rights)-1])
+            NoCoreSys_dNdE.setResolution(c.RESOLUTION)
+            NoCoreSys_dNdE.smear()
+        nu_energies = pd.playDarts(10000,NoCoreSys_dNdE.dNdE,c.NU_ENERGY_ARRAY)
+        htest = h.Event_Hist(nu_energies,c.NUMBINS,NoCoreSys_dNdE.Pos_Energy_Array[0], \
+                NoCoreSys_dNdE.Pos_Energy_Array[len(NoCoreSys_dNdE.Pos_Energy_Array) -1])
         splt.plot_EventHist(htest,oscParams[1],oscParams[0])
 
     if DEBUG == True:
         print("SHOWING SOME PLOTS OF dNdE's REBINNING")
         #First, build the untouched dNdE function
-        Perfect_dNdE = ns.build_Theory_dNdE(unosc_spectra,oscParams)
-        #Build the dNdE with US and/or CA core systematics included
         Varied_dNdE = ns.build_Theory_dNdE_wCoreSys(unosc_spectra, oscParams)
+        TotEvents = RoughIntegrate(Varied_dNdE.dNdE,Varied_dNdE.Nu_Energy_Array)
+        print("TOTEVENTS BEFORE SMEAR: " + str(TotEvents))
+        splt.dNdEPlot_line(Varied_dNdE.Pos_Energy_Array, \
+                Varied_dNdE.dNdE, oscParams[1], oscParams[0])
         if "DETECTOR_RESP" in c.SYSTEMATICS:
-            #FIXME: Don't want resolution hard-coded... 
-            Varied_dNdE.setResolution(0.075)
+            Varied_dNdE.setResolution(c.RESOLUTION)
             Varied_dNdE.smear()
-        RoughIntegrate(Varied_dNdE.dNdE,c.ENERGY_ARRAY)
-        splt.dNdEPlot_line(c.ENERGY_ARRAY,Varied_dNdE.dNdE, oscParams[1],\
+        TotEvents = RoughIntegrate(Varied_dNdE.dNdE,Varied_dNdE.Pos_Energy_Array)
+        print("TOTEVENTS AFTER SMEAR: " + str(TotEvents))
+        splt.dNdEPlot_line(Varied_dNdE.Pos_Energy_Array,Varied_dNdE.dNdE, oscParams[1],\
                 oscParams[0])
-        dNdEHistperf = h.dNdE_Hist(Perfect_dNdE,c.NUMBINS)
+        dNdEHistperf = h.dNdE_Hist(NoCoreSys_dNdE,c.NUMBINS)
         dNdEHistvar = h.dNdE_Hist(Varied_dNdE,c.NUMBINS)
-        print("HIST BINNING FROM n.dNdE_Hist")
-        print(dNdEHistvar.bin_lefts[0])
-        print(dNdEHistvar.bin_rights[len(dNdEHistvar.bin_rights)-1])
-        dNdEHistvar = pd.playDarts_h(188,dNdEHistvar)
+        dNdEHistvar = pd.playDarts_h(TotEvents,dNdEHistvar)
         splt.dNdEPlot_pts(dNdEHistperf.bin_centers,dNdEHistperf.bin_values, \
                 dNdEHistperf.bin_lefts,dNdEHistperf.bin_rights, \
                 oscParams[1], oscParams[0])

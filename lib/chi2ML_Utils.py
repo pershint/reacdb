@@ -10,6 +10,7 @@ import NuSpectrum as ns
 import Histogram as h
 import playDarts as pd
 
+
 #builds the chi-squared between the expected SNO+ spectrum with
 #systematics included and an oscillated spectrum with no systematics
 #that is oscillated with a (sine-squared theta12) and b
@@ -21,13 +22,13 @@ import playDarts as pd
 #Fluctuation generated using the PlayDarts library.
 def getExpt_wstats(oscParams, All_unosc_spectra):
     VarieddNdE = ns.build_Theory_dNdE_wCoreSys(All_unosc_spectra, oscParams)
+    #integrate neutrino dNdE to get avg. # neutrinos for experiment
     if "DETECTOR_RESP" in c.SYSTEMATICS:
         VarieddNdE.setResolution(c.RESOLUTION)
         VarieddNdE.smear()
-    Varied_EventHist = h.dNdE_Hist(VarieddNdE, c.NUMBINS)
-    events_in_experiment = sum(Varied_EventHist.bin_values)
-    print("EVTS PER YEAR: " + str(events_per_year))
-    if events_per_year > 15:
+    Varied_EventHist = h.dNdE_Hist_new(VarieddNdE, c.NUMBINS,c.HMIN,c.HMAX)
+    print("EVTS PER YEAR: " + str(events_in_experiment))
+    if events_in_experiment > 15:
         n = int(pd.RandShoot(events_in_experiment, np.sqrt(events_in_experiment),1))
     else:
         n = pd.RandShoot_p(events_in_experiment,1)
@@ -38,16 +39,17 @@ def getExpt_wstats(oscParams, All_unosc_spectra):
 def getExpt_wstats_PosE(oscParams, All_unosc_spectra):
     VarieddNdE = ns.build_Theory_dNdE_wCoreSys(All_unosc_spectra, oscParams)
     #DO A ROUGH INTEGRATE TO GET EVENTS IN EXPERIMENT TIME
-    #events_in_experiment
-    nu_energies = pd.playDarts(events_in_experiment,Perfect_dNdE.dNdE,c.ENERGY_ARRAY)
+    TheoryEventNum = int(pd.RoughIntegrate(VarieddNdE.dNdE,VarieddNdE.Nu_Energy_Array))
+    events_in_experiment = int(pd.RandShoot(TheoryEventNum, np.sqrt(TheoryEventNum),1))
+    nu_energies = pd.playDarts(events_in_experiment,Perfect_dNdE.dNdE,c.NU_ENERGY_ARRAY)
     print("NU ENERGIES: " + str(nu_energies))
     NuPosConverter = ntp.NuToPosConverter()
     pos_energies = NuPosConverter.ConvertToPositron(nu_energies)
     if "DETECTOR_RESP" in c.SYSTEMATICS:
         pos_energies = NuPosConverter.Smear(pos_energies,c.RESOLUTION)
-    #FIXME: THE ENERGY_ARRAY IS STILL FOR NEUTRINOS.  WE NEED TO RE-CALCULATE FOR
+    #FIXME: THE NU_ENERGY_ARRAY IS STILL FOR NEUTRINOS.  WE NEED TO RE-CALCULATE FOR
     #POSITRON WINDOW NOW!!!!
-    Stat_EventHist = h.Event_Hist(pos_energies,c.NUMBINS,c.ENERGY_ARRAY[0],c.ENERGY_ARRAY[len(c.ENERGY_ARRAY) -1])
+    Stat_EventHist = h.Event_Hist(pos_energies,c.NUMBINS,c.HMIN,c.HMAX)
     return Stat_EventHist
 
 ## ------------ BEGIN FUNCTIONS/CLASSES FOR CHI-SQUARED TESTS ---------- ##

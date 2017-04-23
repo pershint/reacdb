@@ -42,6 +42,17 @@ extern "C"
                 smearedspec[j] += cg[j];
         }
     }
+    // Now re-normalize the smeared spectrum entries by the bin widths
+    for (int j=0; j<nentries; j++)
+    {
+      if(j == 0)
+        smearedspec[j] = smearedspec[j] * (e_arr[j+1] - e_arr[j]);
+      else if(j == (nentries-1))
+        smearedspec[j] = smearedspec[j] * (e_arr[j] - e_arr[j-1]);
+      else
+        smearedspec[j] = smearedspec[j] * (((e_arr[j+1] - e_arr[j]) +
+          (e_arr[j] - e_arr[j-1]))/2);
+    }
     return smearedspec;
   }
 }
