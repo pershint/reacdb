@@ -27,7 +27,7 @@ HMAX = 8.82
 RUNTIME = 8760*5   #Run years in hours
 
 EFFICIENCY = 1  #Assume 100% signal detection efficiency
-NP = 1E32   #Number of protons on target (1E32 = 1 TeV)
+NP = (1E32 * 0.5929)   #Number of protons on target (1E32 = 1 TNU)
 
 #TODO: Make a list of all cores that have been online since start of 2016 
 DATE = '11/20/2016' #Tells GetUSList from which day to grab US operating reactors

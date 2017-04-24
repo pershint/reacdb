@@ -175,11 +175,10 @@ if __name__ == '__main__':
     if DEBUG == True:
         NoCoreSys_dNdE = ns.build_Theory_dNdE(unosc_spectra,oscParams)
         if "DETECTOR_RESP" in c.SYSTEMATICS:
-            #FIXME: Don't want resolution hard-coded... 
             NoCoreSys_dNdE.setResolution(c.RESOLUTION)
             NoCoreSys_dNdE.smear()
         nu_energies = pd.playDarts(10000,NoCoreSys_dNdE.Nu_dNdE,c.NU_ENERGY_ARRAY)
-        htest = h.Event_Hist(nu_energies,c.NUMBINS,c.HMIN,c.HMAX)
+        htest = h.Event_Hist(nu_energies,c.NUMBINS,1.82,9.02)
         splt.plot_EventHist(htest,oscParams[1],oscParams[0])
 
     if DEBUG == True:
@@ -189,7 +188,7 @@ if __name__ == '__main__':
         TotEvents = RoughIntegrate(Varied_dNdE.Pos_dNdE,Varied_dNdE.Pos_Energy_Array)
         print("TOTEVENTS BEFORE SMEAR: " + str(TotEvents))
         splt.dNdEPlot_line(Varied_dNdE.Pos_Energy_Array, \
-                Varied_dNdE.Pos_dNdE, oscParams[1], oscParams[0])
+            Varied_dNdE.Pos_dNdE, oscParams[1], oscParams[0])
         if "DETECTOR_RESP" in c.SYSTEMATICS:
             Varied_dNdE.setResolution(c.RESOLUTION)
             Varied_dNdE.smear()
