@@ -20,17 +20,13 @@ DEBUG = False
 # ------------ CONSTANTS ------------------------- #
 hbarc = 1.9733E-16 #in MeV * km
 MWHTOMEV = 2.247E22 #One MW*h equals this many MeV
-NP = 1E32   #Need to approximate SNO+'s number of proton targets
 
 
 # ----------- OSCILLATION PARAMETERS HELD CONSTANT ------------ #
 #SINSQT13 FROM PDG LIVE AS OF 2016
-SINSQT13 = 0.0219 
-SINSQTWO13 = 0.0851 #calculated from SINSQT13
-COS4THT13 = 0.9570  #PDG 2016
-#Approximate DELTAMSQ31 = DELTAMSQ32 for now
-DELTAMSQ31 = 2.5E-3
-DELTAMSQ32 = 2.5E-3
+SINSQT13 = 0.0214
+SINSQTWO13 = 0.0837 #CALCULATED FROM SINSQT13
+COS4THT13 = 0.95765 #PDG2016, values in RAT
 
 def setDebug(debug):
     globals()["DEBUG"] = debug
@@ -139,7 +135,7 @@ class UnoscSpecGen(object):
             longitude = self.ReacDetails.core_longitudes[i]
             latitude = self.ReacDetails.core_latitudes[i]
             altitude = self.ReacDetails.core_altitudes[i]
-            coreDistance = sd.getDistFromSNOLAB([longitude,latitude,altitude])
+            coreDistance = sd.getSNOLABDist_ECEF([longitude,latitude,altitude])
             self.Core_Distances.append(coreDistance)
         if DEBUG == True:
             print("For core " + self.ReacStatus.index + "...")
@@ -271,6 +267,7 @@ class Osc_CoreSysGen(object):
         #Oscillate each core spectra, then sum them
         self.Osc_Spectra = []
         self.__oscillateSpectra()
+#        self.Osc_Spectra = self.Unosc_Spectra
         self.Summed_Spectra = []
         self.__sumSpectra()
 
@@ -331,11 +328,6 @@ class Osc_CoreSysGen(object):
         #USING THE EQN. FROM SVOBODA/LEARNED
         term1 = COS4THT13*self.SINSQTWO12*(np.sin(1E-12 * \
                 self.DELTAMSQ21 * L /(4 * E * hbarc))**2)
-        #UNCOMMENT TO CONSIDER NORMAL/INVERTED HIERARCHY TERMS
-#        term2 = self.COSSQT12*SINSQTWO13*(np.sin(1E-12 * \
-#                DELTAMSQ31 * L /(4 * E * hbarc))**2)
-#        term3 = self.SINSQT12*SINSQTWO13*(np.sin(1E-12 * \
-#            DELTAMSQ32 * L /(4 * E * hbarc))**2)
         result = (1 - term1) # + term2 + term3)
         #OR, USING 2-PARAMETER APPROXIMATION USED BY KAMLAND
 #        result = 1 - (SINSQTWO12 * np.sin((1.27 * \
@@ -388,7 +380,7 @@ class dNdE(object):
     def evalNudNdE(self):
         self.Nu_dNdE = [] #Remove any previous values in dNdE
         self.Nu_dNdE = c.EFFICIENCY * c.NP * \
-            self.XC(self.Nu_Energy_Array) * self.Spectrum
+            self.XC_Vogel_0ord(self.Nu_Energy_Array) * self.Spectrum
 
     def Array_Check(self):
         if len(self.Nu_Energy_Array) != len(self.Spectrum):
@@ -407,10 +399,8 @@ class dNdE(object):
     #takes in an array of energies and returns the scattering angle-averaged
     #cross-section for neutrino IBD interactions.
     def XC_Vogel_0ord(self, E):
-        DELTA = 1.293  #in MeV
-        me = 0.511 #in MeV
         Ee0 = (E - DELTA)
-        pe0 = np.sqrt((Ee0**2 - me**2))
+        pe0 = np.sqrt((Ee0**2 - Me**2))
 #        f,g=1,1.26  #vector axial coupling constants
 #        gFERM = 1.16639E-11  #in MeV ^ -2
 #        cosTC = 0.974

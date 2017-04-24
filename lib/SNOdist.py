@@ -5,11 +5,13 @@ import sys
 basepath = os.path.dirname(__file__)
 posdbpath = os.path.abspath(os.path.join(basepath, "..", "db", "static", "ReacPos_corr.txt"))
 
-REARTH = 6371000 #Radius of earth at sea level, In meters
+REARTH = 6378137 #Radius of earth at sea level, In meters (Matching RAT)
 SNODEPTH = 2070   #Distance of SNOLAB underground, In meters
-SNOLAB_LATLONG = [-81.1868, 46.4719]  #[longitude, latitude] according to Google Earth
-SNOLAB_XYZ = [672000,-4335000,4618000] #Calculated with the X,Y,Z calculator below
+F = 1./298.257223   #Flattening factor for WGS84 model
 
+NOLAB_LATLONG = [-81.1868, 46.4719]  #[longitude, latitude] according to Google Earth
+#SNOLAB_XYZ = [672000,-4335000,4618000] #Calculated with the X,Y,Z calculator below
+SNOLAB_XYZ = [673988, -4347073,4600028]
 
 def parsecoord():
     """
@@ -40,6 +42,35 @@ def parsecoord():
             continue
     return locationdict
 
+def getSNOLABDist_ECEF(longlatalt):
+    """
+    Function takes in a longitude, latitude, and altitude (formatted as
+    as [longitude(deg),latitude(deg),altitude(km)]). returns distance
+    from SNO+ in kilometers.
+    The function first takes the location's longitude and latitude and
+    converts to cartesian coordinates.  The distance between SNOLAB (which is
+    ~2070 meters underground!) and the calculation result is returned.
+    The X-axis is aligned with the Greenwich meridian and equator.
+    The Y-axis is normal to the X-axis and in the equator plane.
+    Tye Z-axis is aligned with the North and South Pole.
+    """
+    LS = (180./np.pi)*np.arctan(((1-F)**2)*np.tan((np.pi/180.)*longlatalt[1]))
+    RS = np.sqrt((REARTH**2)/(1+(((1/((1-F)**2))-1)*(np.sin((np.pi/180.)*LS)**2))))
+    X=((RS * np.cos((np.pi/180.)*LS)*np.cos((np.pi/180.)*longlatalt[0])) + \
+            (longlatalt[2]*1000*np.cos((np.pi/180.)*longlatalt[1])* \
+            np.cos((np.pi/180.)*longlatalt[0])))
+    Y=((RS * np.cos((np.pi/180.)*LS)*np.sin((np.pi/180.)*longlatalt[0])) + \
+            (longlatalt[2]*1000*np.cos((np.pi/180.)*longlatalt[1])* \
+            np.sin((np.pi/180.)*longlatalt[0])))
+    Z=((RS * np.sin((np.pi/180.)*LS)) + longlatalt[2]*1000*np.sin((np.pi/180.)*longlatalt[1]))
+    print(X,Y,Z)
+    dist = np.sqrt(((X-SNOLAB_XYZ[0])**2) + ((Y-SNOLAB_XYZ[1])**2) + ((Z-SNOLAB_XYZ[2])**2))
+    #give the distance in kilometers; cut off decimals, as uncertainties definitely
+    #are too large for meter resolution
+    dist = int(dist/1000)
+    #dist = round(dist, -1)  USE IN FUTURE TO ROUND TO THE TENS IN KM
+    return dist
+
 def getDistFromSNOLAB(longlatalt):
     """
     Function takes in a longitude, latitude, and altitude (formatted as
@@ -53,9 +84,10 @@ def getDistFromSNOLAB(longlatalt):
     Tye Z-axis is aligned with the North and South Pole.
     """
 
-    X=(REARTH-SNODEPTH+longlatalt[2])*np.cos(((np.pi)*longlatalt[1])/180)*np.cos(((np.pi)*longlatalt[0])/180)
-    Y=(REARTH-SNODEPTH+longlatalt[2])*np.cos(((np.pi)*longlatalt[1])/180)*np.sin(((np.pi)*longlatalt[0])/180)
-    Z=(REARTH-SNODEPTH+longlatalt[2])*np.sin(((np.pi)*longlatalt[1])/180)
+
+    X=(REARTH+1000*longlatalt[2])*np.cos(((np.pi)*longlatalt[1])/180)*np.cos(((np.pi)*longlatalt[0])/180)
+    Y=(REARTH+1000*longlatalt[2])*np.cos(((np.pi)*longlatalt[1])/180)*np.sin(((np.pi)*longlatalt[0])/180)
+    Z=(REARTH+1000*longlatalt[2])*np.sin(((np.pi)*longlatalt[1])/180)
     dist = np.sqrt(((X-SNOLAB_XYZ[0])**2) + ((Y-SNOLAB_XYZ[1])**2) + ((Z-SNOLAB_XYZ[2])**2))
     #give the distance in kilometers; cut off decimals, as uncertainties definitely
     #are too large for meter resolution

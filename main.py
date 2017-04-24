@@ -43,6 +43,12 @@ def setOscParams(parameter_choice):
         dmsq = 7.54E-05
         globals()["oscParams"] = [dmsq, sst12]
 
+    elif parameter_choice == "PDG":
+        print("USING PDG 2016 OSCILLATION PARAMETERS")
+        sst12 = 0.297
+        dmsq = 7.37E-05
+        globals()["oscParams"] = [dmsq, sst12]
+
     elif parameter_choice == "none":
         print("NO OSCILLATION PARAMETERS SET.  NOOOO")
 
