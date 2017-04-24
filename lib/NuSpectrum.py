@@ -368,19 +368,26 @@ class dNdE(object):
 
         self.resolution = None
 
-        self.dNdE = []
-        self.evaldNdE()
+        self.Nu_dNdE = []
+        self.evalNudNdE()
 
         self.Pos_Energy_Array = self.getPositronEnergyArr()
+        self.Pos_dNdE = self.NuToPos_dNdE()
+
 
     def getPositronEnergyArr(self):
         Converter = ntp.NuToPosConverter()
-        pos_energies = Converter.ConvertToPositron(self.Nu_Energy_Array)
+        pos_energies = Converter.ConvertToPositron_0ord(self.Nu_Energy_Array)
         return pos_energies
 
-    def evaldNdE(self):
-        self.dNdE = [] #Remove any previous values in dNdE
-        self.dNdE = c.EFFICIENCY * c.NP * \
+    def NuToPos_dNdE(self):
+        Converter = ntp.NuToPosConverter()
+        Pos_dNdE = Converter.ScaleByJacobian_0ord(self.Nu_Energy_Array,self.Nu_dNdE)
+        return Pos_dNdE
+
+    def evalNudNdE(self):
+        self.Nu_dNdE = [] #Remove any previous values in dNdE
+        self.Nu_dNdE = c.EFFICIENCY * c.NP * \
             self.XC(self.Nu_Energy_Array) * self.Spectrum
 
     def Array_Check(self):
@@ -389,12 +396,30 @@ class dNdE(object):
                     "length of spectrum given.  Check your entries.")
 
     #takes in an array of energies and returns an array of cross-section values
-    #as a function of energy
+    #as a function of energy. Source: A. Strumia and F. Vissani, Physics Letters
+    #B 564, 42
     def XC(self, E):
         Ee = (E - DELTA)
         pe = np.sqrt((Ee**2) - (Me**2))
         poly = E**(A1 + (A2 * np.log(E)) + (A3 * ((np.log(E))**3)))
         return (1E-53) * pe * Ee * poly #1E-53, instead of -43, for km^2 units
+
+    #takes in an array of energies and returns the scattering angle-averaged
+    #cross-section for neutrino IBD interactions.
+    def XC_Vogel_0ord(self, E):
+        DELTA = 1.293  #in MeV
+        me = 0.511 #in MeV
+        Ee0 = (E - DELTA)
+        pe0 = np.sqrt((Ee0**2 - me**2))
+#        f,g=1,1.26  #vector axial coupling constants
+#        gFERM = 1.16639E-11  #in MeV ^ -2
+#        cosTC = 0.974
+#        RCinner = 0.024  #inner radiative correction
+#        sig0 = (gFERM**2) * (cosTC**2) * (1 + RCinner) / np.pi
+#        sigtot_0th = sig0 * (f**2 + 3*(g**2)) * pe0 * Ee0 * 1E-10 #cm^2->km^2
+        sigtot_0th = 0.0952 * pe0 * Ee0 * 1E-52
+        return sigtot_0th
+
 
     def setResolution(self, res):
         '''
@@ -412,7 +437,7 @@ class dNdE(object):
         if self.resolution is None:
             print("Define your resolution first!  Exiting...")
             sys.exit(0)
-        numpoints = len(self.dNdE)
+        numpoints = len(self.Pos_dNdE)
         #call library you're going to use, and get the function from it
         libns = ct.CDLL(os.path.join(clibpath,'libNuSpectrum.so'))
         specsmearer= libns.convolveWER
@@ -425,7 +450,7 @@ class dNdE(object):
         specsmearer.restype = pdub
     
         #cast inputs as numpy arrays (just in case they were a list)
-        spec = np.array(self.dNdE)
+        spec = np.array(self.Pos_dNdE)
         e_arr = np.array(self.Pos_Energy_Array)
 
         #use the np.array.ctypes function call to cast data as needed for ctypes
@@ -440,5 +465,5 @@ class dNdE(object):
     
         #go back to a python-usable numpy array
         smearedspec = np.array(np.fromiter(indata, dtype=np.float64, count=numpoints))
-        self.dNdE = smearedspec
+        self.Pos_dNdE = smearedspec
 

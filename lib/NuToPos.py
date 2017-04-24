@@ -4,7 +4,7 @@
 #only good for scintillator, and the detector response for this portion of the
 #energy would also need to be treated separately.
 import numpy as np
-
+import playDarts as pd
 
 class NuToPosConverter(object):
     def __init__(self):
@@ -46,6 +46,11 @@ class NuToPosConverter(object):
         pos_p = self._convert_0ord(nu_Es)
         E_tot = self.addAnnihilE(pos_p)
         return E_tot
+
+    def ScaleByJacobian_0ord(self,nu_Es,dNdE):
+        pos_p = np.array(self._convert_0ord(nu_Es))
+        factor = pos_p / (np.sqrt((pos_p)**2 + (self._m_e)**2))
+        return (dNdE * factor)
 
     def ConvertToPositron(self,nu_Es):
         pos_p = self.getPosMomentums(nu_Es)

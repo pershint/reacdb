@@ -152,7 +152,6 @@ if __name__ == '__main__':
 
     #Get the list of reactors to use in simulation
     WorldList = rp.getRLIndices()
-    print(WorldList)
     USList = nrc.getUSList(c.DATE)
     List_Dictionary = {'US':USList, 'WORLD':WorldList, 'CA':c.CAList}
     if DEBUG == True:
@@ -173,28 +172,27 @@ if __name__ == '__main__':
             #FIXME: Don't want resolution hard-coded... 
             NoCoreSys_dNdE.setResolution(c.RESOLUTION)
             NoCoreSys_dNdE.smear()
-        nu_energies = pd.playDarts(10000,NoCoreSys_dNdE.dNdE,c.NU_ENERGY_ARRAY)
-        htest = h.Event_Hist(nu_energies,c.NUMBINS,NoCoreSys_dNdE.Pos_Energy_Array[0], \
-                NoCoreSys_dNdE.Pos_Energy_Array[len(NoCoreSys_dNdE.Pos_Energy_Array) -1])
+        nu_energies = pd.playDarts(10000,NoCoreSys_dNdE.Nu_dNdE,c.NU_ENERGY_ARRAY)
+        htest = h.Event_Hist(nu_energies,c.NUMBINS,c.HMIN,c.HMAX)
         splt.plot_EventHist(htest,oscParams[1],oscParams[0])
 
     if DEBUG == True:
         print("SHOWING SOME PLOTS OF dNdE's REBINNING")
         #First, build the untouched dNdE function
         Varied_dNdE = ns.build_Theory_dNdE_wCoreSys(unosc_spectra, oscParams)
-        TotEvents = RoughIntegrate(Varied_dNdE.dNdE,Varied_dNdE.Nu_Energy_Array)
+        TotEvents = RoughIntegrate(Varied_dNdE.Pos_dNdE,Varied_dNdE.Pos_Energy_Array)
         print("TOTEVENTS BEFORE SMEAR: " + str(TotEvents))
         splt.dNdEPlot_line(Varied_dNdE.Pos_Energy_Array, \
-                Varied_dNdE.dNdE, oscParams[1], oscParams[0])
+                Varied_dNdE.Pos_dNdE, oscParams[1], oscParams[0])
         if "DETECTOR_RESP" in c.SYSTEMATICS:
             Varied_dNdE.setResolution(c.RESOLUTION)
             Varied_dNdE.smear()
-        TotEvents = RoughIntegrate(Varied_dNdE.dNdE,Varied_dNdE.Pos_Energy_Array)
+        TotEvents = RoughIntegrate(Varied_dNdE.Pos_dNdE,Varied_dNdE.Pos_Energy_Array)
         print("TOTEVENTS AFTER SMEAR: " + str(TotEvents))
-        splt.dNdEPlot_line(Varied_dNdE.Pos_Energy_Array,Varied_dNdE.dNdE, oscParams[1],\
+        splt.dNdEPlot_line(Varied_dNdE.Pos_Energy_Array,Varied_dNdE.Pos_dNdE, oscParams[1],\
                 oscParams[0])
-        dNdEHistperf = h.dNdE_Hist(NoCoreSys_dNdE,c.NUMBINS)
-        dNdEHistvar = h.dNdE_Hist(Varied_dNdE,c.NUMBINS)
+        dNdEHistperf = h.dNdE_Hist(NoCoreSys_dNdE,c.NUMBINS,c.HMIN,c.HMAX)
+        dNdEHistvar = h.dNdE_Hist(Varied_dNdE,c.NUMBINS,c.HMIN,c.HMAX)
         dNdEHistvar = pd.playDarts_h(TotEvents,dNdEHistvar)
         splt.dNdEPlot_pts(dNdEHistperf.bin_centers,dNdEHistperf.bin_values, \
                 dNdEHistperf.bin_lefts,dNdEHistperf.bin_rights, \
