@@ -103,10 +103,14 @@ def RoughIntegrate(y_array,x_array):
     print("NOTE: Final endpoint of array is not considered in integral.")
     integral = 0.0
     for i,y in enumerate(y_array):
-        if i == len(y_array)-1:
+        if i == 0:
+            integral += y_array[i] * (x_array[i+1]-x_array[i])
+        elif i == len(y_array)-1:
             print("At end of array.  Result: " + str(integral))
             return int(integral)
-        integral += y_array[i] * (x_array[i+1]-x_array[i])
+        else:
+            integral += y_array[i] * (((x_array[i]-x_array[i-1]) + \
+                    (x_array[i+1]-x_array[i]))/2.)
 
 #Uses whatever type is set in the arguments for -r to pick a reactor name list
 def setListType(List_Dictionary):
@@ -162,7 +166,6 @@ if __name__ == '__main__':
     if DEBUG == True:
         showReactors()
     List = setListType(List_Dictionary)
-
     #if DEBUG == True:
     #    getBruceSpectra()
 

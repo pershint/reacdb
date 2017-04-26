@@ -311,11 +311,11 @@ class Osc_CoreSysGen(object):
                      self.Core_Distances[i])],axis=0))
 
     def calcSINSQTWO(self, sst12):
-        result = 4 * sst12 * (1 - sst12)
+        result = 4. * sst12 * (1. - sst12)
         return result
 
     def calcCOSSQ(self, sst12):
-        result = 1 - sst12
+        result = 1. - sst12
         return result
 
     def Pee(self,E,L):
@@ -325,7 +325,7 @@ class Osc_CoreSysGen(object):
         #USING THE EQN. FROM SVOBODA/LEARNED
         term1 = COS4THT13*self.SINSQTWO12*(np.sin(1E-12 * \
                 self.DELTAMSQ21 * L /(4 * E * hbarc))**2)
-        result = (1 - term1) # + term2 + term3)
+        result = (1. - term1) # + term2 + term3)
         #OR, USING 2-PARAMETER APPROXIMATION USED BY KAMLAND
 #        result = 1 - (SINSQTWO12 * np.sin((1.27 * \
 #                DELTAMSQ21*L)/(E/1000))**2)

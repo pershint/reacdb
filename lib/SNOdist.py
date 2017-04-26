@@ -9,9 +9,11 @@ REARTH = 6378137. #Radius of earth at sea level, In meters (Matching RAT)
 SNODEPTH = (2070.-307.)   #Distance of SNOLAB underground, In meters
 F = 1./298.257223   #Flattening factor for WGS84 model
 
-NOLAB_LATLONG = [-81.1868, 46.4719]  #[longitude, latitude] according to Google Earth
-SNOLAB_XYZ_ROUND = [672000,-4335000,4618000] #Calculated with the X,Y,Z calculator below
-SNOLAB_XYZ = [673988., -4347073.,4600028.]
+#SNOLAB_LATLONG = [-81.1868, 46.4719]  #[longitude, latitude] according to Google Earth
+#SNOLAB_LATLONG = [-81.2014, 46.4753]  #[longitude, latitude] according to RAT
+#SNOLAB_XYZ_ROUND = [672000,-4335000,4618000] #Calculated with the X,Y,Z calculator below
+#SNOLAB_XYZ = [673988., -4347073.,4600028.] #Calculated with Google Earth Lat-Long
+SNOLAB_XYZ = [672870., -4347183.,4600511.]
 
 def parsecoord():
     """
