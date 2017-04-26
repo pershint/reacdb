@@ -1,2 +1,7 @@
+/output/*
+/lib/*.pyc
+/lib/config/*.pyc
+/tools/graph/*.pyc
+/tools/*.pyc
 /db/daily/daily_updates
 *.pyo

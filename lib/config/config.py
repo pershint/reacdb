@@ -3,13 +3,14 @@
 import numpy as np
 import sys
 import os.path
+import json
 
 basepath = os.path.dirname(__file__)
 
 sys.path.append(os.path.abspath(os.path.join(basepath, "..")))
 import GetNRCDailyInfo as nrc
 sys.path.remove(os.path.abspath(os.path.join(basepath, "..")))
-
+dbpath = os.path.abspath(os.path.join(basepath,"..","..","db","static"))
 
 #Defines what isotopes we include in our flux parameterization
 ISOTOPES = ['235U', '238U', '239Pu', '241Pu']
@@ -30,12 +31,17 @@ EFFICIENCY = 1.0  #Assume 100% signal detection efficiency
 NP = (1E32 * 0.57719)   #Number of protons on target (1E32 = 1 TNU)
 #NP = 1.0E32     #Number of protons on target (1E32 = 1 TNU)
 
-#TODO: Make a list of all cores that have been online since start of 2016 
-DATE = '04/01/2017' #Tells GetUSList from which day to grab US operating reactors
 
 #Sets the Canadian reactors to be incorporated in CA spectrum contribution
 CAList = ["BRUCE","DARLINGTON","PICKERING","POINT LEPREAU"]
-USList = nrc.getUSList(DATE)
+
+UseRemoteUSList = False
+if UseRemoteUSList:
+    DATE = '04/01/2017' #Decide which day from the NRC database you want the list for
+    USList = nrc.getUSList(DATE)
+else:
+    with open(dbpath + "/USLIST_04012017.json") as l:
+        USList = json.load(l)
 
 #Sets which systematics to include in the generated Spectrum at SNO+
 #Current options: "USSYS", "CASYS", and "DETECTOR_RESP"

@@ -20,10 +20,13 @@ import lib.playDarts as pd
 import lib.config.config as c
 
 import numpy as np
-import scipy.optimize as spo
 
-import iminuit as im
+import json
+import os.path
 
+#Controls location to save output fit results
+basepath = os.path.dirname(__file__)
+outpath = os.path.abspath(os.path.join(basepath, "output"))
 
 
 #Oscillation variables that will be measured by SNO+/vary
@@ -62,14 +65,18 @@ parser.add_option("-p", "--parameters",action="store",dest="parameters",
                   type="string",default="KAMLAND",
                   help="Specify which experiment's oscillation parameters to use")
 parser.add_option("-r", "--reactors",action="store",dest="reactors",
-                  type="string",default="USCA",
+                  type="string",default="WORLD",
                   help="Specify what set of reactors to use (US, WORLD, CA, or USCA)")
+parser.add_option("-j", "--jobnum",action="store",dest="jobnum",
+                  type="string",default="0",
+                  help="Specify a jobnumber to save onto the end of the generated data")
 (options,args) = parser.parse_args()
 
 DEBUG = options.debug
 #Set which parameters to call when building neutrino spectrums
 setOscParams(options.parameters)
 ns.setDebug(options.debug)
+JNUM = options.jobnum
 
 print("SPECTRUM VARIATIONS SET IN CONFIG: " + str(c.SYSTEMATICS))
 
@@ -224,4 +231,10 @@ if __name__ == '__main__':
     print(dms_fits)
     print(sst_fits)
     print(negML_results)
-    cplt.chi2scatter(dms_fits,sst_fits,oscParams)
+    result_dict = {"Params": options.parameters, "ROI":[c.HMIN,c.HMAX], \
+            "nbins": c.NUMBINS, "Reactors": options.reactors, \
+            "dms": dms_fits, "sst": sst_fits, "negML": negML_results}
+    with open(outpath + "/result_" + JNUM + ".json","w") as outfile:
+        json.dump(result_dict,outfile,sort_keys=True,indent=4)
+    if DEBUG == True:
+        cplt.chi2scatter(dms_fits,sst_fits,oscParams)
