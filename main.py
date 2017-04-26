@@ -225,7 +225,7 @@ if __name__ == '__main__':
     #statistically varied experiments.  Use the NegML minimization to find
     #the best fit oscillation parameters assuming no systematics or statistic
     #variation.
-    num_experiments = 10
+    num_experiments = 100
     dms_fits, sst_fits, negML_results = cmu.GetNegMLStatSpread(num_experiments, \
             unosc_spectra,oscParams)
     print(dms_fits)
