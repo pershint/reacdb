@@ -33,13 +33,10 @@ def getExpt_wstats(oscParams, All_unosc_spectra):
     #Statistically fluctuate from theoretical average
     events_in_experiment = int(pd.RandShoot(TheoryEventNum, np.sqrt(TheoryEventNum),1))
     nu_energies = pd.playDarts(events_in_experiment,VarieddNdE.Nu_dNdE,c.NU_ENERGY_ARRAY)
-    print("NU ENERGIES: " + str(nu_energies))
     NuPosConverter = ntp.NuToPosConverter()
     pos_energies = NuPosConverter.ConvertToPositron_0ord(nu_energies)
     if "DETECTOR_RESP" in c.SYSTEMATICS:
         pos_energies = NuPosConverter.Smear(pos_energies,c.RESOLUTION)
-    #FIXME: THE NU_ENERGY_ARRAY IS STILL FOR NEUTRINOS.  WE NEED TO RE-CALCULATE FOR
-    #POSITRON WINDOW NOW!!!!
     Stat_EventHist = h.Event_Hist(pos_energies,c.NUMBINS,c.HMIN,c.HMAX)
     return Stat_EventHist
 

@@ -82,7 +82,7 @@ class Lambda(object):
         for i in np.arange(0,len(iso.poly_coeff)):
             term = self.polyTerm(iso.poly_coeff[i], self.E, i)
             poly_terms.append(term)
-        exp_term = np.sum(poly_terms)
+        exp_term = np.sum(poly_terms,axis=0)
         sl = np.exp(exp_term)
         return sl
 
@@ -91,7 +91,7 @@ class Lambda(object):
         for i,sl in enumerate(self.sl_array):
             bl_term = self.isofracs[i] * sl
             bl_terms.append(bl_term)
-        bl = np.sum(bl_terms)
+        bl = np.sum(bl_terms,axis=0)
         self.value = bl
 
     def polyTerm(self, a, e, c):
@@ -145,16 +145,13 @@ class UnoscSpecGen(object):
         self.Unosc_Spectra = []  #Refresh array before adding spectrums
         for i in np.arange(0,self.no_cores):
             coreType = self.ReacStatus.core_types[i]
-            coreMWt = self.ReacStatus.core_powers[i]
             coreDistance = self.Core_Distances[i]
             isotope_composition = rp.Reactor_Spectrum(coreType).param_composition
             #loop over energies, calculate spectra's values
-            coreSpectrum = []
-            for E in self.energy_array:
-                LambdaFunction = Lambda(self.iso_array, isotope_composition,E).value
-                coreLambda = LambdaFunction / self.spectrumDenom(isotope_composition)
-                coreSpectrum.append( coreLambda / \
-                        (4*np.pi * (coreDistance**2)))
+            LambdaFunction = Lambda(self.iso_array, isotope_composition,self.energy_array).value
+            coreLambda = LambdaFunction / self.spectrumDenom(isotope_composition)
+            coreSpectrum = ( coreLambda / \
+                    (4.*np.pi * (coreDistance**2)))
             self.Unosc_Spectra.append(np.array(coreSpectrum))
 
     def spectrumDenom(self,isocomp):
@@ -267,7 +264,7 @@ class Osc_CoreSysGen(object):
         #Oscillate each core spectra, then sum them
         self.Osc_Spectra = []
         self.__oscillateSpectra()
-#        self.Osc_Spectra = self.Unosc_Spectra
+
         self.Summed_Spectra = []
         self.__sumSpectra()
 

@@ -5,13 +5,13 @@ import sys
 basepath = os.path.dirname(__file__)
 posdbpath = os.path.abspath(os.path.join(basepath, "..", "db", "static", "ReacPos_corr.txt"))
 
-REARTH = 6378137 #Radius of earth at sea level, In meters (Matching RAT)
-SNODEPTH = 2070   #Distance of SNOLAB underground, In meters
+REARTH = 6378137. #Radius of earth at sea level, In meters (Matching RAT)
+SNODEPTH = (2070.-307.)   #Distance of SNOLAB underground, In meters
 F = 1./298.257223   #Flattening factor for WGS84 model
 
 NOLAB_LATLONG = [-81.1868, 46.4719]  #[longitude, latitude] according to Google Earth
-#SNOLAB_XYZ = [672000,-4335000,4618000] #Calculated with the X,Y,Z calculator below
-SNOLAB_XYZ = [673988, -4347073,4600028]
+SNOLAB_XYZ_ROUND = [672000,-4335000,4618000] #Calculated with the X,Y,Z calculator below
+SNOLAB_XYZ = [673988., -4347073.,4600028.]
 
 def parsecoord():
     """
@@ -67,7 +67,7 @@ def getSNOLABDist_ECEF(longlatalt):
     dist = np.sqrt(((X-SNOLAB_XYZ[0])**2) + ((Y-SNOLAB_XYZ[1])**2) + ((Z-SNOLAB_XYZ[2])**2))
     #give the distance in kilometers; cut off decimals, as uncertainties definitely
     #are too large for meter resolution
-    dist = int(dist/1000)
+    dist = (dist/1000.)
     #dist = round(dist, -1)  USE IN FUTURE TO ROUND TO THE TENS IN KM
     return dist
 
@@ -88,10 +88,11 @@ def getDistFromSNOLAB(longlatalt):
     X=(REARTH+1000*longlatalt[2])*np.cos(((np.pi)*longlatalt[1])/180)*np.cos(((np.pi)*longlatalt[0])/180)
     Y=(REARTH+1000*longlatalt[2])*np.cos(((np.pi)*longlatalt[1])/180)*np.sin(((np.pi)*longlatalt[0])/180)
     Z=(REARTH+1000*longlatalt[2])*np.sin(((np.pi)*longlatalt[1])/180)
-    dist = np.sqrt(((X-SNOLAB_XYZ[0])**2) + ((Y-SNOLAB_XYZ[1])**2) + ((Z-SNOLAB_XYZ[2])**2))
+    dist = np.sqrt(((X-SNOLAB_XYZ_ROUND[0])**2) + ((Y-SNOLAB_XYZ_ROUND[1])**2) \
+            + ((Z-SNOLAB_XYZ_ROUND[2])**2))
     #give the distance in kilometers; cut off decimals, as uncertainties definitely
     #are too large for meter resolution
-    dist = int(dist/1000)
+    dist = (dist/1000.)
     #dist = round(dist, -1)  USE IN FUTURE TO ROUND TO THE TENS IN KM
     return dist
 

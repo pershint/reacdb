@@ -5,10 +5,6 @@ import NuSpectrum as ns
 import numpy as np
 
 
-#FIXME: So, I need a base histogram class that would take in bin values,
-#bin_centers, bin_lefts, and bin_rights and just group them as a Histogram
-#object.  Could then make a Histogram subclass for the dNdE Histogram?
-
 #Class takes in a dNdE function (as defined in /lib/NuSpectrum.py in the
 #dNdE class) and produces a histogram that gives the number of events per
 #bin with a total number of numbins
@@ -43,7 +39,6 @@ class dNdE_Hist(Histogram):
         #Initialize arrays that hold bin end locations
         self.bin_lefts, self.bin_rights, self.bin_centers =  \
                 self.Bin_spectrum()
-        print("ENERGYRANGE " + str(self.x_axis))
         self.bin_values = self.fill_binvalues()
 
         super(dNdE_Hist, self).__init__(self.bin_values, self.bin_centers, \
@@ -65,38 +60,21 @@ class dNdE_Hist(Histogram):
         cbin = 0
         endofvalrange = False
         while cbin < self.numbins:
-            if endofvalrange == True:
-                bin_values.append(0.0)
-                cbin+=1
-                break
-            thisbinsavg = []
-            for j,val in enumerate(self.x_axis):
-                if cbin == 0:
-                    if (val >= self.bin_lefts[cbin] and val <= self.bin_rights[cbin]):
-                        thisbinsavg.append(self.spectrum[j])
-                        continue
-                    if val > self.bin_rights[cbin]:
-                        binwidth = self.bin_rights[cbin] - self.bin_lefts[cbin]
-                        bin_values.append(np.mean(thisbinsavg) * binwidth)
-                        cbin+=1
-                        break
-                else:
-                     if (val > self.bin_lefts[cbin] and val <= self.bin_rights[cbin]):
-                         thisbinsavg.append(self.spectrum[j])
-                         if j == len(self.x_axis) - 1:
-                             #Reached the end of our spectrum axes
-                             binwidth = self.bin_rights[cbin] - self.bin_lefts[cbin]
-                             bin_values.append(np.mean(thisbinsavg) * binwidth)
-                             cbin+=1
-                             endofvalrange = True
-                             break
-                         continue
-                     #check if this spectrum value is past the current bin edge
-                     if val > self.bin_rights[cbin]:
-                         binwidth = self.bin_rights[cbin] - self.bin_lefts[cbin]
-                         bin_values.append(np.mean(thisbinsavg) * binwidth)
-                         cbin+=1
-                         break
+#            if endofvalrange == True:
+#                bin_values.append(0.0)
+#                cbin+=1
+#                break
+            if cbin == self.numbins:
+                thisbinsvals = self.spectrum[np.where((self.x_axis >= \
+                        self.bin_lefts[cbin]) & \
+                        (self.x_axis <= self.bin_rights[cbin]))]
+            else:
+                thisbinsvals = self.spectrum[np.where((self.x_axis >= \
+                        self.bin_lefts[cbin]) & \
+                        (self.x_axis < self.bin_rights[cbin]))]
+            binwidth = self.bin_rights[cbin] - self.bin_lefts[cbin]
+            bin_values.append(np.mean(thisbinsvals) * binwidth)
+            cbin+=1
         bin_values = np.array(bin_values)
         return bin_values
 
@@ -165,8 +143,6 @@ class Event_Hist(Histogram):
         while nbin < self.numbins:
             bin_vals.append(len(np.where((self.events >= self.bin_lefts[nbin]) & 
                 (self.events < self.bin_rights[nbin]))[0])) #[0]? np.where is dumb
-            print(bin_vals[nbin])
-            print(nbin)
             nbin+=1
         self.bin_values = bin_vals
 

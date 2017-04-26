@@ -16,21 +16,22 @@ ISOTOPES = ['235U', '238U', '239Pu', '241Pu']
 
 #Defines our energy range for our spectra/dNdE and the resoultion
 #unites are in MeV.
-NU_ENERGY_ARRAY = np.arange(1.82,9.02,0.011)
+NU_ENERGY_ARRAY = np.arange(1.805,9.005,0.01)
 
 #Set the number of bins that your histograms will be binned into
 #Want len(ENERGY_ARRAY) to be divisible by NUMBINS.
-NUMBINS = 30
-HMIN = 1.02
-HMAX = 8.82
+NUMBINS = 20   #30
+HMIN = 3.0  #1.02
+HMAX = 7.0  #8.82
 
-RUNTIME = 8760*5   #Run years in hours
+RUNTIME = 8760.*5   #Run years in hours
 
-EFFICIENCY = 1  #Assume 100% signal detection efficiency
-NP = (1E32 * 0.5929)   #Number of protons on target (1E32 = 1 TNU)
+EFFICIENCY = 1.0  #Assume 100% signal detection efficiency
+NP = (1E32 * 0.57719)   #Number of protons on target (1E32 = 1 TNU)
+#NP = 1.0E32     #Number of protons on target (1E32 = 1 TNU)
 
 #TODO: Make a list of all cores that have been online since start of 2016 
-DATE = '11/20/2016' #Tells GetUSList from which day to grab US operating reactors
+DATE = '04/01/2017' #Tells GetUSList from which day to grab US operating reactors
 
 #Sets the Canadian reactors to be incorporated in CA spectrum contribution
 CAList = ["BRUCE","DARLINGTON","PICKERING","POINT LEPREAU"]

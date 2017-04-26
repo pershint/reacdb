@@ -158,8 +158,7 @@ if __name__ == '__main__':
 
     #Get the list of reactors to use in simulation
     WorldList = rp.getRLIndices()
-    USList = nrc.getUSList(c.DATE)
-    List_Dictionary = {'US':USList, 'WORLD':WorldList, 'CA':c.CAList}
+    List_Dictionary = {'US':c.USList, 'WORLD':WorldList, 'CA':c.CAList}
     if DEBUG == True:
         showReactors()
     List = setListType(List_Dictionary)
@@ -169,8 +168,8 @@ if __name__ == '__main__':
 
     #construct unoscillated spectra of all cores in List
     #CORE SYSTEMATICS NOT ADDED HERE YET
+    #unosc_spectra = build_unoscSpectra(List)
     unosc_spectra = build_unoscSpectra(List)
-
     #Debugging the new Event builder function
     if DEBUG == True:
         NoCoreSys_dNdE = ns.build_Theory_dNdE(unosc_spectra,oscParams)

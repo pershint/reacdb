@@ -75,7 +75,7 @@ class NRCDayList(object):
             reacdict = {"date": date, "reactor_statuses": [], "type":"daily"}
             for reactor in self.NRCCurrent:
                 if reactor[0] == date:
-                    this_reactor = {"reactor_name": reactor[1], "power_capacity" : int(reactor[2])}
+                    this_reactor = {"reactor_name": reactor[1], "power_capacity" :float(reactor[2])}
                     reacdict["reactor_statuses"].append(this_reactor)
             if not reacdict["reactor_statuses"]:
                 print("Given date was not found in the NRC list.  Set another" + \
