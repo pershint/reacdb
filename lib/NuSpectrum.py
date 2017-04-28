@@ -449,8 +449,10 @@ class dNdE(object):
     
         #actually run the function
         indata = specsmearer(spec_in,e_arr_in,numpoints,self.resolution)
-    
         #go back to a python-usable numpy array
         smearedspec = np.array(np.fromiter(indata, dtype=np.float64, count=numpoints))
+        libns.freeMalloc(indata)
+
         self.Pos_dNdE = smearedspec
+        return
 

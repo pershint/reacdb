@@ -23,7 +23,13 @@ extern "C"
       }
       return convolvedgauss;
   }
-  
+
+  void freeMalloc(double * spec)
+  {
+    free(spec);
+    return;
+  }
+
   double* convolveWER(double* spec, double* e_arr, int nentries,double resolution)
   {
     //This Function takes each bin in the spectrum, builds a gaussian centered
@@ -41,6 +47,7 @@ extern "C"
             else
                 smearedspec[j] += cg[j];
         }
+        freeMalloc(cg);
     }
     // Now re-normalize the smeared spectrum entries by the bin widths
     for (int j=0; j<nentries; j++)
