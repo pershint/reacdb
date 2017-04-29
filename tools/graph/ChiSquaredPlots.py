@@ -46,7 +46,7 @@ def chi2contour(DeltaMSqs,sst12s,chisqs):
     fig.colorbar(cont,shrink=0.5, aspect=5)
     plt.show()
 
-def chi2scatter(dms_arr, sst_arr,oscParamsSeed):
+def chi2scatter(data1):
     '''
     Takes in an array of sine-squared theta values and delta-m squared values
     from performing a chi-squared minimization between the SNO+ event spectrum
@@ -55,24 +55,31 @@ def chi2scatter(dms_arr, sst_arr,oscParamsSeed):
     '''
     fig = plt.figure()
     ax = fig.add_subplot(1,1,1)
-    ax.plot(sst_arr, dms_arr, 'ro', alpha=0.7, color='m', label='Best fits')
-    ax.plot(oscParamsSeed[1], oscParamsSeed[0], '*', markersize=20, alpha=0.7, color='b', label = 'Seed values')
-    ax.plot(np.average(sst_arr), np.average(dms_arr), '*', markersize=20, alpha=0.7, color='r', label = 'Fit average')
+    ax.plot(data1['sst'], data1['dms'], 'ro', alpha=0.7, color='b', \
+            label='Best fits, universe is' + data1['Params'],zorder=1)
+    if data1['Params'] == 'KAMLAND':
+        ax.plot(0.316,7.54E-05, '*', markersize=20, alpha=0.7, color='w', markeredgecolor='b', label = '(1): KL parameters')
+    #Now, plot a density contour on top
+    hrange = [[0.20,0.50],[0.00004,0.00008]]
+    H, xedges, yedges = np.histogram2d(data1['sst'],data1['dms'],range=hrange,bins=30)
+    H=np.transpose(H)   #Zero point is at top right
+    #xedges, yedges = np.meshgrid(xedges[:-1],yedges[:-1])
+    extent = [0.20, 0.50, 0.00004, 0.000080] #xedges[0],xedges[-1],yedges[0],yedges[-1]]
+    CT = ax.contour(H, extent=extent, origin="lower",linewidths=4,zorder=4)
+    ax.plot(np.average(data1['sst']), np.average(data1['dms']), '*', markersize=20, alpha=0.7, color='r', label = 'Fit avg.',zorder=2)
+    ax.plot(np.median(data1['sst']), np.median(data1['dms']), '*', markersize=20, alpha=0.7, color='k', label = 'median avg.',zorder=3)
+    ax.set_xlim(0.20,0.50)
+    ax.set_ylim(0.000045,0.000080)
     ax.set_xlabel(r'$\sin^{2}(\theta_{12})$')
     ax.set_ylabel(r'$\Delta m^{2}_{12} (ev^{2})$')
     ax.set_title('Scatter plot of best-fit oscillation parameters')
     ax.grid(True)
-    plt.legend(loc = 2)
+    box = ax.get_position()
+    #shrink the graph a bit so the legend fits
+    ax.set_position([box.x0,box.y0,box.width*0.75, box.height])
+    plt.legend(loc = 'center left', bbox_to_anchor=(1,0.5))
+    plt.colorbar(CT,shrink=0.8, extend='both')
     plt.show()
-
-if __name__ == '__main__':
-    print("SOME TESTS OF CHISQ GRAPH FUNCTIONS")
-    x = np.arange(1,5,1)
-    y = np.arange(1,5,1)
-    chi2scatter(x,y)
-    X,Y = np.meshgrid(x, y, sparse=False)
-    z = np.sin(X**2 + Y**2) / (X**2 + Y**2)
-    chi2contour(X,Y,z)
 
 def chi2scatter_2sets(data1, data2,oscParamsSeed1,oscParamsSeed2):
     '''
