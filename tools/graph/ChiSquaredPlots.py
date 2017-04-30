@@ -5,6 +5,8 @@ import numpy as np
 import scipy as sp
 import sys
 import scipy.ndimage as ndimage
+import scipy.interpolate as si
+import contmaker as cm
 
 #Takes in an array of chi-squared test results and plots them as a function of the
 #sine squared theta values used to get the results.  dms is fixed.
@@ -46,12 +48,43 @@ def chi2contour(DeltaMSqs,sst12s,chisqs):
     fig.colorbar(cont,shrink=0.5, aspect=5)
     plt.show()
 
+def chi2CLs(data1):
+    '''
+    Takes in a data set, plots the delta m-squared and sine-squared
+    theta values, and plots their 68.3% and 90% CLs on the same plot.
+    The CLs are calculated in slices and the region between each point is
+    interpolated.
+    '''
+    fig = plt.figure()
+    ax = fig.add_subplot(1,1,1)
+#    ax.plot(data1['sst'], data1['dms'], 'ro', alpha=0.7, color='b', \
+#            label='Best fits, universe is' + data1['Params'],zorder=1)
+    if data1['Params'] == 'KAMLAND':
+        ax.plot(0.316,7.54E-05, '*', markersize=20, alpha=0.7, color='w', markeredgecolor='b', label = 'KL Values')
+    avgsst = np.average(data1['sst'])
+    avgdms = np.average(data1['dms'])
+    ax.plot(avgsst, avgdms, '*', markersize=20, alpha=0.7, color='r', label = 'Mean of fits',zorder=2)
+    CL68_sst,CL68_dms = cm.getcontourlines(0.683,20,data1,[avgsst,avgdms])
+    CL90_sst,CL90_dms = cm.getcontourlines(0.90,20,data1,[avgsst,avgdms])
+    #tsk = si.splprep(68CL_sst,68CL_dms,s=0)
+    ax.plot(CL68_sst, CL68_dms, color='blue', label = '68.3% CL')
+    ax.plot(CL90_sst, CL90_dms, color='purple', label = '90% CL')
+    ax.set_xlim(0.20,0.50)
+    ax.set_ylim(0.00004,0.000080)
+    ax.set_xlabel(r'$\sin^{2}(\theta_{12})$')
+    ax.set_ylabel(r'$\Delta m^{2}_{12} (ev^{2})$')
+    ax.set_title('Scatter plot of best-fit oscillation parameters')
+    ax.grid(True)
+    box = ax.get_position()
+    #shrink the graph a bit so the legend fits
+    ax.set_position([box.x0,box.y0,box.width*0.75, box.height])
+    plt.legend(loc = 'center left', bbox_to_anchor=(1,0.5))
+    plt.show()
+
 def chi2scatter(data1):
     '''
-    Takes in an array of sine-squared theta values and delta-m squared values
-    from performing a chi-squared minimization between the SNO+ event spectrum
-    with oscillation parameters oscParamsSeed = [dms, sst] and the same spectrum
-    with poisson fluctuations.
+    Takes in a data set, plots the delta m-squared and sine-squared
+    theta values, and plots them along with their density contours.
     '''
     fig = plt.figure()
     ax = fig.add_subplot(1,1,1)
@@ -69,7 +102,7 @@ def chi2scatter(data1):
     ax.plot(np.average(data1['sst']), np.average(data1['dms']), '*', markersize=20, alpha=0.7, color='r', label = 'Fit avg.',zorder=2)
     ax.plot(np.median(data1['sst']), np.median(data1['dms']), '*', markersize=20, alpha=0.7, color='k', label = 'median avg.',zorder=3)
     ax.set_xlim(0.20,0.50)
-    ax.set_ylim(0.000045,0.000080)
+    ax.set_ylim(0.000044,0.000080)
     ax.set_xlabel(r'$\sin^{2}(\theta_{12})$')
     ax.set_ylabel(r'$\Delta m^{2}_{12} (ev^{2})$')
     ax.set_title('Scatter plot of best-fit oscillation parameters')
