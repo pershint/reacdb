@@ -25,10 +25,10 @@ NUMBINS = 20   #30
 HMIN = 3.0  #1.02
 HMAX = 7.0  #8.82
 
-RUNTIME = 8760.*5   #Run years in hours
+RUNTIME = 8760.*7   #Run years in hours
 
 EFFICIENCY = 1.0  #Assume 100% signal detection efficiency
-NP = (1E32 * 0.57719)   #Number of protons on target (1E32 = 1 TNU)
+NP = (1E32 * 0.57719 * ((5.5**3)/(6.0**3)))   #Number of protons on target (1E32 = 1 TNU)
 #NP = 1.0E32     #Number of protons on target (1E32 = 1 TNU)
 
 

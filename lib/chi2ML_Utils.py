@@ -43,7 +43,6 @@ def getExpt_wstats(oscParams, All_unosc_spectra):
 ## ------------ BEGIN FUNCTIONS/CLASSES FOR CHI-SQUARED TESTS ---------- ##
 ## --------------------------------------------------------------------- ##
 
-
 def GetChi2dmsFixed(unosc_spectra, oscParams, sst_array):
     '''
     Calculates an array of chi-squared results for a spectra with parameters
@@ -89,6 +88,39 @@ def Getchi2StatSpread(num_experiments, unosc_spectra,oscParams):
 
 ## ----- BEGIN FUNCTIONS/CLASSES FOR NEGATIVE MAX LIKELIHOOD TESTS ----- ##
 ## --------------------------------------------------------------------- ##
+def GetNegMLStatSpread_dmsseed(num_experiments, unosc_spectra,oscParams):
+    '''
+    Function returns three arrays that have the best fit oscillation parameters
+    And minimized neg. ML results for best fitting a statistically fluctuated
+    SNO+ Antineutrino spectrum against a non-fluctuated spectrum with the
+    input oscillation parameters.
+    '''
+    dms_fits=[]
+    sst_fits=[]
+    negML_results = []
+    experiment = 0
+    while experiment < num_experiments:
+        EventHist_wstats = getExpt_wstats(oscParams,unosc_spectra)
+        print("CHISQUARE BEING CALCULATED NOW FOR A RANDOM EXPERIMENT...")
+        negML = ExperimentNegML(unosc_spectra,c.SYSTEMATICS, \
+                c.RESOLUTION, EventHist_wstats)
+        im.describe(negML)
+        #First, get delta-m squared's profile at the seed sst.  This will be our
+        #Delta-m squared seed.
+        mseed = im.Minuit(negML, limit_dms = (1e-07, 1e-03), limit_sst=(0.0,1.0), sst = (oscParams[1]), dms = (oscParams[0]), fix_sst=True)
+        dmspoint,negMLval = mseed.profile(dms,bins=100,bound=(1E-05,1E-04))
+        dmsseed = negMLval.index(np.min(negMLval))
+        print("DMS SEED IS: " + str(dmsseed))
+        #Get the global minimum in range of 1E-05 to 1E-04
+        m = im.Minuit(negML, limit_dms = (1e-07, 1e-03), limit_sst=(0.0,1.0), sst = (oscParams[1]), dms = dmsseed)
+        m.migrad()
+        print("MINIMIZATION OUTPUT: " + str(m.values))
+        print("MINIMUM VALUE: " + str(m.fval))
+        dms_fits.append(m.values['dms'])
+        sst_fits.append(m.values['sst'])
+        negML_results.append(m.fval)
+        experiment += 1
+    return dms_fits, sst_fits, negML_results
 
 def GetNegMLStatSpread(num_experiments, unosc_spectra,oscParams):
     '''
@@ -169,7 +201,7 @@ class ExperimentNegML(object):
         if "DETECTOR_RESP" in self.Systematics:
             PerfectdNdE.setResolution(self.Resolution)
             PerfectdNdE.smear()
-       #Build your histogram for the input oscillation parameters
+        #Build your histogram for the input oscillation parameters
         FitHist = h.dNdE_Hist(PerfectdNdE, self.numbins, self.hmin, self.hmax)
         x = self.Stat_EventHist.bin_values
         if np.max(x) > 170:

@@ -9,6 +9,7 @@ import lib.rdbparse as rp
 import lib.SNOdist as sd
 import lib.NuSpectrum as ns
 import lib.chi2ML_Utils as cmu
+import lib.NuToPos as ntp
 
 import tools.graph.SpectraPlots as splt
 import tools.graph.OscPlot as oplt
@@ -70,6 +71,9 @@ parser.add_option("-r", "--reactors",action="store",dest="reactors",
 parser.add_option("-j", "--jobnum",action="store",dest="jobnum",
                   type="string",default="0",
                   help="Specify a jobnumber to save onto the end of the generated data")
+parser.add_option("-s", "--seed", action="store_true", dest="seed",
+                  default="False",help="Runs feeds in a DMS value to minuit" + \
+                  "found by doing a rough global minimization across DMS at fixed SST")
 (options,args) = parser.parse_args()
 
 DEBUG = options.debug
@@ -77,6 +81,7 @@ DEBUG = options.debug
 setOscParams(options.parameters)
 ns.setDebug(options.debug)
 JNUM = options.jobnum
+DMSSEED = options.seed
 
 print("SPECTRUM VARIATIONS SET IN CONFIG: " + str(c.SYSTEMATICS))
 
@@ -214,7 +219,19 @@ if __name__ == '__main__':
         splt.dNdEPlot_pts(dNdEHistvar.bin_centers,dNdEHistvar.bin_values, \
                 dNdEHistvar.bin_lefts,dNdEHistvar.bin_rights, \
                 oscParams[1], oscParams[0])
-
+        TheoryEventNum = int(pd.RoughIntegrate(Varied_dNdE.Nu_dNdE,Varied_dNdE.Nu_Energy_Array))
+    #Statistically fluctuate from theoretical average
+        events_in_experiment = int(pd.RandShoot(TheoryEventNum, np.sqrt(TheoryEventNum),1))
+        print("SHOOTING AN EXPERIMENT WITH STATISTICS INCLUDED NOW")
+        nu_energies = pd.playDarts(events_in_experiment,Varied_dNdE.Nu_dNdE,c.NU_ENERGY_ARRAY)
+        NuPosConverter = ntp.NuToPosConverter()
+        pos_energies = NuPosConverter.ConvertToPositron_0ord(nu_energies)
+        if "DETECTOR_RESP" in c.SYSTEMATICS:
+            pos_energies = NuPosConverter.Smear(pos_energies,c.RESOLUTION)
+        Stat_EventHist = h.Event_Hist(pos_energies,c.NUMBINS,c.HMIN,c.HMAX)
+        splt.dNdEPlot_pts(Stat_EventHist.bin_centers,Stat_EventHist.bin_values, \
+                Stat_EventHist.bin_lefts, Stat_EventHist.bin_rights, \
+                oscParams[1], oscParams[0])
         #Calculate the chi-squared test results (fixed dms, vary sst)
         sst_array = np.arange(0.01, 1.00, 0.01)
         chi2_results = cmu.GetChi2dmsFixed(unosc_spectra, oscParams, sst_array)
@@ -226,8 +243,12 @@ if __name__ == '__main__':
     #the best fit oscillation parameters assuming no systematics or statistic
     #variation.
     num_experiments = 100
-    dms_fits, sst_fits, negML_results = cmu.GetNegMLStatSpread(num_experiments, \
-            unosc_spectra,oscParams)
+    if DMSSEED == True:
+        dms_fits, sst_fits, negML_results = cmu.GetNegMLStatSpread_dmsseed(num_experiments, \
+                unosc_spectra,oscParams)
+    else:
+        dms_fits, sst_fits, negML_results = cmu.GetNegMLStatSpread(num_experiments, \
+                unosc_spectra,oscParams)
     print(dms_fits)
     print(sst_fits)
     print(negML_results)
