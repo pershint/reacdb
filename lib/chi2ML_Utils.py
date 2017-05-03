@@ -34,7 +34,7 @@ def getExpt_wstats(oscParams, All_unosc_spectra):
     events_in_experiment = int(pd.RandShoot(TheoryEventNum, np.sqrt(TheoryEventNum),1))
     nu_energies = pd.playDarts(events_in_experiment,VarieddNdE.Nu_dNdE,c.NU_ENERGY_ARRAY)
     NuPosConverter = ntp.NuToPosConverter()
-    pos_energies = NuPosConverter.ConvertToPositron_0ord(nu_energies)
+    pos_energies = NuPosConverter.ConvertToPositronKE_0ord(nu_energies)
     if "DETECTOR_RESP" in c.SYSTEMATICS:
         pos_energies = NuPosConverter.Smear(pos_energies,c.RESOLUTION)
     Stat_EventHist = h.Event_Hist(pos_energies,c.NUMBINS,c.HMIN,c.HMAX)

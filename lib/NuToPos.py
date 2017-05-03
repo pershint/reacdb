@@ -34,26 +34,28 @@ class NuToPosConverter(object):
         p_p1 = self._convert_1ord(p_p0,nu_E)
         return p_p1
 
-    def addAnnihilE(self, pos_mom):
+    def addAnnihilE(self, pos_KE):
         '''
         Takes an array of positron momentums and adds to each the energy
         released in a positron-electron annihilation.
         '''
         E_ann = self._m_e * 2
-        return pos_mom + E_ann
+        return pos_KE + E_ann
 
-    def ConvertToPositron_0ord(self,nu_Es):
+    def ConvertToPositronKE_0ord(self,nu_Es):
         pos_p = self._convert_0ord(nu_Es)
-        E_tot = self.addAnnihilE(pos_p)
+        pos_KE = np.sqrt(pos_p**2 + self._m_e**2) - self._m_e
+        E_tot = self.addAnnihilE(pos_KE)
         return E_tot
 
-    def ScaleByJacobian_0ord(self,nu_Es,dNdE):
-        pos_p = np.array(self._convert_0ord(nu_Es))
-        factor = pos_p / (np.sqrt((pos_p)**2 + (self._m_e)**2))
-        return (dNdE * factor)
+    def ConvertToPositronP_0ord(self,nu_Es):
+        pos_p = self._convert_0ord(nu_Es)
+        return pos_p
+
 
     def ConvertToPositron(self,nu_Es):
         pos_p = self.getPosMomentums(nu_Es)
+        pos_KE = np.sqrt(pos_p**2 + self._m_e**2) - self._m_e
         E_tot = self.addAnnihilE(pos_p)
         return E_tot
 

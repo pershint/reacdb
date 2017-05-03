@@ -188,44 +188,44 @@ if __name__ == '__main__':
     #Debugging the new Event builder function
     if DEBUG == True:
         NoCoreSys_dNdE = ns.build_Theory_dNdE(unosc_spectra,oscParams)
-        if "DETECTOR_RESP" in c.SYSTEMATICS:
-            NoCoreSys_dNdE.setResolution(c.RESOLUTION)
-            NoCoreSys_dNdE.smear()
-        nu_energies = pd.playDarts(10000,NoCoreSys_dNdE.Nu_dNdE,c.NU_ENERGY_ARRAY)
-        htest = h.Event_Hist(nu_energies,c.NUMBINS,1.82,9.02)
-        splt.plot_EventHist(htest,oscParams[1],oscParams[0])
-
-    if DEBUG == True:
         print("SHOWING SOME PLOTS OF dNdE's REBINNING")
-        #First, build the untouched dNdE function
+        #build the dNdE function with systematic fluctuations
         Varied_dNdE = ns.build_Theory_dNdE_wCoreSys(unosc_spectra, oscParams)
         TotEvents = RoughIntegrate(Varied_dNdE.Pos_dNdE,Varied_dNdE.Pos_Energy_Array)
+        nuTot = RoughIntegrate(Varied_dNdE.Nu_dNdE,Varied_dNdE.Nu_Energy_Array)
+        print("EVENTS IN NEUTRINO ENERGY SPECTRUM: " + str(nuTot))
         print("TOTEVENTS BEFORE SMEAR: " + str(TotEvents))
         splt.dNdEPlot_line(Varied_dNdE.Pos_Energy_Array, \
             Varied_dNdE.Pos_dNdE, oscParams[1], oscParams[0])
         if "DETECTOR_RESP" in c.SYSTEMATICS:
             Varied_dNdE.setResolution(c.RESOLUTION)
             Varied_dNdE.smear()
-        TotEvents = RoughIntegrate(Varied_dNdE.Pos_dNdE,Varied_dNdE.Pos_Energy_Array)
         print("TOTEVENTS AFTER SMEAR: " + str(TotEvents))
         splt.dNdEPlot_line(Varied_dNdE.Pos_Energy_Array,Varied_dNdE.Pos_dNdE, oscParams[1],\
                 oscParams[0])
+        #form histograms in 3-7 MeV region
         dNdEHistperf = h.dNdE_Hist(NoCoreSys_dNdE,c.NUMBINS,c.HMIN,c.HMAX)
+        
+        perfect_numeventsinhist = np.sum(dNdEHistperf.bin_values)
+        stat_eventsinhist = int(pd.RandShoot(perfect_numeventsinhist, \
+                np.sqrt(perfect_numeventsinhist), 1))
         dNdEHistvar = h.dNdE_Hist(Varied_dNdE,c.NUMBINS,c.HMIN,c.HMAX)
-        dNdEHistvar = pd.playDarts_h(TotEvents,dNdEHistvar)
+        dNdEHistvar = pd.playDarts_h(stat_eventsinhist,dNdEHistvar)
         splt.dNdEPlot_pts(dNdEHistperf.bin_centers,dNdEHistperf.bin_values, \
                 dNdEHistperf.bin_lefts,dNdEHistperf.bin_rights, \
                 oscParams[1], oscParams[0])
+        #plots your histogram with smearing, core systematics, statistics
         splt.dNdEPlot_pts(dNdEHistvar.bin_centers,dNdEHistvar.bin_values, \
                 dNdEHistvar.bin_lefts,dNdEHistvar.bin_rights, \
                 oscParams[1], oscParams[0])
         TheoryEventNum = int(pd.RoughIntegrate(Varied_dNdE.Nu_dNdE,Varied_dNdE.Nu_Energy_Array))
-    #Statistically fluctuate from theoretical average
+
+        #Statistically fluctuate from theoretical average to build histogram
         events_in_experiment = int(pd.RandShoot(TheoryEventNum, np.sqrt(TheoryEventNum),1))
         print("SHOOTING AN EXPERIMENT WITH STATISTICS INCLUDED NOW")
         nu_energies = pd.playDarts(events_in_experiment,Varied_dNdE.Nu_dNdE,c.NU_ENERGY_ARRAY)
         NuPosConverter = ntp.NuToPosConverter()
-        pos_energies = NuPosConverter.ConvertToPositron_0ord(nu_energies)
+        pos_energies = NuPosConverter.ConvertToPositronKE_0ord(nu_energies)
         if "DETECTOR_RESP" in c.SYSTEMATICS:
             pos_energies = NuPosConverter.Smear(pos_energies,c.RESOLUTION)
         Stat_EventHist = h.Event_Hist(pos_energies,c.NUMBINS,c.HMIN,c.HMAX)

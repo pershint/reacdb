@@ -361,17 +361,21 @@ class dNdE(object):
         self.evalNudNdE()
 
         self.Pos_Energy_Array = self.getPositronEnergyArr()
-        self.Pos_dNdE = self.NuToPos_dNdE()
+        self.Pos_dNdE = self.NuToPos_dNdE(0)
 
 
     def getPositronEnergyArr(self):
         Converter = ntp.NuToPosConverter()
-        pos_energies = Converter.ConvertToPositron_0ord(self.Nu_Energy_Array)
+        pos_energies = Converter.ConvertToPositronKE_0ord(self.Nu_Energy_Array)
         return pos_energies
 
-    def NuToPos_dNdE(self):
+    #Makes room for a jacobian factor; isn't one for 0order, just multiplies by 1
+    def NuToPos_dNdE(self,order):
         Converter = ntp.NuToPosConverter()
-        Pos_dNdE = Converter.ScaleByJacobian_0ord(self.Nu_Energy_Array,self.Nu_dNdE)
+        if order == 0:
+            Pos_dNdE = self.Nu_dNdE
+        else:
+            print("order 1 not implemented!")
         return Pos_dNdE
 
     def evalNudNdE(self):
