@@ -64,13 +64,13 @@ def chi2CLs(data1):
     avgsst = np.average(data1['sst'])
     avgdms = np.average(data1['dms'])
     ax.plot(avgsst, avgdms, '*', markersize=20, alpha=0.7, color='r', label = 'Mean of fits',zorder=2)
-    CL68_sst,CL68_dms = cm.getcontourlines(0.683,36,data1,[avgsst,avgdms])
-    CL90_sst,CL90_dms = cm.getcontourlines(0.90,36,data1,[avgsst,avgdms])
+    CL68_sst,CL68_dms = cm.getcontourlines(0.683,120,data1,[avgsst,avgdms])
+    CL90_sst,CL90_dms = cm.getcontourlines(0.90,120,data1,[avgsst,avgdms])
     #tsk = si.splprep(68CL_sst,68CL_dms,s=0)
     ax.plot(CL68_sst, CL68_dms, color='blue', label = '68.3% CL')
     ax.plot(CL90_sst, CL90_dms, color='purple', label = '90% CL')
-    ax.set_xlim(0.20,0.50)
-    ax.set_ylim(0.00006,0.000090)
+    ax.set_xlim(0.20,0.55)
+    ax.set_ylim(0.000055,0.000090)
     ax.set_xlabel(r'$\sin^{2}(\theta_{12})$')
     ax.set_ylabel(r'$\Delta m^{2}_{12} (ev^{2})$')
     ax.set_title('Scatter plot of best-fit oscillation parameters')
@@ -93,16 +93,16 @@ def chi2scatter(data1):
     if data1['Params'] == 'KAMLAND':
         ax.plot(0.316,7.54E-05, '*', markersize=20, alpha=0.7, color='w', markeredgecolor='b', label = '(1): KL parameters')
     #Now, plot a density contour on top
-    hrange = [[0.20,0.50],[0.00004,0.00008]]
+    hrange = [[0.20,0.50],[0.00002,0.0003]]
     H, xedges, yedges = np.histogram2d(data1['sst'],data1['dms'],range=hrange,bins=30)
     H=np.transpose(H)   #Zero point is at top right
     #xedges, yedges = np.meshgrid(xedges[:-1],yedges[:-1])
-    extent = [0.20, 0.50, 0.00004, 0.000080] #xedges[0],xedges[-1],yedges[0],yedges[-1]]
+    extent = [0.20, 0.50, 0.00002, 0.0003] #xedges[0],xedges[-1],yedges[0],yedges[-1]]
     CT = ax.contour(H, extent=extent, origin="lower",linewidths=4,zorder=4)
     ax.plot(np.average(data1['sst']), np.average(data1['dms']), '*', markersize=20, alpha=0.7, color='r', label = 'Fit avg.',zorder=2)
     ax.plot(np.median(data1['sst']), np.median(data1['dms']), '*', markersize=20, alpha=0.7, color='k', label = 'median avg.',zorder=3)
     ax.set_xlim(0.20,0.50)
-    ax.set_ylim(0.000044,0.000080)
+    ax.set_ylim(0.00002,0.00030)
     ax.set_xlabel(r'$\sin^{2}(\theta_{12})$')
     ax.set_ylabel(r'$\Delta m^{2}_{12} (ev^{2})$')
     ax.set_title('Scatter plot of best-fit oscillation parameters')

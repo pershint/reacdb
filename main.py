@@ -37,7 +37,7 @@ oscParams = []
 def setOscParams(parameter_choice):
     if parameter_choice == "SK":
         print("USING SUPERKAMIOKANDE OSCILLATION PARAMETERS")
-        sst12 = 0.334
+        sst12 = 0.308
         dmsq = 4.85E-05
         globals()["oscParams"] = [dmsq, sst12]
 
@@ -50,7 +50,8 @@ def setOscParams(parameter_choice):
     elif parameter_choice == "PDG":
         print("USING PDG 2016 OSCILLATION PARAMETERS")
         sst12 = 0.297
-        dmsq = 7.37E-05
+#        dmsq = 7.37E-05
+        dmsq = 1.75E-04
         globals()["oscParams"] = [dmsq, sst12]
 
     elif parameter_choice == "none":
@@ -195,8 +196,8 @@ if __name__ == '__main__':
         nuTot = RoughIntegrate(Varied_dNdE.Nu_dNdE,Varied_dNdE.Nu_Energy_Array)
         print("EVENTS IN NEUTRINO ENERGY SPECTRUM: " + str(nuTot))
         print("TOTEVENTS BEFORE SMEAR: " + str(TotEvents))
-        splt.dNdEPlot_line(Varied_dNdE.Pos_Energy_Array, \
-            Varied_dNdE.Pos_dNdE, oscParams[1], oscParams[0])
+        splt.dNdEPlot_line_TNU(Varied_dNdE.Nu_Energy_Array, \
+            Varied_dNdE.Nu_dNdE, oscParams[1], oscParams[0])
         if "DETECTOR_RESP" in c.SYSTEMATICS:
             Varied_dNdE.setResolution(c.RESOLUTION)
             Varied_dNdE.smear()

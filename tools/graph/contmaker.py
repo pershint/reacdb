@@ -21,7 +21,7 @@ def getcontourlines(CL,numslices,data,origin):
     origx = np.array(data["sst"])
     origy = np.array(data["dms"])
     #You need the relative scales to be the same to make your regions
-    scale = float(origin[0]/origin[1])
+    scale = float(origin[0]/origin[1])*10
     circx =  np.array(origx - origin[0])
     circy =  np.array((origy - origin[1])*scale)
     slicenum = 0

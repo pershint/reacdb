@@ -69,14 +69,29 @@ def plot_TwoEventHist(Hist1,Hist2,sst12,m12):
 def dNdEPlot_line(energies,numSpec,sst12,m12):
     num_points = len(energies)
     opacity = 0.9
-    fix, ax = plt.subplots()
+    fig, ax = plt.subplots()
     plt.plot(energies,numSpec, alpha=opacity, color='g')
     plt.fill_between(energies, 1e-10, numSpec, facecolor ='g',alpha = 0.4)
     ax.annotate(r'$\sin^{2}(\theta _{12})$ =' + str(sst12) + '\n' + \
-            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,200), fontsize = '16', 
-            xytext=(6.5,200))
+            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,50), fontsize = '16', 
+            xytext=(6.5,50))
+#    plt.xaxis.get_label().set_fontproperties(30)
     plt.xlabel('Prompt Energy (MeV)')
     plt.ylabel(r'$dN/dE_{prompt}$ (TNU/MeV)')
+    plt.title(r'SNO+ Neutrino Spectrum, All World Reactors')
+    plt.show()
+
+def dNdEPlot_line_TNU(energies,numSpec,sst12,m12):
+    num_points = len(energies)
+    opacity = 0.9
+    fix, ax = plt.subplots()
+    plt.plot(energies,numSpec, alpha=opacity, color='m')
+    plt.fill_between(energies, 1e-10, numSpec, facecolor ='m',alpha = 0.4)
+    ax.annotate(r'$\sin^{2}(\theta _{12})$ =' + str(sst12) + '\n' + \
+            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,50), fontsize = '16', 
+            xytext=(6.5,50))
+    plt.xlabel('Neutrino Energy (MeV)')
+    plt.ylabel(r'dN/$dE_{\nu}$ (TNU/MeV)')
     plt.title(r'SNO+ Neutrino Spectrum, All World Reactors')
     plt.show()
 
