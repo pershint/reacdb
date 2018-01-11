@@ -85,13 +85,17 @@ def dNdEPlot_line_TNU(energies,numSpec,sst12,m12):
     num_points = len(energies)
     opacity = 0.9
     fix, ax = plt.subplots()
-    plt.plot(energies,numSpec, alpha=opacity, color='m')
-    plt.fill_between(energies, 1e-10, numSpec, facecolor ='m',alpha = 0.4)
+    ax.plot(energies,numSpec, alpha=opacity, color='g')
+    ax.fill_between(energies, 1e-10, numSpec, facecolor ='g',alpha = 0.4)
     ax.annotate(r'$\sin^{2}(\theta _{12})$ =' + str(sst12) + '\n' + \
             r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,50), fontsize = '16', 
             xytext=(6.5,50))
-    plt.xlabel('Neutrino Energy (MeV)')
-    plt.ylabel(r'dN/$dE_{\nu}$ (TNU/MeV)')
+    for tick in ax.xaxis.get_major_ticks():
+        tick.label.set_fontsize(18)
+    for tick in ax.yaxis.get_major_ticks():
+        tick.label.set_fontsize(18)
+    plt.xlabel('Neutrino Energy (MeV)',fontsize=18)
+    plt.ylabel(r'dN/$dE_{\nu}$ (TNU/MeV)',fontsize=18)
     plt.title(r'SNO+ Neutrino Spectrum, All World Reactors')
     plt.show()
 
