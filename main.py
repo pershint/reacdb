@@ -6,7 +6,6 @@ import sys,time,optparse
 import lib.GetNRCDailyInfo as nrc
 import lib.rdbbuild as rb
 import lib.rdbparse as rp
-import lib.SNOdist as sd
 import lib.NuSpectrum as ns
 import lib.chi2ML_Utils as cmu
 import lib.NuToPos as ntp

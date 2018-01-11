@@ -1,6 +1,6 @@
 import time
 import rdbparse as rp
-import SNOdist as sd
+import distance as sd
 import NuSpectrum as ns
 import numpy as np
 

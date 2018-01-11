@@ -7,7 +7,7 @@ import NuToPos as ntp
 import rdbparse as rp
 import playDarts as pd
 import GetNRCDailyInfo as nrc
-import SNOdist as sd
+import distance as sd
 import dailyparse as dp
 import numpy as np
 
@@ -135,7 +135,7 @@ class UnoscSpecGen(object):
             longitude = self.ReacDetails.core_longitudes[i]
             latitude = self.ReacDetails.core_latitudes[i]
             altitude = self.ReacDetails.core_altitudes[i]
-            coreDistance = sd.getSNOLABDist_ECEF([longitude,latitude,altitude])
+            coreDistance = sd.distance(c.LONGLATALT,[longitude,latitude,altitude])
             self.Core_Distances.append(coreDistance)
         if DEBUG == True:
             print("For core " + self.ReacStatus.index + "...")

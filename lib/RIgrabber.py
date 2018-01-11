@@ -10,7 +10,7 @@
 from __future__ import print_function
 import sys
 import urllib2
-import SNOdist as sd
+import distance as sd
 import getCAreacs as gca
 import couch_utils.DButils as dbu
 import rdbparse as rp
@@ -102,7 +102,7 @@ class claws:
         Uses the latlongparse library to calculate a reactor's distance
         from SNOLAB.
         """
-        self.dist_from_SNOplus = sd.getDistFromSNOLAB(self.position)
+        self.dist_from_SNO = sd.distancefromSNOLAB(self.position)
  
     def calculateSignificance(self):
         """
