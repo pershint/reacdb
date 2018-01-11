@@ -19,7 +19,9 @@ ISOTOPES = ['235U', '238U', '239Pu', '241Pu']
 #unites are in MeV.
 NU_ENERGY_ARRAY = np.arange(1.805,9.005,0.01)
 
-LONGLATALT = [-81.2014, 46.4753, 1.763] #[longitude,latitude,altitude(km)] of detector
+#LONGLATALT = [-81.2014, 46.4753, 1.763] #[longitude,latitude,altitude(km)] of detector
+LONGLATALT = [-0.821,54.556,1.1]  #Boulby mine specific
+
 
 #Set the number of bins that your histograms will be binned into
 #Want len(ENERGY_ARRAY) to be divisible by NUMBINS.

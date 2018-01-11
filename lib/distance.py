@@ -28,7 +28,6 @@ def longlat2xyz_ECEF(longlatalt):
     Z=((RS * np.sin((np.pi/180.)*LS)) + longlatalt[2]*1000*np.sin((np.pi/180.)*longlatalt[1]))
     return [X,Y,Z]
 
-print("SNOLAB XYZ: " + str(longlat2xyz_ECEF(SNOLAB_LONGLATALT)))
 
 def distance(longlatalt1,longlatalt2):
     """
