@@ -19,8 +19,8 @@ ISOTOPES = ['235U', '238U', '239Pu', '241Pu']
 #unites are in MeV.
 NU_ENERGY_ARRAY = np.arange(1.805,9.005,0.01)
 
-#LONGLATALT = [-81.2014, 46.4753, 1.763] #[longitude,latitude,altitude(km)] of detector
-LONGLATALT = [-0.821,54.556,1.1]  #Boulby mine specific
+LONGLATALT = [-81.2014, 46.4753, 1.763] #[longitude,latitude,altitude(km)] of detector
+#LONGLATALT = [-0.821,54.556,1.1]  #Boulby mine specific
 
 
 #Set the number of bins that your histograms will be binned into
@@ -32,8 +32,8 @@ HMAX = 7.0  #8.82
 RUNTIME = 8760.*1   #Run years in hours
 
 EFFICIENCY = 1.0  #Assume 100% signal detection efficiency
-#NP = (1E32 * 0.57719 * ((5.5**3)/(6.0**3)))   #Number of protons on target (1E32 = 1 TNU)
-NP = 1.0E32     #Number of protons on target (1E32 = 1 TNU)
+NP = (1E32 * 0.57719)# * ((5.5**3)/(6.0**3)))   #Number of protons on target (1E32 = 1 TNU)
+#NP = 1.0E32     #Number of protons on target (1E32 = 1 TNU)
 
 
 #Sets the Canadian reactors to be incorporated in CA spectrum contribution
