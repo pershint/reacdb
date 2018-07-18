@@ -86,6 +86,7 @@ def hist_average(histograms):
     stddev_hist = h.Histogram(stdevs, bc, bl, br)
     return avg_hist, stddev_hist
 
+
 def RoughIntegrate(y_array,x_array):
     """
     Returns the area under the y_array for the range of the
@@ -95,9 +96,12 @@ def RoughIntegrate(y_array,x_array):
     print("NOTE: Final endpoint of array is not considered in integral.")
     integral = 0.0
     for i,y in enumerate(y_array):
-        if i == len(y_array)-1:
+        if i == 0:
+            integral += y_array[i] * (x_array[i+1]-x_array[i])/2.0
+        elif i == len(y_array)-1:
+            integral += y_array[i] * (x_array[i] - x_array[i-1])/2.0
             print("At end of array.  Result: " + str(integral))
             return int(integral)
-        integral += y_array[i] * (x_array[i+1]-x_array[i])
-
-
+        else:
+            integral += y_array[i] * (((x_array[i]-x_array[i-1]) + \
+                    (x_array[i+1]-x_array[i]))/2.)

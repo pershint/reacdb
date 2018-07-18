@@ -1,11 +1,13 @@
 from __future__ import print_function
 import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set(font_scale=2)
 import numpy as np
 import scipy as sp
 import sys
 
 
-def dNdEPlot_pts(energies,numSpec,bin_left,bin_right,sst12,m12):
+def dNdEPlot_pts(energies,numSpec,bin_left,bin_right,sst12,m12,PID=None):
     num_points = len(energies)
     opacity = 0.9
     fix, ax = plt.subplots()
@@ -16,12 +18,16 @@ def dNdEPlot_pts(energies,numSpec,bin_left,bin_right,sst12,m12):
     plt.vlines(bin_right,numSpec, \
             0.0000000001, color = 'b')
     ax.annotate(r'$\sin^{2}(\theta _{12})$ =' + str(sst12) + '\n' + \
-            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,200), fontsize = '16', 
-            xytext=(6.5,200))
+            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,125),  
+            xytext=(6.5,125))
     plt.ylim(0,np.max(numSpec) + 1)
-    plt.xlabel('Prompt Energy (MeV)')
     plt.ylabel(r'Events/ 200 keV')
-    plt.title(r'SNO+ Neutrino Spectrum, all world reactors')
+    if PID=='pos': 
+        plt.xlabel('Prompt Energy (MeV)')
+        plt.title(r'Neutrino spectrum at given location in positron energy')
+    if PID=='nu': 
+        plt.xlabel('Antineutrino Energy (MeV)')
+        plt.title(r'Neutrino spectrum at given location in antineutrino energy')
     plt.show()
 
 #Takes in a Histogram object as defined in /lib/histogram and plots it
@@ -38,11 +44,11 @@ def plot_EventHist(Histogram,sst12,m12):
     plt.vlines(Histogram.bin_rights,Histogram.bin_values, \
             0.0000000001, color = 'b')
     ax.annotate(r'$\sin^{2}(\theta _{12})$ =' + str(sst12) + '\n' + \
-            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,200), fontsize = '16', 
+            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,200),  
             xytext=(6.5,200))
     plt.xlabel('Energy (MeV)')
     plt.ylabel(r'events/$10^{32}proton-years/MeV$')
-    plt.title(r'SNO+ Neutrino Spectrum for all US and Canadian Reactors')
+    plt.title(r'Neutrino spectrum in TNU at input location')
     plt.show()
 
 #Takes in a Histogram object as defined in /lib/histogram and plots it
@@ -53,50 +59,66 @@ def plot_TwoEventHist(Hist1,Hist2,sst12,m12):
     plt.plot(Hist1.bin_centers,Hist1.bin_values,'ro', \
             alpha=opacity, color='r')
     plt.hlines(Hist1.bin_values,Hist1.bin_lefts, \
-            Hist1.bin_rights, color = 'b')
-    plt.plot(Hist2.bin_centers,Hist2.bin_values,'ro', \
+            Hist1.bin_rights, color = 'r')
+    plt.plot(Hist2.bin_centers,Hist2.bin_values,'bo', \
             alpha=opacity, color='b')
     plt.hlines(Hist2.bin_values,Hist2.bin_lefts, \
             Hist2.bin_rights, color = 'b')
     ax.annotate(r'$\sin^{2}(\theta _{12})$ =' + str(sst12) + '\n' + \
-            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,200), fontsize = '16', 
+            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,200),  
             xytext=(6.5,200))
     plt.xlabel('Energy (MeV)')
     plt.ylabel(r'events/$10^{32}proton-years/MeV$')
-    plt.title(r'SNO+ Neutrino Spectrum for all US and Canadian Reactors')
+    plt.title(r'Comparison of two spectrum histograms')
     plt.show()
 
-def dNdEPlot_line(energies,numSpec,sst12,m12):
+def dNdEPlot_line(energies,numSpec,sst12,m12,PID=None):
     num_points = len(energies)
     opacity = 0.9
     fig, ax = plt.subplots()
     plt.plot(energies,numSpec, alpha=opacity, color='g')
     plt.fill_between(energies, 1e-10, numSpec, facecolor ='g',alpha = 0.4)
     ax.annotate(r'$\sin^{2}(\theta _{12})$ =' + str(sst12) + '\n' + \
-            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,50), fontsize = '16', 
-            xytext=(6.5,50))
+            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,35),  
+            xytext=(6.5,35))
 #    plt.xaxis.get_label().set_fontproperties(30)
-    plt.xlabel('Prompt Energy (MeV)')
-    plt.ylabel(r'$dN/dE_{prompt}$ (TNU/MeV)')
-    plt.title(r'SNO+ Neutrino Spectrum, All World Reactors')
+    if PID=='pos': 
+        plt.xlabel('Prompt Energy (MeV)')
+        plt.ylabel(r'$dN/dE_{prompt}$ (MeV)')
+        plt.title(r'Event Spectrum as a function of prompt positron energy')
+    if PID=='nu': 
+        plt.xlabel('Energy (MeV)')
+        plt.ylabel(r'$dN/dE_{\nu}$ (MeV)')
+        plt.title(r'Neutrino event spectrum')
+    else:
+        print("PID not recognized.  Not making plot")
+        return
     plt.show()
 
-def dNdEPlot_line_TNU(energies,numSpec,sst12,m12):
+def dNdEPlot_line_TNU(energies,numSpec,sst12,m12,PID=None):
     num_points = len(energies)
     opacity = 0.9
     fix, ax = plt.subplots()
     ax.plot(energies,numSpec, alpha=opacity, color='g')
     ax.fill_between(energies, 1e-10, numSpec, facecolor ='g',alpha = 0.4)
     ax.annotate(r'$\sin^{2}(\theta _{12})$ =' + str(sst12) + '\n' + \
-            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,50), fontsize = '16', 
+            r'$\Delta m^{2}_{21}$ = ' + str(m12), xy=(7,50),  
             xytext=(6.5,50))
     for tick in ax.xaxis.get_major_ticks():
         tick.label.set_fontsize(18)
     for tick in ax.yaxis.get_major_ticks():
         tick.label.set_fontsize(18)
-    plt.xlabel('Neutrino Energy (MeV)',fontsize=18)
-    plt.ylabel(r'dN/$dE_{\nu}$ (TNU/MeV)',fontsize=18)
-    plt.title(r'SNO+ Neutrino Spectrum, All World Reactors')
+    if PID=='pos': 
+        plt.xlabel('Prompt Energy (MeV)')
+        plt.ylabel(r'$dN/dE_{prompt}$ (TNU/MeV)')
+        plt.title(r'Event Spectrum as a function of prompt positron energy')
+    if PID=='nu': 
+        plt.xlabel('Energy (MeV)')
+        plt.ylabel(r'$dN/dE_{\nu}$ (TNU/MeV)')
+        plt.title(r'Neutrino event spectrum')
+    else:
+        print("PID not recognized.  Not making plot")
+        return
     plt.show()
 
 def CAspectrumPlot(energies,spectrum):
@@ -111,7 +133,7 @@ def CAspectrumPlot(energies,spectrum):
     plt.plot(energies, spectrum, alpha=opacity, color='b')
     plt.xlabel('Energy (MeV)')
     plt.ylabel(r'(Sum of Oscillated Spectra$m^{-2}$)')
-    plt.title(r'Plot of oscillated neutrino spectrum at SNO+ for all' + \
+    plt.title(r'Plot of oscillated neutrino spectrum at input location for all' + \
             'Canadian plants')
     #plt.xticks(index + bar_width, x, y=0.001)
     #plt.legend()
@@ -134,7 +156,7 @@ def plotSumOscSpectrum(OscSpectra):
     plt.xlabel('Energy (MeV)')
     plt.ylabel(r'(Sum of Oscillated Spectra$m^{-2}$)')
     plt.title(r'Plot of oscillated Core Spectrums for Plant ' +  \
-            str(OscSpectra.ReacDetails.index) + ' at SNO+')
+            str(OscSpectra.ReacDetails.index) + ' at input location')
     #plt.xticks(index + bar_width, x, y=0.001)
     #plt.legend()
     #plt.tight_layout()  #could use instead of the subplots_adjust line
@@ -155,7 +177,7 @@ def plotCoreOscSpectrum(core_number,OscSpectra):
     plt.xlabel('Energy (MeV)')
     plt.ylabel(r'Unoscillated spectra ($m^{-2}$)')
     plt.title(r'Plot of oscillated Core Spectrum for the ' + str(core_number) + \
-    r'th core of Plant ' + str(OscSpectra.ReacDetails.index) + ' at SNO+')
+    r'th core of Plant ' + str(OscSpectra.ReacDetails.index) + ' at input location')
     #plt.xticks(index + bar_width, x, y=0.001)
     #plt.legend()
     #plt.tight_layout()  #could use instead of the subplots_adjust line
@@ -176,7 +198,7 @@ def plotCoreUnoscSpectrum(core_number,UnoscSpectra):
     plt.xlabel('Energy (MeV)')
     plt.ylabel(r'Unoscillated spectra ($m^{-2}$)')
     plt.title(r'Plot of Unoscillated Core Spectrum for the ' + str(core_number) + \
-    r'th core of Plant ' + str(UnoscSpectra.ReacDetails.index) + ' at SNO+')
+    r'th core of Plant ' + str(UnoscSpectra.ReacDetails.index) + ' at input location')
     #plt.xticks(index + bar_width, x, y=0.001)
     #plt.legend()
     #plt.tight_layout()  #could use instead of the subplots_adjust line

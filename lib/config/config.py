@@ -29,7 +29,7 @@ NUMBINS = 20   #30
 HMIN = 3.0  #1.02
 HMAX = 7.0  #8.82
 
-RUNTIME = 8760.*1   #Run years in hours
+RUNTIME = 8760.*5   #Run years in hours
 
 EFFICIENCY = 1.0  #Assume 100% signal detection efficiency
 NP = (1E32 * 0.57719)# * ((5.5**3)/(6.0**3)))   #Number of protons on target (1E32 = 1 TNU)
@@ -49,7 +49,7 @@ else:
 
 #Sets which systematics to include in the generated Spectrum at SNO+
 #Current options: "USSYS", "CASYS", and "DETECTOR_RESP"
-SYSTEMATICS = ["DETECTOR_RESP"]
+SYSTEMATICS = []#"DETECTOR_RESP"]
 
 #To activate, add "USSYS" to SYSTEMATICS
 US_LF_VAR = 25 #Variance in all US load factors as a percentage

@@ -11,33 +11,14 @@ import distance as sd
 import dailyparse as dp
 import numpy as np
 
+import ArgParser as p
+import PhysicsConstants as pc
+
 basepath = os.path.dirname(__file__)
 clibpath = os.path.abspath(os.path.join(basepath,"ctypes_libs"))
 
-DEBUG = False
+DEBUG = p.debug #False
 
-
-# ------------ CONSTANTS ------------------------- #
-hbarc = 1.9733E-16 #in MeV * km
-MWHTOMEV = 2.247E22 #One MW*h equals this many MeV
-
-
-# ----------- OSCILLATION PARAMETERS HELD CONSTANT ------------ #
-#SINSQT13 FROM PDG LIVE AS OF 2016
-SINSQT13 = 0.0214
-SINSQTWO13 = 0.0837 #CALCULATED FROM SINSQT13
-COS4THT13 = 0.95765 #PDG2016, values in RAT
-
-def setDebug(debug):
-    globals()["DEBUG"] = debug
-
-
-#-----CROSS-SECTION CONSTANTS------#
-DELTA = 1.293   #in MeV; neutron mass - proton mass
-Me = 0.511 #in MeV
-A1 = -0.07056
-A2 = 0.02018
-A3 = -0.001953
 
 #Takes in an array of UnoscSpecGen classes (assume all have same energy points on y-axis)
 #And returns the dNdE function that results from them (neutrino energy)
@@ -204,7 +185,7 @@ class coreGen(object):
         approproate thermal power, time, and MeV conversion factor.
         '''
         for i,coreSpectrum in enumerate(self.Unosc_Spectra):
-            coreSpectrum = coreSpectrum * self.Uptime * MWHTOMEV * \
+            coreSpectrum = coreSpectrum * self.Uptime * pc.MWHTOMEV * \
                     self.core_powers[i] 
             self.Unosc_Spectra_wP.append(coreSpectrum)
 
@@ -230,7 +211,7 @@ class coreGen(object):
         #now, use the average values to rescale the spectrums
         
         for i,coreSpectrum in enumerate(self.Unosc_Spectra):
-            coreSpectrum = coreSpectrum * self.Uptime * MWHTOMEV * \
+            coreSpectrum = coreSpectrum * self.Uptime * pc.MWHTOMEV * \
                     self.AvgMWts[i] * (self.AvgLFs[i] / 100.0)
             self.Unosc_Spectra_wP.append(coreSpectrum)
 
@@ -323,11 +304,11 @@ class Osc_CoreSysGen(object):
         #of the Pee spectrum.
         #L must be given in kilometers, energy in MeV
         #USING THE EQN. FROM SVOBODA/LEARNED
-        term1 = COS4THT13*self.SINSQTWO12*(np.sin(1E-12 * \
-                self.DELTAMSQ21 * L /(4 * E * hbarc))**2)
+        term1 = pc.COS4THT13*self.SINSQTWO12*(np.sin(1E-12 * \
+                self.DELTAMSQ21 * L /(4 * E * pc.hbarc))**2)
         result = (1. - term1) # + term2 + term3)
         #OR, USING 2-PARAMETER APPROXIMATION USED BY KAMLAND
-#        result = 1 - (SINSQTWO12 * np.sin((1.27 * \
+#        result = 1 - (self.SINSQTWO12 * np.sin((1.27 * \
 #                DELTAMSQ21*L)/(E/1000))**2)
 
         return result
@@ -392,16 +373,16 @@ class dNdE(object):
     #as a function of energy. Source: A. Strumia and F. Vissani, Physics Letters
     #B 564, 42
     def XC(self, E):
-        Ee = (E - DELTA)
-        pe = np.sqrt((Ee**2) - (Me**2))
-        poly = E**(A1 + (A2 * np.log(E)) + (A3 * ((np.log(E))**3)))
+        Ee = (E - pc.DELTA)
+        pe = np.sqrt((Ee**2) - (pc.Me**2))
+        poly = E**(pc.A1 + (pc.A2 * np.log(E)) + (pc.A3 * ((np.log(E))**3)))
         return (1E-53) * pe * Ee * poly #1E-53, instead of -43, for km^2 units
 
     #takes in an array of energies and returns the scattering angle-averaged
     #cross-section for neutrino IBD interactions.
     def XC_Vogel_0ord(self, E):
-        Ee0 = (E - DELTA)
-        pe0 = np.sqrt((Ee0**2 - Me**2))
+        Ee0 = (E - pc.DELTA)
+        pe0 = np.sqrt((Ee0**2 - pc.Me**2))
 #        f,g=1,1.26  #vector axial coupling constants
 #        gFERM = 1.16639E-11  #in MeV ^ -2
 #        cosTC = 0.974
